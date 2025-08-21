@@ -70,56 +70,107 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Right side - Animated Scene */}
+            {/* Right side - 3D Animated Scene */}
             <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-md">
-                {/* Parents watching */}
-                <div className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
-                  <div className="flex items-center space-x-3 bg-white/90 backdrop-blur-sm rounded-full px-6 py-4 shadow-lg border">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
-                      <Users className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <Eye className="h-5 w-5 text-gray-600" />
-                    <Heart className="h-6 w-6 text-red-400 fill-red-100" />
+              <div className="relative w-full max-w-lg perspective-1000">
+                {/* 3D Scene Container */}
+                <div className="scene-3d relative h-80 bg-gradient-to-b from-sky-200 via-sky-100 to-green-100 rounded-2xl overflow-hidden shadow-2xl">
+                  
+                  {/* Background Hills */}
+                  <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-green-200 to-green-100 rounded-b-2xl transform-gpu" style={{clipPath: 'polygon(0% 100%, 100% 100%, 100% 60%, 80% 50%, 60% 40%, 40% 50%, 20% 45%, 0% 55%)'}}>
                   </div>
-                </div>
-
-                {/* Road */}
-                <div className="relative h-32 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg overflow-hidden">
-                  {/* Road lines */}
-                  <div className="absolute top-1/2 left-0 w-full h-1 transform -translate-y-1/2">
-                    <div className="flex space-x-4 h-full animate-pulse">
-                      <div className="flex-1 bg-white opacity-50"></div>
-                      <div className="flex-1 bg-transparent"></div>
-                      <div className="flex-1 bg-white opacity-50"></div>
-                      <div className="flex-1 bg-transparent"></div>
-                      <div className="flex-1 bg-white opacity-50"></div>
-                    </div>
-                  </div>
-
-                  {/* Animated Car */}
-                  <div className="absolute top-1/2 transform -translate-y-1/2 car-drive-animation">
-                    <div className="relative">
-                      <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center relative shadow-lg">
-                        <Car className="h-8 w-8 text-green-600" />
-                        {/* Safety indicators */}
-                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
-                          <CheckCircle className="h-4 w-4 text-white" />
+                  
+                  {/* 3D Road */}
+                  <div className="road-3d absolute bottom-0 left-1/2 transform -translate-x-1/2 w-64 h-32">
+                    <div className="road-surface bg-gradient-to-t from-gray-400 to-gray-300 h-full transform-gpu road-perspective shadow-lg">
+                      {/* Road lines */}
+                      <div className="absolute inset-0 flex justify-center items-center">
+                        <div className="road-lines flex flex-col space-y-3 h-full justify-evenly">
+                          <div className="w-1 h-4 bg-yellow-200 road-line-animation" style={{animationDelay: '0s'}}></div>
+                          <div className="w-1 h-4 bg-yellow-200 road-line-animation" style={{animationDelay: '0.3s'}}></div>
+                          <div className="w-1 h-4 bg-yellow-200 road-line-animation" style={{animationDelay: '0.6s'}}></div>
+                          <div className="w-1 h-4 bg-yellow-200 road-line-animation" style={{animationDelay: '0.9s'}}></div>
                         </div>
                       </div>
-                      {/* Motion trail */}
-                      <div className="absolute right-full top-1/2 transform -translate-y-1/2 flex space-x-1">
-                        <div className="w-2 h-1 bg-green-400 rounded-full opacity-60 animate-ping" style={{animationDelay: '0ms'}}></div>
-                        <div className="w-2 h-1 bg-green-400 rounded-full opacity-40 animate-ping" style={{animationDelay: '200ms'}}></div>
-                        <div className="w-2 h-1 bg-green-400 rounded-full opacity-20 animate-ping" style={{animationDelay: '400ms'}}></div>
+                    </div>
+                  </div>
+
+                  {/* 3D Animated Car */}
+                  <div className="car-3d-animation absolute bottom-16 left-1/2 transform -translate-x-1/2">
+                    <div className="car-container transform-gpu">
+                      <div className="relative">
+                        {/* Car body with 3D effect */}
+                        <div className="car-body w-20 h-12 bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-lg relative shadow-xl transform-gpu car-tilt">
+                          {/* Car windows */}
+                          <div className="absolute top-1 left-2 right-2 h-4 bg-gradient-to-b from-sky-200 to-sky-300 rounded-t-md"></div>
+                          {/* Car wheels */}
+                          <div className="absolute -bottom-1 left-1 w-3 h-3 bg-gray-800 rounded-full wheel-spin"></div>
+                          <div className="absolute -bottom-1 right-1 w-3 h-3 bg-gray-800 rounded-full wheel-spin"></div>
+                          {/* Headlights */}
+                          <div className="absolute top-3 -left-1 w-2 h-2 bg-yellow-300 rounded-full animate-pulse"></div>
+                          {/* Safety indicator */}
+                          <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-bounce shadow-lg">
+                            <CheckCircle className="h-4 w-4 text-white" />
+                          </div>
+                        </div>
+                        
+                        {/* Exhaust effect */}
+                        <div className="absolute top-1/2 -left-3 transform -translate-y-1/2">
+                          <div className="exhaust-puff w-2 h-2 bg-gray-300 rounded-full opacity-40 animate-ping" style={{animationDelay: '0s'}}></div>
+                          <div className="exhaust-puff absolute -left-2 w-1 h-1 bg-gray-400 rounded-full opacity-30 animate-ping" style={{animationDelay: '0.2s'}}></div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Safety message */}
-                <div className="absolute -bottom-4 right-0 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg">
-                  Driving Safely ✓
+                  {/* 3D Parents with Faces */}
+                  <div className="parents-3d absolute left-4 top-1/2 transform -translate-y-1/2 z-20">
+                    <div className="parents-container bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-2xl border transform-gpu parent-wave">
+                      {/* Mom */}
+                      <div className="parent-figure mb-3 text-center">
+                        <div className="parent-face w-12 h-12 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full mx-auto mb-2 relative overflow-hidden shadow-lg face-bob">
+                          {/* Hair */}
+                          <div className="absolute top-0 left-1 right-1 h-4 bg-amber-600 rounded-t-full"></div>
+                          {/* Eyes */}
+                          <div className="absolute top-4 left-3 w-1.5 h-1.5 bg-blue-800 rounded-full eye-blink"></div>
+                          <div className="absolute top-4 right-3 w-1.5 h-1.5 bg-blue-800 rounded-full eye-blink"></div>
+                          {/* Smile */}
+                          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-2 border-b-2 border-pink-600 rounded-b-full smile-animation"></div>
+                        </div>
+                        <div className="text-xs text-gray-600 font-medium">Mom</div>
+                      </div>
+                      
+                      {/* Dad */}
+                      <div className="parent-figure text-center">
+                        <div className="parent-face w-12 h-12 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full mx-auto mb-2 relative overflow-hidden shadow-lg face-bob" style={{animationDelay: '0.3s'}}>
+                          {/* Hair */}
+                          <div className="absolute top-1 left-2 right-2 h-3 bg-amber-800 rounded-t-md"></div>
+                          {/* Eyes */}
+                          <div className="absolute top-4 left-3 w-1.5 h-1.5 bg-brown-800 rounded-full eye-blink" style={{animationDelay: '0.2s'}}></div>
+                          <div className="absolute top-4 right-3 w-1.5 h-1.5 bg-brown-800 rounded-full eye-blink" style={{animationDelay: '0.2s'}}></div>
+                          {/* Smile */}
+                          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 w-4 h-2 border-b-2 border-orange-600 rounded-b-full smile-animation" style={{animationDelay: '0.5s'}}></div>
+                        </div>
+                        <div className="text-xs text-gray-600 font-medium">Dad</div>
+                      </div>
+                      
+                      {/* Heart and watching indicator */}
+                      <div className="mt-3 text-center">
+                        <Heart className="h-6 w-6 text-red-400 fill-red-200 mx-auto heart-beat" />
+                        <div className="text-xs text-gray-500 mt-1">Watching with love</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Floating Safety Message */}
+                  <div className="safety-message absolute top-4 right-4 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg transform-gpu float-animation">
+                    ✓ Safe & Secure
+                  </div>
+                  
+                  {/* Speed indicator */}
+                  <div className="speed-indicator absolute bottom-4 left-4 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium shadow-lg">
+                    <span className="speed-value">25</span> mph
+                  </div>
                 </div>
               </div>
             </div>

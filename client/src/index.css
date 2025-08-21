@@ -115,19 +115,203 @@
   }
 }
 
-/* Car driving animation */
-@keyframes driveOff {
+/* 3D Scene and Perspective */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.scene-3d {
+  transform-style: preserve-3d;
+}
+
+.transform-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 3D Road with perspective */
+.road-perspective {
+  transform: perspective(400px) rotateX(45deg);
+  transform-origin: bottom center;
+}
+
+@keyframes roadLineMove {
   0% {
-    left: 20px;
+    transform: translateY(100px) scaleY(0.3);
+    opacity: 0;
+  }
+  50% {
     opacity: 1;
   }
   100% {
-    left: 100%;
-    opacity: 0.3;
+    transform: translateY(-20px) scaleY(1.2);
+    opacity: 0;
   }
 }
 
-.car-drive-animation {
-  animation: driveOff 4s ease-in-out infinite;
-  animation-delay: 1s;
+.road-line-animation {
+  animation: roadLineMove 2s ease-in-out infinite;
+}
+
+/* 3D Car Animation */
+@keyframes car3DDrive {
+  0% {
+    transform: translateX(-100px) translateY(0px) rotateY(-15deg) scale(0.8);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateX(-20px) translateY(-5px) rotateY(-5deg) scale(0.9);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(20px) translateY(-10px) rotateY(5deg) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100px) translateY(-15px) rotateY(15deg) scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.car-3d-animation {
+  animation: car3DDrive 6s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes carTilt {
+  0%, 100% {
+    transform: rotateZ(0deg) rotateY(0deg);
+  }
+  25% {
+    transform: rotateZ(-2deg) rotateY(-5deg);
+  }
+  75% {
+    transform: rotateZ(2deg) rotateY(5deg);
+  }
+}
+
+.car-tilt {
+  animation: carTilt 3s ease-in-out infinite;
+}
+
+/* Wheel spinning */
+@keyframes wheelSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.wheel-spin {
+  animation: wheelSpin 0.3s linear infinite;
+}
+
+/* Parent faces with 3D effects */
+@keyframes faceBob {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg);
+  }
+  50% {
+    transform: translateY(-2px) rotateX(-5deg);
+  }
+}
+
+.face-bob {
+  animation: faceBob 3s ease-in-out infinite;
+}
+
+@keyframes eyeBlink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.eye-blink {
+  animation: eyeBlink 4s ease-in-out infinite;
+}
+
+@keyframes smileAnimation {
+  0%, 70%, 100% {
+    border-width: 2px;
+    opacity: 1;
+  }
+  85% {
+    border-width: 3px;
+    opacity: 0.8;
+  }
+}
+
+.smile-animation {
+  animation: smileAnimation 5s ease-in-out infinite;
+}
+
+@keyframes parentWave {
+  0%, 100% {
+    transform: translateX(0px) rotateY(0deg);
+  }
+  50% {
+    transform: translateX(2px) rotateY(-2deg);
+  }
+}
+
+.parent-wave {
+  animation: parentWave 4s ease-in-out infinite;
+}
+
+/* Heart beating */
+@keyframes heartBeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.heart-beat {
+  animation: heartBeat 2s ease-in-out infinite;
+}
+
+/* Floating elements */
+@keyframes floatAnimation {
+  0%, 100% {
+    transform: translateY(0px) rotateZ(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateZ(1deg);
+  }
+}
+
+.float-animation {
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+/* Speed counter animation */
+@keyframes speedCounter {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.speed-indicator {
+  animation: speedCounter 2s ease-in-out infinite;
+}
+
+/* Enhanced shadow effects for 3D depth */
+.scene-3d::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: -1;
 }
