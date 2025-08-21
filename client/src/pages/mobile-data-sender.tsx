@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Smartphone, Wifi, MapPin, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Smartphone, Wifi, MapPin, Activity, AlertTriangle, CheckCircle, Lock } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
 import { Layout } from '@/components/layout';
 
@@ -22,53 +22,160 @@ interface SensorReading {
   };
 }
 
+interface PermissionState {
+  location: 'granted' | 'denied' | 'prompt' | 'unknown';
+  motion: 'granted' | 'denied' | 'prompt' | 'unknown';
+}
+
 export default function MobileDataSender() {
   const [isTracking, setIsTracking] = useState(false);
   const [sensorData, setSensorData] = useState<SensorReading[]>([]);
   const [lastUpload, setLastUpload] = useState<Date | null>(null);
   const [uploading, setUploading] = useState(false);
   const [violations, setViolations] = useState(0);
+  const [permissions, setPermissions] = useState<PermissionState>({
+    location: 'unknown',
+    motion: 'unknown'
+  });
+  const [sensorError, setSensorError] = useState<string | null>(null);
+  
+  const watchIdRef = useRef<number | null>(null);
+  const lastPositionRef = useRef<GeolocationPosition | null>(null);
+  const motionDataRef = useRef<DeviceMotionEvent | null>(null);
 
-  // Simulate getting device sensor data
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
+  // Check and request permissions
+  const requestPermissions = async () => {
+    setSensorError(null);
     
-    if (isTracking) {
-      interval = setInterval(() => {
-        // Simulate realistic sensor data
-        const reading: SensorReading = {
-          timestamp: new Date().toISOString(),
-          gps: {
-            latitude: 37.7749 + (Math.random() - 0.5) * 0.001,
-            longitude: -122.4194 + (Math.random() - 0.5) * 0.001,
-            speed: 15 + Math.random() * 25, // m/s (simulated driving speeds)
-            accuracy: Math.random() * 10 + 3
-          },
-          accelerometer: {
-            x: (Math.random() - 0.5) * 2, // lateral
-            y: (Math.random() - 0.5) * 4, // forward/back  
-            z: 9.8 + (Math.random() - 0.5) * 0.5, // gravity + vibration
-            timestamp: Date.now()
-          }
-        };
+    // Request location permission
+    if ('geolocation' in navigator) {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          });
+        });
         
-        setSensorData(prev => [...prev.slice(-99), reading]); // Keep last 100 readings
-      }, 1000); // Collect data every second
+        setPermissions(prev => ({ ...prev, location: 'granted' }));
+        lastPositionRef.current = position;
+      } catch (error) {
+        setPermissions(prev => ({ ...prev, location: 'denied' }));
+        setSensorError('Location access denied. Please enable location services.');
+        return false;
+      }
+    } else {
+      setSensorError('Geolocation is not supported by this browser.');
+      return false;
+    }
+
+    // Request motion permission (iOS 13+)
+    if (typeof (DeviceMotionEvent as any).requestPermission === 'function') {
+      try {
+        const permission = await (DeviceMotionEvent as any).requestPermission();
+        setPermissions(prev => ({ ...prev, motion: permission }));
+        if (permission !== 'granted') {
+          setSensorError('Motion sensor access denied. Please allow motion access.');
+          return false;
+        }
+      } catch (error) {
+        setSensorError('Motion sensor permission failed.');
+        return false;
+      }
+    } else if ('DeviceMotionEvent' in window) {
+      // Android and older iOS
+      setPermissions(prev => ({ ...prev, motion: 'granted' }));
+    } else {
+      setSensorError('Motion sensors not supported on this device.');
+      return false;
+    }
+
+    return true;
+  };
+
+  // Get real device sensor data
+  useEffect(() => {
+    let geoInterval: NodeJS.Timeout;
+    
+    if (isTracking && permissions.location === 'granted') {
+      // Start GPS tracking
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (position) => {
+          lastPositionRef.current = position;
+        },
+        (error) => {
+          console.error('GPS error:', error);
+          setSensorError('GPS tracking error: ' + error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 1000
+        }
+      );
+
+      // Motion event listener
+      const handleMotion = (event: DeviceMotionEvent) => {
+        motionDataRef.current = event;
+      };
+
+      window.addEventListener('devicemotion', handleMotion);
+
+      // Collect data every second
+      geoInterval = setInterval(() => {
+        const position = lastPositionRef.current;
+        const motion = motionDataRef.current;
+
+        if (position && motion && motion.acceleration) {
+          const reading: SensorReading = {
+            timestamp: new Date().toISOString(),
+            gps: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              speed: position.coords.speed || 0, // m/s from GPS
+              accuracy: position.coords.accuracy
+            },
+            accelerometer: {
+              x: motion.acceleration.x || 0, // lateral acceleration
+              y: motion.acceleration.y || 0, // forward/backward acceleration  
+              z: motion.acceleration.z || 0, // vertical acceleration
+              timestamp: Date.now()
+            }
+          };
+          
+          setSensorData(prev => [...prev.slice(-99), reading]); // Keep last 100 readings
+        }
+      }, 1000);
     }
     
     return () => {
-      if (interval) clearInterval(interval);
+      if (watchIdRef.current) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+      }
+      if (geoInterval) {
+        clearInterval(geoInterval);
+      }
+      window.removeEventListener('devicemotion', handleMotion as any);
     };
-  }, [isTracking]);
+  }, [isTracking, permissions]);
 
-  const startTracking = () => {
-    setIsTracking(true);
-    setSensorData([]);
-    setViolations(0);
+  const startTracking = async () => {
+    setSensorError(null);
+    const permissionsGranted = await requestPermissions();
+    
+    if (permissionsGranted) {
+      setIsTracking(true);
+      setSensorData([]);
+      setViolations(0);
+    }
   };
 
   const stopTracking = () => {
     setIsTracking(false);
+    if (watchIdRef.current) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+    }
   };
 
   const uploadData = async () => {
@@ -138,10 +245,52 @@ export default function MobileDataSender() {
                     <span className="font-mono text-sm">{sensorData.length}</span>
                   </div>
 
+                  {/* Permission Status */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        Location:
+                      </span>
+                      <Badge variant="outline" className={
+                        permissions.location === 'granted' ? 'text-green-700 border-green-300' :
+                        permissions.location === 'denied' ? 'text-red-700 border-red-300' :
+                        'text-gray-700 border-gray-300'
+                      }>
+                        {permissions.location === 'granted' ? '✓' : 
+                         permissions.location === 'denied' ? '✗' : '?'}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="flex items-center gap-1">
+                        <Activity className="h-3 w-3" />
+                        Motion:
+                      </span>
+                      <Badge variant="outline" className={
+                        permissions.motion === 'granted' ? 'text-green-700 border-green-300' :
+                        permissions.motion === 'denied' ? 'text-red-700 border-red-300' :
+                        'text-gray-700 border-gray-300'
+                      }>
+                        {permissions.motion === 'granted' ? '✓' : 
+                         permissions.motion === 'denied' ? '✗' : '?'}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {sensorError && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-red-700">{sensorError}</p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     {!isTracking ? (
                       <Button onClick={startTracking} className="w-full">
-                        Start Collecting Data
+                        <Lock className="h-4 w-4 mr-2" />
+                        Start Real Sensor Data
                       </Button>
                     ) : (
                       <Button onClick={stopTracking} variant="outline" className="w-full">
@@ -207,13 +356,14 @@ export default function MobileDataSender() {
                           return (
                             <div className="grid grid-cols-2 gap-4 text-sm">
                               <div>
-                                <p className="text-blue-700 font-medium">GPS</p>
+                                <p className="text-blue-700 font-medium">GPS (Real Device)</p>
                                 <p className="font-mono">Lat: {latest.gps.latitude.toFixed(6)}</p>
                                 <p className="font-mono">Lng: {latest.gps.longitude.toFixed(6)}</p>
                                 <p className="font-mono">Speed: {((latest.gps.speed || 0) * 2.237).toFixed(1)} mph</p>
+                                <p className="font-mono">Accuracy: {latest.gps.accuracy?.toFixed(0)}m</p>
                               </div>
                               <div>
-                                <p className="text-blue-700 font-medium">Accelerometer</p>
+                                <p className="text-blue-700 font-medium">Motion (Real Device)</p>
                                 <p className="font-mono">X: {latest.accelerometer.x.toFixed(2)} m/s²</p>
                                 <p className="font-mono">Y: {latest.accelerometer.y.toFixed(2)} m/s²</p>
                                 <p className="font-mono">Z: {latest.accelerometer.z.toFixed(2)} m/s²</p>
@@ -258,19 +408,19 @@ export default function MobileDataSender() {
                   <div className="space-y-3 text-sm text-gray-600">
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Click "Start Collecting Data" to simulate smartphone sensors collecting GPS and accelerometer data</p>
+                      <p>Uses your device's real GPS and motion sensors for authentic driving data</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Data is collected every second and stored locally until uploaded</p>
+                      <p>Requires location and motion permissions - you'll be prompted to allow access</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Upload data to the server for automated violation detection and analysis</p>
+                      <p>Best results when used on a smartphone while actually driving or moving</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                      <p>The system will automatically detect speeding, harsh braking, and aggressive acceleration</p>
+                      <p>The system will detect real speeding, harsh braking, and aggressive acceleration from your movements</p>
                     </div>
                   </div>
                 </CardContent>
