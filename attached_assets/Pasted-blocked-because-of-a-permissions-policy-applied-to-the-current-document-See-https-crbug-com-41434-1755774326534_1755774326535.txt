@@ -1,0 +1,21 @@
+blocked because of a permissions policy applied to the current document. See https://crbug.com/414348233 for more details.
+(anonymous) @ cdn.replit.com/_next…c4eab78cae629.js:20Understand this error
+3635-c8abf43f70fc9a0b.js:1 WebSocket connection to 'wss://eval.kirk.platform.replit.com/wsv2/v2.public.Q2dZSWg1bWF4UVlTQmdpbXRackZCaUlFYTJseWF6QUFPczBCQ2lRMk9UUXlObUpsWVMxaU1HWmpMVFE1TWpJdE9XWTBPQzB3TkRsa1kyVXpNVGd4TWpNU0EyNXBlQm9XY21Wd2JHbDBMWEpsY0d3dFptbHNaWE10YTJseWF5SUtRMjl2Y21ScFRXRjBaU29PWjNkbGJuTjFiVzFsY25Nek1qVkNUZ29YY21Wd2JHbDBMWEpsY0d3dFlteHZZMnR6TFd0cGNtc1NGWEpsY0d4cGRDMXlaWEJzTFcxbGRHRXRhMmx5YXhvY2NtVndiR2wwTFcxaGNtZGhjbWx1WlMxaWJHOWphM010YTJseWEwb0hDSnlYK1JVUUFWQUFXZzlwYm5SbGJuUmZjR1Z5YzI5dVlXeDRBRklqQ0FFUWdJQ0FnQ0FaQUFBQUFBQUFFRUFoQUFBQUFBQUFFRUFvZ0lDQWdNZ0JNQUpnQUdvVkNKeVgrUlVTRG1kM1pXNXpkVzF0WlhKek16STFnZ0VDS2dDYUFRb0tDREF1TUM0eE5qUXhvQUVC1MYeQP_QF6Z2_6yGGrW8ZF7DYRC1Whacxi6qUX2Ng6cWjZwzLc4Uqpqhdh5z7hpsPcSwh4wrVkqFimryKuL9AA.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-c8abf43f70fc9a0b.js:1Understand this error
+9089-a9a7fae70990afad.js:1 WebSocket connection to 'wss://production-ai-chat.replit.com/river?auth_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ2MDI1NjI4LCJ1c2VyVGltZUNyZWF0ZWQiOiIyMDI1LTA4LTA1VDE4OjQxOjQ1LjY3NloiLCJyZXBsSWQiOiJkZGJlZjQ2ZS01Zjg1LTQ4MWQtOTNkZC02OWQ0MjY3MTMxMjgiLCJtZW1iZXJzaGlwIjoiY29yZSIsImlzc3VlciI6Imh0dHBzOi8vcmVwbGl0LXdlYi1wcm9kLnAucmVwbGl0LmNvbSIsInJvbGVzIjpbImludGVudF9wZXJzb25hbCJdLCJjYW5Xcml0ZSI6dHJ1ZSwiaGFzUmVwbGl0QWlQcm8iOnRydWUsImZsYWdnaW5nQ29udGV4dCI6IntcImtleVwiOlwidXNlcjo0NjAyNTYyOFwiLFwia2luZFwiOlwib3duZXJcIixcInJvbGVzXCI6W1wiaW50ZW50X3BlcnNvbmFsXCJdLFwiaXNfdGVhbVwiOmZhbHNlLFwibWVtYmVyc2hpcFwiOlwiY29yZVwifSIsImlhdCI6MTc1NTc3MjQ5NCwiZXhwIjoxNzU1Nzc2MDk0fQ.QiO8ykIGr7aT8Z-TfZFLFynjM9YkRD5fT7N_--HiMfj5ndo8xO9Jmp1IzahhjDtQgmtyNQP83RYQnyI8yo_yonwvfjtMHNZzrGydpVtQGX8FktlUtt_EOWmrSjEF0bRBKviK9saynzMJZirsqZmC7jf8xHyttIpJKMula4eJ6reIX8QTPyOTzbnzRCJ4RlfWU9_imqIl_XZc3TxQyDV4xoWgBYEnGKdsHFVufzjHIy7t7MsuGByLEuOYyQlKExSEqVcqKFh22-tXH9957M3WzbI6zxkm0HfX7X6kux9JTtFAtKNHkqPVs4iq5tBdLbfY27MkWq-b2FDWJ72jAjetPw' failed: 
+(anonymous) @ 9089-a9a7fae70990afad.js:1Understand this error
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html?initialPath=%2F&id=%3Ar78a%3A:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+ddbef46e-5f85-481d-93dd-69d426713128-00-3agzr7b4t2tw3.riker.replit.dev/api/user:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
