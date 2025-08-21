@@ -161,13 +161,6 @@ export default function ParentDashboard() {
                 <span className="text-sm font-medium text-gray-700">
                   {parent.firstName} {parent.lastName}
                 </span>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => window.location.href = '/api/logout'}
-                >
-                  Logout
-                </Button>
               </div>
             </div>
           </div>

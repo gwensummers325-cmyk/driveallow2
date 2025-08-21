@@ -125,13 +125,6 @@ export default function TeenDashboard() {
                 <span className="text-sm font-medium text-gray-700">
                   {teen.firstName} {teen.lastName}
                 </span>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => window.location.href = '/api/logout'}
-                >
-                  Logout
-                </Button>
               </div>
             </div>
           </div>
