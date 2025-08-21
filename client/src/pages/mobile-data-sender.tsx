@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Smartphone, Wifi, MapPin, Activity, AlertTriangle, CheckCircle, Lock } from 'lucide-react';
+import { Smartphone, Wifi, MapPin, Activity, AlertTriangle, CheckCircle, Lock, User } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { useAuth } from '@/hooks/use-auth';
 import { Layout } from '@/components/layout';
 
 interface SensorReading {
@@ -28,11 +29,13 @@ interface PermissionState {
 }
 
 export default function MobileDataSender() {
+  const { user } = useAuth();
   const [isTracking, setIsTracking] = useState(false);
   const [sensorData, setSensorData] = useState<SensorReading[]>([]);
   const [lastUpload, setLastUpload] = useState<Date | null>(null);
   const [uploading, setUploading] = useState(false);
   const [violations, setViolations] = useState(0);
+  const [selectedTeenId, setSelectedTeenId] = useState<string>('');
   const [permissions, setPermissions] = useState<PermissionState>({
     location: 'unknown',
     motion: 'unknown'
@@ -156,7 +159,7 @@ export default function MobileDataSender() {
       if (geoInterval) {
         clearInterval(geoInterval);
       }
-      window.removeEventListener('devicemotion', handleMotion as any);
+      window.removeEventListener('devicemotion', handleMotion);
     };
   }, [isTracking, permissions]);
 
@@ -178,14 +181,30 @@ export default function MobileDataSender() {
     }
   };
 
+  // Determine which teen ID to use
+  const getTeenId = () => {
+    if (user?.role === 'teen') {
+      return user.id; // Teens submit their own data
+    } else if (user?.role === 'parent') {
+      return selectedTeenId || 'test-teen-1'; // Parents can select which teen
+    }
+    return 'test-teen-1'; // Fallback
+  };
+
   const uploadData = async () => {
     if (sensorData.length === 0) return;
+    
+    const teenId = getTeenId();
+    if (!teenId) {
+      setSensorError('Please select a teen to associate this data with.');
+      return;
+    }
     
     setUploading(true);
     try {
       // Convert sensor readings to the expected format
       const formattedData = sensorData.map(reading => ({
-        teenId: 'test-teen-1', // In real app, this would come from auth
+        teenId,
         timestamp: reading.timestamp,
         gps: reading.gps,
         accelerometer: reading.accelerometer,
@@ -243,6 +262,38 @@ export default function MobileDataSender() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Data Points:</span>
                     <span className="font-mono text-sm">{sensorData.length}</span>
+                  </div>
+
+                  {/* Teen Selection for Parents */}
+                  {user?.role === 'parent' && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-gray-700 flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        Collecting data for:
+                      </label>
+                      <select 
+                        value={selectedTeenId} 
+                        onChange={(e) => setSelectedTeenId(e.target.value)}
+                        className="w-full text-xs border border-gray-200 rounded p-2 bg-white"
+                      >
+                        <option value="">Select Teen...</option>
+                        <option value="test-teen-1">Test Teen</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Current User Info */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-2">
+                    <div className="text-xs text-blue-700">
+                      <strong>Data will be attributed to:</strong><br />
+                      {user?.role === 'teen' ? (
+                        `${user.firstName} ${user.lastName} (You)`
+                      ) : user?.role === 'parent' ? (
+                        selectedTeenId ? `Selected teen: ${selectedTeenId}` : 'No teen selected'
+                      ) : (
+                        'Test Teen (Demo mode)'
+                      )}
+                    </div>
                   </div>
 
                   {/* Permission Status */}
