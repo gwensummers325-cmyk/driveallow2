@@ -2,36 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star } from "lucide-react";
 import { useLocation } from "wouter";
+import { Layout } from "@/components/layout";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Car className="h-6 w-6 text-primary mr-2" />
-              <h1 className="text-2xl font-bold text-primary">DriveWise</h1>
-            </div>
-            <div className="flex space-x-3">
-              <Button 
-                variant="outline" 
-                onClick={() => setLocation('/auth/parent')}
-              >
-                Parent Sign In
-              </Button>
-              <Button 
-                onClick={() => setLocation('/auth/teen')}
-              >
-                Teen Sign In
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+    <Layout showBackButton={false}>
+      <div className="min-h-screen">
 
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -340,6 +318,7 @@ export default function Landing() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </Layout>
   );
 }

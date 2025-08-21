@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target } from "lucide-react";
+import { Layout } from "@/components/layout";
 
 export default function TeenDashboard() {
   const { toast } = useToast();
@@ -35,26 +36,30 @@ export default function TeenDashboard() {
 
   if (isLoading || isDashboardLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (!dashboardData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
-          <CardContent className="pt-6 text-center">
-            <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-4" />
-            <h1 className="text-xl font-bold text-gray-900 mb-2">No Data Available</h1>
-            <p className="text-gray-600">Unable to load dashboard data.</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <Card className="w-full max-w-md mx-4">
+            <CardContent className="pt-6 text-center">
+              <AlertTriangle className="h-8 w-8 text-red-500 mx-auto mb-4" />
+              <h1 className="text-xl font-bold text-gray-900 mb-2">No Data Available</h1>
+              <p className="text-gray-600">Unable to load dashboard data.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </Layout>
     );
   }
 
@@ -96,7 +101,8 @@ export default function TeenDashboard() {
   const milesProgress = (weeklyMiles / weeklyGoal) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Layout>
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -383,6 +389,7 @@ export default function TeenDashboard() {
           </CardContent>
         </Card>
       </main>
-    </div>
+      </div>
+    </Layout>
   );
 }

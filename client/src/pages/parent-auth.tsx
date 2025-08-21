@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Users, Shield, Heart, Car } from "lucide-react";
+import { Layout } from "@/components/layout";
 
 export default function ParentAuth() {
   const { user, loginMutation, registerMutation } = useAuth();
@@ -44,7 +45,8 @@ export default function ParentAuth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
+    <Layout backPath="/">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         
         {/* Left side - Hero content */}
@@ -219,6 +221,7 @@ export default function ParentAuth() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </Layout>
   );
 }

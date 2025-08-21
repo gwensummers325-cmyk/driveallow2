@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
 import { Car, DollarSign, Star, Users } from "lucide-react";
+import { Layout } from "@/components/layout";
 
 export default function TeenAuth() {
   const { user, loginMutation, registerMutation } = useAuth();
@@ -45,7 +46,8 @@ export default function TeenAuth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <Layout backPath="/">
+      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         
         {/* Left side - Hero content */}
@@ -238,6 +240,7 @@ export default function TeenAuth() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </Layout>
   );
 }
