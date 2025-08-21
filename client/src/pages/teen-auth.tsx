@@ -100,133 +100,54 @@ export default function TeenAuth() {
               </div>
               <CardTitle className="text-2xl font-bold">Teen Access</CardTitle>
               <CardDescription>
-                Sign in or create your teen account
+                Sign in to access your allowance dashboard
               </CardDescription>
             </CardHeader>
             
             <CardContent>
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login">Sign In</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Username</Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={loginForm.username}
+                    onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                    placeholder="Enter your username"
+                    required
+                  />
+                </div>
                 
-                <TabsContent value="login">
-                  <form onSubmit={handleLogin} className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="username">Username</Label>
-                      <Input
-                        id="username"
-                        type="text"
-                        value={loginForm.username}
-                        onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <Input
-                        id="password"
-                        type="password"
-                        value={loginForm.password}
-                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-green-600 hover:bg-green-700" 
-                      disabled={loginMutation.isPending}
-                    >
-                      {loginMutation.isPending ? "Signing In..." : "Sign In"}
-                    </Button>
-                  </form>
-                </TabsContent>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={loginForm.password}
+                    onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
                 
-                <TabsContent value="register">
-                  <form onSubmit={handleRegister} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">First Name</Label>
-                        <Input
-                          id="firstName"
-                          type="text"
-                          value={registerForm.firstName}
-                          onChange={(e) => setRegisterForm({ ...registerForm, firstName: e.target.value })}
-                          required
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Last Name</Label>
-                        <Input
-                          id="lastName"
-                          type="text"
-                          value={registerForm.lastName}
-                          onChange={(e) => setRegisterForm({ ...registerForm, lastName: e.target.value })}
-                          required
-                        />
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={registerForm.email}
-                        onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="parentId">Parent Username</Label>
-                      <Input
-                        id="parentId"
-                        type="text"
-                        placeholder="Your parent's username"
-                        value={registerForm.parentId}
-                        onChange={(e) => setRegisterForm({ ...registerForm, parentId: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="registerUsername">Username</Label>
-                      <Input
-                        id="registerUsername"
-                        type="text"
-                        value={registerForm.username}
-                        onChange={(e) => setRegisterForm({ ...registerForm, username: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="registerPassword">Password</Label>
-                      <Input
-                        id="registerPassword"
-                        type="password"
-                        value={registerForm.password}
-                        onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
-                        required
-                      />
-                    </div>
-                    
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-green-600 hover:bg-green-700" 
-                      disabled={registerMutation.isPending}
-                    >
-                      {registerMutation.isPending ? "Creating Account..." : "Create Teen Account"}
-                    </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
-
+                <Button 
+                  type="submit" 
+                  className="w-full bg-green-600 hover:bg-green-700" 
+                  disabled={loginMutation.isPending}
+                >
+                  {loginMutation.isPending ? "Signing In..." : "Sign In"}
+                </Button>
+              </form>
+              
+              <div className="mt-6 text-center">
+                <p className="text-sm text-gray-600 mb-2">
+                  Need an account? Ask your parent to create one for you.
+                </p>
+                <p className="text-xs text-gray-500">
+                  Test login: <strong>testteen</strong> / <strong>teen123</strong>
+                </p>
+              </div>
+              
               <div className="mt-6 text-center text-sm text-gray-600">
                 <span>Are you a parent? </span>
                 <button 

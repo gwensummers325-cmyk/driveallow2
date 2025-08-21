@@ -10,10 +10,22 @@ import {
   insertAllowanceBalanceSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { createTestAccounts } from "./create-test-accounts";
 
 export function registerRoutes(app: Express): Server {
   // Auth middleware
   setupAuth(app);
+
+  // Test accounts creation endpoint (remove in production)
+  app.post('/api/create-test-accounts', async (req, res) => {
+    try {
+      await createTestAccounts();
+      res.json({ message: "Test accounts created successfully" });
+    } catch (error) {
+      console.error("Error creating test accounts:", error);
+      res.status(500).json({ message: "Failed to create test accounts" });
+    }
+  });
 
   // Dashboard data routes
   app.get('/api/dashboard/parent', isAuthenticated, async (req: any, res) => {

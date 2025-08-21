@@ -54,7 +54,7 @@ export class DatabaseStorage implements IStorage {
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     const result = await db.select().from(users).where(eq(users.username, username));
-    return result[0] as User | undefined;
+    return result[0] || undefined;
   }
 
   async createUser(userData: UpsertUser): Promise<User> {
@@ -81,7 +81,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUsersByParentId(parentId: string): Promise<User[]> {
-    return await db.select().from(users).where(eq(users.parentId, parentId)) as User[];
+    return await db.select().from(users).where(eq(users.parentId, parentId));
   }
 
   async getAllowanceSettings(parentId: string, teenId: string): Promise<AllowanceSettings | undefined> {
