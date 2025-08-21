@@ -9,6 +9,7 @@ import {
   text,
   boolean,
   pgEnum,
+  unique,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -76,7 +77,9 @@ export const allowanceSettings = pgTable("allowance_settings", {
   speedComplianceBonus: decimal("speed_compliance_bonus", { precision: 10, scale: 2 }).notNull().default('2.00'),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  parentTeenUnique: unique().on(table.parentId, table.teenId),
+}));
 
 // Transactions table
 export const transactions = pgTable("transactions", {
