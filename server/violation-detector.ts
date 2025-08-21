@@ -11,6 +11,38 @@ export interface DrivingData {
   location: string;
 }
 
+export interface SmartphoneSensorData {
+  teenId: string;
+  timestamp: string;
+  gps: GPSData;
+  accelerometer: AccelerometerData;
+  gyroscope?: GyroscopeData;
+  location?: string;
+}
+
+export interface GPSData {
+  latitude: number;
+  longitude: number;
+  altitude?: number;
+  speed?: number; // m/s from GPS
+  accuracy?: number;
+  heading?: number;
+}
+
+export interface AccelerometerData {
+  x: number; // lateral acceleration (m/s²)
+  y: number; // forward/backward acceleration (m/s²) 
+  z: number; // vertical acceleration (m/s²)
+  timestamp: number;
+}
+
+export interface GyroscopeData {
+  x: number; // pitch rate (rad/s)
+  y: number; // roll rate (rad/s)
+  z: number; // yaw rate (rad/s)
+  timestamp: number;
+}
+
 export interface ViolationResult {
   type: 'speeding_minor' | 'speeding_major' | 'harsh_braking' | 'aggressive_acceleration';
   severity: 'low' | 'medium' | 'high';
@@ -154,63 +186,83 @@ export class ViolationDetector {
     }
   }
 
-  // Simulate continuous monitoring for demo purposes
-  static startContinuousMonitoring() {
-    console.log('🚗 Starting automated driving behavior monitoring...');
+  // Process incoming smartphone sensor data
+  static async processSmartphoneData(sensorData: SmartphoneSensorData): Promise<ViolationResult[]> {
+    console.log(`📱 Processing smartphone sensor data for teen: ${sensorData.teenId}`);
     
-    setInterval(async () => {
-      try {
-        // For demonstration purposes, we'll simulate some driving data
-        // In a real app, this would receive data from mobile apps
-        const knownTeenIds = ['test-teen-1']; // Hardcode for demo
-        
-        for (const teenId of knownTeenIds) {
-          // 2% chance per check of generating driving data
-          if (Math.random() > 0.98) {
-            const simulatedData = this.generateSimulatedDrivingData(teenId);
-            console.log(`🚗 Simulating driving data for teen: ${teenId}`);
-            await this.processRealTimeData(simulatedData);
-          }
-        }
-      } catch (error) {
-        console.error('Error in continuous monitoring:', error);
+    const violations: ViolationResult[] = [];
+    
+    try {
+      // Convert smartphone sensor data to driving data format
+      const drivingData: DrivingData = {
+        teenId: sensorData.teenId,
+        timestamp: sensorData.timestamp,
+        latitude: sensorData.gps.latitude,
+        longitude: sensorData.gps.longitude,
+        speed: this.calculateSpeed(sensorData.gps),
+        speedLimit: await this.getSpeedLimit(sensorData.gps.latitude, sensorData.gps.longitude),
+        acceleration: this.calculateAcceleration(sensorData.accelerometer),
+        location: sensorData.location || await this.reverseGeocode(sensorData.gps.latitude, sensorData.gps.longitude)
+      };
+      
+      // Check for violations using existing detection logic
+      const violation = this.detectViolation(drivingData);
+      if (violation) {
+        await this.processViolation(sensorData.teenId, violation, drivingData);
+        violations.push(violation);
       }
-    }, 10000); // Check every 10 seconds
+      
+      // Store driving data for analysis
+      await this.storeDrivingData(drivingData);
+      
+    } catch (error) {
+      console.error('Error processing smartphone sensor data:', error);
+    }
+    
+    return violations;
   }
 
-  // Generate simulated driving data for demonstration
-  private static generateSimulatedDrivingData(teenId: string): DrivingData {
-    const locations = ['Main Street', 'Highway 101', 'Oak Avenue', 'School Zone', 'Residential Area'];
-    const speedLimits = [25, 35, 45, 55, 65];
+  // Calculate speed from GPS data
+  private static calculateSpeed(gps: GPSData): number {
+    // GPS speed is typically provided in m/s, convert to mph
+    if (gps.speed !== undefined) {
+      return Math.round(gps.speed * 2.237); // Convert m/s to mph
+    }
+    return 0;
+  }
+
+  // Calculate acceleration from accelerometer data  
+  private static calculateAcceleration(accel: AccelerometerData): number {
+    // Calculate forward acceleration magnitude
+    // Y-axis typically represents forward/backward motion
+    return Math.round(accel.y * 10) / 10;
+  }
+
+  // Get speed limit for current location (placeholder - would use mapping API)
+  private static async getSpeedLimit(lat: number, lng: number): Promise<number> {
+    // In production, this would query a mapping service like Google Maps API
+    // For now, return typical speed limits based on simple area classification
     
-    const baseSpeedLimit = speedLimits[Math.floor(Math.random() * speedLimits.length)];
-    const location = locations[Math.floor(Math.random() * locations.length)];
+    // Simple heuristic based on location patterns
+    const latMod = Math.abs(lat % 0.01);
+    const lngMod = Math.abs(lng % 0.01);
     
-    // Generate realistic driving scenarios
-    const scenarios = [
-      // Normal driving (most common)
-      { speed: baseSpeedLimit + Math.random() * 5, acceleration: Math.random() * 1 - 0.5 },
-      // Minor speeding  
-      { speed: baseSpeedLimit + 8 + Math.random() * 5, acceleration: Math.random() * 2 },
-      // Major speeding (rare)
-      { speed: baseSpeedLimit + 17 + Math.random() * 8, acceleration: Math.random() * 2 },
-      // Harsh braking
-      { speed: baseSpeedLimit + Math.random() * 5, acceleration: -5 - Math.random() * 2 },
-      // Aggressive acceleration
-      { speed: baseSpeedLimit + Math.random() * 10, acceleration: 3.5 + Math.random() * 2 }
-    ];
-    
-    const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-    
-    return {
-      teenId,
-      timestamp: new Date().toISOString(),
-      latitude: 37.7749 + (Math.random() - 0.5) * 0.1,
-      longitude: -122.4194 + (Math.random() - 0.5) * 0.1,
-      speed: Math.round(scenario.speed),
-      speedLimit: baseSpeedLimit,
-      acceleration: Math.round(scenario.acceleration * 10) / 10,
-      location
-    };
+    // Simulate different area types
+    if (latMod < 0.003 && lngMod < 0.003) return 25; // Residential/school zones
+    if (latMod < 0.006 && lngMod < 0.006) return 35; // City streets
+    if (latMod < 0.008 && lngMod < 0.008) return 45; // Main roads
+    return 55; // Highways/major roads
+  }
+
+  // Reverse geocode coordinates to address (placeholder)
+  private static async reverseGeocode(lat: number, lng: number): Promise<string> {
+    // In production, this would use a geocoding API
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  }
+
+  // Store driving data for analysis and trip tracking
+  private static async storeDrivingData(data: DrivingData): Promise<void> {
+    // Store raw driving data for analysis (would save to database)
+    console.log(`📊 Storing driving data: ${data.speed}mph at ${data.location}`);
   }
 }

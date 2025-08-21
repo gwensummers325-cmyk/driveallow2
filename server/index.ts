@@ -68,14 +68,7 @@ app.use((req, res, next) => {
   }, () => {
     log(`serving on port ${port}`);
     
-    // Start automated violation detection after server starts
-    setTimeout(async () => {
-      try {
-        const { ViolationDetector } = await import('./violation-detector');
-        ViolationDetector.startContinuousMonitoring();
-      } catch (error) {
-        console.error('Failed to start violation monitoring:', error);
-      }
-    }, 3000); // Wait 3 seconds for server to fully initialize
+    // Initialize real-time driving data processing system
+    console.log('📱 Real-time smartphone sensor data processing ready');
   });
 })();

@@ -55,6 +55,14 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
             <div className="flex items-center space-x-4">
               {user ? (
                 <div className="flex items-center space-x-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setLocation("/mobile-data")}
+                    className="flex items-center space-x-1"
+                  >
+                    <span>📱 Data Simulator</span>
+                  </Button>
                   <span className="text-sm text-gray-600">
                     Welcome, {user.firstName}
                   </span>

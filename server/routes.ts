@@ -376,22 +376,38 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Automated Detection Routes
-  app.post('/api/driving-data', async (req, res) => {
+  // Smartphone Sensor Data Routes
+  app.post('/api/smartphone-data', isAuthenticated, async (req: any, res) => {
     try {
-      const drivingData = req.body;
+      const sensorData = req.body;
+      const userId = req.user.id;
       
-      // Validate required fields
-      if (!drivingData.teenId || !drivingData.speed || !drivingData.speedLimit) {
-        return res.status(400).json({ message: "Missing required driving data fields" });
+      // Validate required sensor data fields
+      if (!sensorData.teenId || !sensorData.gps || !sensorData.accelerometer) {
+        return res.status(400).json({ 
+          message: "Missing required sensor data fields (teenId, gps, accelerometer)" 
+        });
       }
 
-      // Process the driving data for violations
+      // Ensure user can only submit data for themselves (teens) or their children (parents)
+      if (req.user.role === 'teen' && sensorData.teenId !== userId) {
+        return res.status(403).json({ message: "Can only submit your own driving data" });
+      }
+      
+      if (req.user.role === 'parent') {
+        const teen = await storage.getUser(sensorData.teenId);
+        if (!teen || teen.parentId !== userId) {
+          return res.status(403).json({ message: "Can only submit data for your teens" });
+        }
+      }
+
+      // Process the smartphone sensor data for violations
       const { ViolationDetector } = await import('./violation-detector');
-      const violations = await ViolationDetector.processRealTimeData(drivingData);
+      const violations = await ViolationDetector.processSmartphoneData(sensorData);
       
       res.json({ 
-        processed: true, 
+        processed: true,
+        timestamp: new Date().toISOString(),
         violations: violations.length,
         detectedViolations: violations.map(v => ({
           type: v.type,
@@ -401,8 +417,68 @@ export function registerRoutes(app: Express): Server {
         }))
       });
     } catch (error) {
-      console.error("Error processing driving data:", error);
-      res.status(500).json({ message: "Failed to process driving data" });
+      console.error("Error processing smartphone sensor data:", error);
+      res.status(500).json({ message: "Failed to process sensor data" });
+    }
+  });
+
+  // Bulk sensor data upload (for buffered data from mobile apps)
+  app.post('/api/smartphone-data/bulk', isAuthenticated, async (req: any, res) => {
+    try {
+      const { sensorDataArray } = req.body;
+      const userId = req.user.id;
+      
+      if (!Array.isArray(sensorDataArray) || sensorDataArray.length === 0) {
+        return res.status(400).json({ message: "sensorDataArray must be a non-empty array" });
+      }
+
+      const results = [];
+      const { ViolationDetector } = await import('./violation-detector');
+      
+      for (const sensorData of sensorDataArray) {
+        // Validate each data point
+        if (!sensorData.teenId || !sensorData.gps || !sensorData.accelerometer) {
+          continue; // Skip invalid data points
+        }
+
+        // Security check
+        if (req.user.role === 'teen' && sensorData.teenId !== userId) {
+          continue;
+        }
+        
+        if (req.user.role === 'parent') {
+          const teen = await storage.getUser(sensorData.teenId);
+          if (!teen || teen.parentId !== userId) {
+            continue;
+          }
+        }
+
+        try {
+          const violations = await ViolationDetector.processSmartphoneData(sensorData);
+          results.push({
+            timestamp: sensorData.timestamp,
+            violations: violations.length,
+            processed: true
+          });
+        } catch (error) {
+          console.error('Error processing individual sensor data:', error);
+          results.push({
+            timestamp: sensorData.timestamp,
+            violations: 0,
+            processed: false,
+            error: 'Processing failed'
+          });
+        }
+      }
+      
+      res.json({ 
+        totalProcessed: results.length,
+        totalViolations: results.reduce((sum, r) => sum + r.violations, 0),
+        results 
+      });
+    } catch (error) {
+      console.error("Error processing bulk sensor data:", error);
+      res.status(500).json({ message: "Failed to process bulk sensor data" });
     }
   });
 
