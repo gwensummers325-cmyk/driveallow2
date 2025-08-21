@@ -486,7 +486,11 @@ export default function ParentDashboard() {
         {/* Settings Panel */}
         {teens.length > 0 && (
           <div className="mt-8">
-            <SettingsPanel teenId={teens[0]?.id} />
+            <SettingsPanel 
+              teenId={selectedTeenId || teens[0]?.id} 
+              teens={teens}
+              onTeenChange={setSelectedTeenId}
+            />
           </div>
         )}
       </main>

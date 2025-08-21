@@ -18,9 +18,11 @@ import {
 
 interface SettingsPanelProps {
   teenId?: string;
+  teens?: any[];
+  onTeenChange?: (teenId: string) => void;
 }
 
-export function SettingsPanel({ teenId }: SettingsPanelProps) {
+export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPanelProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState({
@@ -117,14 +119,16 @@ export function SettingsPanel({ teenId }: SettingsPanelProps) {
     }));
   };
 
-  if (!teenId) {
+  const selectedTeen = teens.find(t => t.id === teenId);
+
+  if (!teenId && teens.length === 0) {
     return (
       <Card>
         <CardHeader>
           <CardTitle>Allowance & Penalty Settings</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500">Please select a teen to configure settings.</p>
+          <p className="text-gray-500">No teens available. Create a teen account first.</p>
         </CardContent>
       </Card>
     );
@@ -133,7 +137,34 @@ export function SettingsPanel({ teenId }: SettingsPanelProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Allowance & Penalty Settings</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Allowance & Penalty Settings</CardTitle>
+          {teens.length > 1 && onTeenChange && (
+            <div className="flex items-center space-x-2">
+              <Label className="text-sm text-gray-600">Configure for:</Label>
+              <Select value={teenId || ''} onValueChange={onTeenChange}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Select teen" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teens.map((teen: any) => (
+                    <SelectItem key={teen.id} value={teen.id}>
+                      {teen.firstName} {teen.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+        {selectedTeen && (
+          <div className="text-sm text-gray-600 mt-2">
+            Currently configuring settings for {selectedTeen.firstName} {selectedTeen.lastName}
+            <span className="ml-2 text-green-600 font-medium">
+              Current Balance: ${parseFloat(selectedTeen.balance?.currentBalance || '0.00').toFixed(2)}
+            </span>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
