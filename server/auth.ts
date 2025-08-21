@@ -45,8 +45,9 @@ export function setupAuth(app: Express) {
     store: sessionStore,
     cookie: {
       secure: false,
-      httpOnly: true,
+      httpOnly: false, // Allow frontend access to cookie
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'lax', // Allow cross-origin requests
     },
   };
 
