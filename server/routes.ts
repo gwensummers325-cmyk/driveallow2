@@ -376,6 +376,182 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Monitoring routes
+  app.get("/api/monitoring/dashboard", isAuthenticated, async (req: any, res) => {
+    if (!req.user || req.user.role !== 'parent') {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const parentId = req.user.id;
+      const teens = await storage.getUsersByParentId(parentId);
+      
+      // Mock data for now - in real implementation, get from monitoring tables
+      const activeTrips = teens.filter(() => Math.random() > 0.7); // Random active trips
+      
+      // Calculate aggregate metrics
+      const totalActiveTrips = activeTrips.length;
+      const averageSpeed = 28.5; // Mock average speed
+      const safetyScore = 95; // Mock safety score
+      
+      res.json({
+        teens: teens.map(teen => ({
+          ...teen,
+          isCurrentlyDriving: activeTrips.some(trip => trip.id === teen.id),
+          currentSpeed: Math.random() > 0.5 ? 25 + Math.random() * 20 : 0,
+          speedLimit: 35
+        })),
+        totalActiveTrips,
+        averageSpeed,
+        safetyScore
+      });
+    } catch (error) {
+      console.error("Error fetching monitoring dashboard:", error);
+      res.status(500).json({ message: "Failed to fetch monitoring dashboard" });
+    }
+  });
+  
+  app.get("/api/monitoring/active-trips", isAuthenticated, async (req: any, res) => {
+    if (!req.user || req.user.role !== 'parent') {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const parentId = req.user.id;
+      const teens = await storage.getUsersByParentId(parentId);
+      
+      // Mock active trips data
+      const activeTrips = teens.filter(() => Math.random() > 0.6).map(teen => ({
+        id: `trip-${teen.id}`,
+        teenId: teen.id,
+        teenName: `${teen.firstName} ${teen.lastName}`,
+        status: 'active',
+        startTime: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+        startLocation: 'Home',
+        currentSpeed: 25 + Math.random() * 20,
+        maxSpeed: 35 + Math.random() * 10,
+        totalDistance: Math.random() * 15,
+        safetyScore: 85 + Math.random() * 15,
+        recentViolations: []
+      }));
+      
+      res.json(activeTrips);
+    } catch (error) {
+      console.error("Error fetching active trips:", error);
+      res.status(500).json({ message: "Failed to fetch active trips" });
+    }
+  });
+  
+  app.get("/api/monitoring/violations/:teenId?", isAuthenticated, async (req: any, res) => {
+    if (!req.user || req.user.role !== 'parent') {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const parentId = req.user.id;
+      const teenId = req.params.teenId;
+      
+      // Mock violations data
+      const violations = [
+        {
+          id: 'v1',
+          teenId: teenId,
+          teenName: 'Test Teen',
+          type: 'speeding_minor',
+          severity: 'medium',
+          speedRecorded: '42',
+          speedLimit: '35',
+          location: 'Main Street',
+          autoReported: true,
+          createdAt: new Date(Date.now() - 86400000).toISOString()
+        }
+      ].filter(() => Math.random() > 0.5);
+      
+      res.json(violations);
+    } catch (error) {
+      console.error("Error fetching violations:", error);
+      res.status(500).json({ message: "Failed to fetch violations" });
+    }
+  });
+  
+  app.get("/api/monitoring/alerts", isAuthenticated, async (req: any, res) => {
+    if (!req.user || req.user.role !== 'parent') {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    
+    try {
+      const parentId = req.user.id;
+      
+      // Mock alerts data
+      const alerts = [
+        {
+          id: 'a1',
+          teenName: 'Test Teen',
+          type: 'speed',
+          message: 'Speed limit exceeded by 8 mph on Highway 101',
+          severity: 'medium',
+          isRead: false,
+          createdAt: new Date(Date.now() - 1800000).toISOString()
+        }
+      ].filter(() => Math.random() > 0.7);
+      
+      res.json(alerts);
+    } catch (error) {
+      console.error("Error fetching alerts:", error);
+      res.status(500).json({ message: "Failed to fetch alerts" });
+    }
+  });
+  
+  app.get("/api/monitoring/widget/:teenId", isAuthenticated, async (req: any, res) => {
+    try {
+      const teenId = req.params.teenId;
+      
+      // Mock widget data
+      const weeklyViolations = Math.floor(Math.random() * 3);
+      const safetyScore = Math.max(0, 100 - (weeklyViolations * 15));
+      
+      res.json({
+        safetyScore,
+        weeklyViolations,
+        totalMiles: 127 + Math.random() * 50,
+        averageSpeed: 25.5 + Math.random() * 10,
+        lastViolation: weeklyViolations > 0 ? {
+          type: 'speeding_minor',
+          speedRecorded: '38',
+          createdAt: new Date(Date.now() - 86400000).toISOString()
+        } : null,
+        isCurrentlyDriving: Math.random() > 0.7
+      });
+    } catch (error) {
+      console.error("Error fetching monitoring widget:", error);
+      res.status(500).json({ message: "Failed to fetch monitoring widget" });
+    }
+  });
+  
+  app.get("/api/monitoring/active-trip/:teenId", isAuthenticated, async (req: any, res) => {
+    try {
+      const teenId = req.params.teenId;
+      
+      // Mock active trip data
+      const hasActiveTrip = Math.random() > 0.6;
+      const activeTrip = hasActiveTrip ? {
+        id: `trip-${teenId}`,
+        teenId,
+        status: 'active',
+        startTime: new Date(Date.now() - Math.random() * 3600000).toISOString(),
+        currentSpeed: 25 + Math.random() * 15,
+        speedLimit: 35,
+        totalDistance: Math.random() * 10,
+        safetyScore: 85 + Math.random() * 15
+      } : null;
+      
+      res.json(activeTrip);
+    } catch (error) {
+      console.error("Error fetching active trip:", error);
+      res.status(500).json({ message: "Failed to fetch active trip" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

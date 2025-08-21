@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import Landing from "@/pages/landing";
 import ParentDashboard from "@/pages/parent-dashboard";
 import TeenDashboard from "@/pages/teen-dashboard";
+import MonitoringDashboard from "@/pages/monitoring-dashboard";
 import ParentAuth from "@/pages/parent-auth";
 import TeenAuth from "@/pages/teen-auth";
 import NotFound from "@/pages/not-found";
@@ -29,6 +30,9 @@ function Router() {
     <Switch>
       <Route path="/auth/parent" component={ParentAuth} />
       <Route path="/auth/teen" component={TeenAuth} />
+      <Route path="/monitoring">
+        {user?.role === 'parent' ? <MonitoringDashboard /> : <Landing />}
+      </Route>
       <Route path="/">
         {!user ? (
           <Landing />

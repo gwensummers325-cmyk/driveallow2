@@ -6,10 +6,11 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift } from "lucide-react";
+import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, Activity } from "lucide-react";
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
+import { MonitoringWidget } from "@/components/monitoring-widget";
 import { CreateTeenModal } from "@/components/create-teen-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
@@ -182,14 +183,25 @@ export default function ParentDashboard() {
                 </div>
               </div>
               <div className="mt-4">
-                <Button
-                  size="sm"
-                  onClick={() => setShowCreateTeenModal(true)}
-                  className="w-full"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Teen Driver
-                </Button>
+                <div className="space-y-2">
+                  <Button
+                    size="sm"
+                    onClick={() => setShowCreateTeenModal(true)}
+                    className="w-full"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Teen Driver
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => window.location.href = '/monitoring'}
+                    className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                  >
+                    <Activity className="h-4 w-4 mr-2" />
+                    Live Monitor
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -305,6 +317,9 @@ export default function ParentDashboard() {
                           </div>
                         </div>
                       </div>
+
+                      {/* Monitoring Widget */}
+                      <MonitoringWidget teenId={teen.id} />
 
                       {/* Actions */}
                       <div className="grid grid-cols-3 gap-2">

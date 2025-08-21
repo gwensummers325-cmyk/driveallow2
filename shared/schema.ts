@@ -45,6 +45,21 @@ export const incidentTypeEnum = pgEnum('incident_type', [
   'other'
 ]);
 
+// Trip status enum
+export const tripStatusEnum = pgEnum('trip_status', [
+  'active',
+  'completed',
+  'cancelled'
+]);
+
+// Violation severity enum
+export const violationSeverityEnum = pgEnum('violation_severity', [
+  'low',
+  'medium',
+  'high',
+  'critical'
+]);
+
 // Users table  
 export const users: any = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -117,6 +132,68 @@ export const allowanceBalances = pgTable("allowance_balances", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Driving trips table
+export const drivingTrips = pgTable("driving_trips", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  status: tripStatusEnum("status").notNull().default('active'),
+  startTime: timestamp("start_time").notNull().defaultNow(),
+  endTime: timestamp("end_time"),
+  startLocation: text("start_location"),
+  endLocation: text("end_location"),
+  totalDistance: decimal("total_distance", { precision: 10, scale: 2 }), // in miles
+  maxSpeed: decimal("max_speed", { precision: 5, scale: 2 }), // in mph
+  avgSpeed: decimal("avg_speed", { precision: 5, scale: 2 }), // in mph
+  speedViolations: text("speed_violations").array().default([]), // JSON array of violations
+  aggressiveEvents: text("aggressive_events").array().default([]), // JSON array of events
+  safetyScore: decimal("safety_score", { precision: 5, scale: 2 }), // 0-100
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Real-time driving data table
+export const drivingData = pgTable("driving_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  tripId: varchar("trip_id").references(() => drivingTrips.id),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  speed: decimal("speed", { precision: 5, scale: 2 }).notNull(), // mph
+  acceleration: decimal("acceleration", { precision: 6, scale: 3 }), // m/s²
+  brakeForce: decimal("brake_force", { precision: 6, scale: 3 }), // g-force
+  speedLimit: decimal("speed_limit", { precision: 5, scale: 2 }), // mph
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+// Driving violations table (auto-detected)
+export const drivingViolations = pgTable("driving_violations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  tripId: varchar("trip_id").references(() => drivingTrips.id),
+  type: incidentTypeEnum("type").notNull(),
+  severity: violationSeverityEnum("severity").notNull().default('medium'),
+  speedRecorded: decimal("speed_recorded", { precision: 5, scale: 2 }),
+  speedLimit: decimal("speed_limit", { precision: 5, scale: 2 }),
+  location: text("location"),
+  autoReported: boolean("auto_reported").notNull().default(true),
+  incidentId: varchar("incident_id").references(() => incidents.id), // Link to created incident
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Monitoring alerts table
+export const monitoringAlerts = pgTable("monitoring_alerts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  parentId: varchar("parent_id").notNull().references(() => users.id),
+  type: varchar("type").notNull(), // 'speed', 'harsh_brake', 'aggressive_accel', 'trip_start', 'trip_end'
+  message: text("message").notNull(),
+  severity: violationSeverityEnum("severity").notNull().default('medium'),
+  isRead: boolean("is_read").notNull().default(false),
+  tripId: varchar("trip_id").references(() => drivingTrips.id),
+  violationId: varchar("violation_id").references(() => drivingViolations.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   parent: one(users, {
@@ -177,6 +254,61 @@ export const allowanceBalancesRelations = relations(allowanceBalances, ({ one })
   }),
 }));
 
+export const drivingTripsRelations = relations(drivingTrips, ({ one, many }) => ({
+  teen: one(users, {
+    fields: [drivingTrips.teenId],
+    references: [users.id],
+  }),
+  drivingData: many(drivingData),
+  violations: many(drivingViolations),
+  alerts: many(monitoringAlerts),
+}));
+
+export const drivingDataRelations = relations(drivingData, ({ one }) => ({
+  teen: one(users, {
+    fields: [drivingData.teenId],
+    references: [users.id],
+  }),
+  trip: one(drivingTrips, {
+    fields: [drivingData.tripId],
+    references: [drivingTrips.id],
+  }),
+}));
+
+export const drivingViolationsRelations = relations(drivingViolations, ({ one }) => ({
+  teen: one(users, {
+    fields: [drivingViolations.teenId],
+    references: [users.id],
+  }),
+  trip: one(drivingTrips, {
+    fields: [drivingViolations.tripId],
+    references: [drivingTrips.id],
+  }),
+  incident: one(incidents, {
+    fields: [drivingViolations.incidentId],
+    references: [incidents.id],
+  }),
+}));
+
+export const monitoringAlertsRelations = relations(monitoringAlerts, ({ one }) => ({
+  teen: one(users, {
+    fields: [monitoringAlerts.teenId],
+    references: [users.id],
+  }),
+  parent: one(users, {
+    fields: [monitoringAlerts.parentId],
+    references: [users.id],
+  }),
+  trip: one(drivingTrips, {
+    fields: [monitoringAlerts.tripId],
+    references: [drivingTrips.id],
+  }),
+  violation: one(drivingViolations, {
+    fields: [monitoringAlerts.violationId],
+    references: [drivingViolations.id],
+  }),
+}));
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -205,6 +337,26 @@ export const insertAllowanceBalanceSchema = createInsertSchema(allowanceBalances
   updatedAt: true,
 });
 
+export const insertDrivingTripSchema = createInsertSchema(drivingTrips).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertDrivingDataSchema = createInsertSchema(drivingData).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertDrivingViolationSchema = createInsertSchema(drivingViolations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMonitoringAlertSchema = createInsertSchema(monitoringAlerts).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -217,3 +369,11 @@ export type Incident = typeof incidents.$inferSelect;
 export type InsertIncident = z.infer<typeof insertIncidentSchema>;
 export type AllowanceBalance = typeof allowanceBalances.$inferSelect;
 export type InsertAllowanceBalance = z.infer<typeof insertAllowanceBalanceSchema>;
+export type DrivingTrip = typeof drivingTrips.$inferSelect;
+export type InsertDrivingTrip = z.infer<typeof insertDrivingTripSchema>;
+export type DrivingData = typeof drivingData.$inferSelect;
+export type InsertDrivingData = z.infer<typeof insertDrivingDataSchema>;
+export type DrivingViolation = typeof drivingViolations.$inferSelect;
+export type InsertDrivingViolation = z.infer<typeof insertDrivingViolationSchema>;
+export type MonitoringAlert = typeof monitoringAlerts.$inferSelect;
+export type InsertMonitoringAlert = z.infer<typeof insertMonitoringAlertSchema>;
