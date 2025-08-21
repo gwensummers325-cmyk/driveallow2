@@ -397,54 +397,6 @@ export default function ParentDashboard() {
 
           {/* Quick Actions & Status */}
           <div className="space-y-6">
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Button 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white"
-                    onClick={() => {
-                      if (teens.length > 0) {
-                        setSelectedTeenId(teens[0].id);
-                        setShowReportModal(true);
-                      }
-                    }}
-                    disabled={teens.length === 0}
-                  >
-                    <AlertTriangle className="mr-2 h-4 w-4" />
-                    Report Incident
-                  </Button>
-                  <Button 
-                    className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => {
-                      if (teens.length > 0) {
-                        setSelectedTeenId(teens[0].id);
-                        setShowBonusModal(true);
-                      }
-                    }}
-                    disabled={teens.length === 0}
-                  >
-                    <Gift className="mr-2 h-4 w-4" />
-                    Add Bonus
-                  </Button>
-                  <Button 
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    onClick={() => {
-                      if (teens.length > 0) {
-                        payAllowanceMutation.mutate(teens[0].id);
-                      }
-                    }}
-                    disabled={teens.length === 0 || payAllowanceMutation.isPending}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    {payAllowanceMutation.isPending ? 'Paying...' : 'Pay Allowance'}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Family Summary */}
             <Card>
