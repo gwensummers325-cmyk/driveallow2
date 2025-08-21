@@ -41,10 +41,7 @@ export default function Landing() {
             {/* Left side - Text Content */}
             <div className="text-center lg:text-left">
               <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Watch Your Teen Drive Away
-                <span className="block text-4xl md:text-5xl text-primary">
-                  with Complete Peace of Mind
-                </span>
+                Drive. Safe. Earn.
               </h2>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
