@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +15,7 @@ import { useState } from "react";
 
 export default function ParentDashboard() {
   const { toast } = useToast();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const queryClient = useQueryClient();
   const [showReportModal, setShowReportModal] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
@@ -23,7 +23,7 @@ export default function ParentDashboard() {
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
     queryKey: ["/api/dashboard/parent"],
-    enabled: isAuthenticated && !isLoading,
+    enabled: !!user && !isLoading,
   });
 
   const payAllowanceMutation = useMutation({
@@ -45,7 +45,7 @@ export default function ParentDashboard() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/auth/parent";
         }, 500);
         return;
       }
@@ -59,18 +59,18 @@ export default function ParentDashboard() {
 
   // Redirect to home if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !user) {
       toast({
         title: "Unauthorized",
         description: "You are logged out. Logging in again...",
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/auth/parent";
       }, 500);
       return;
     }
-  }, [isAuthenticated, isLoading, toast]);
+  }, [user, isLoading, toast]);
 
   if (isLoading || isDashboardLoading) {
     return (

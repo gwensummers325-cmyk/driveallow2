@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Landing() {
+  const [, setLocation] = useLocation();
+  
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -13,9 +16,19 @@ export default function Landing() {
               <Car className="h-6 w-6 text-primary mr-2" />
               <h1 className="text-2xl font-bold text-primary">DriveWise</h1>
             </div>
-            <Button onClick={() => window.location.href = '/api/login'}>
-              Sign In
-            </Button>
+            <div className="flex space-x-3">
+              <Button 
+                variant="outline" 
+                onClick={() => setLocation('/auth/parent')}
+              >
+                Parent Sign In
+              </Button>
+              <Button 
+                onClick={() => setLocation('/auth/teen')}
+              >
+                Teen Sign In
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -51,14 +64,25 @@ export default function Landing() {
               </p>
               
               <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                <Button 
-                  size="lg" 
-                  onClick={() => window.location.href = '/api/login'}
-                  className="text-lg px-10 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary shadow-lg"
-                >
-                  Start Protecting Your Teen
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                  <Button 
+                    size="lg" 
+                    onClick={() => setLocation('/auth/parent')}
+                    className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary shadow-lg"
+                  >
+                    Parent Dashboard
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    onClick={() => setLocation('/auth/teen')}
+                    className="text-lg px-8 py-4 border-2 hover:bg-green-50"
+                  >
+                    Teen Dashboard
+                    <Car className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
                 
                 <div className="flex items-center space-x-2 text-gray-600">
                   <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />

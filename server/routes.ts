@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth, isAuthenticated } from "./auth";
 import { emailService } from "./emailService";
 import { 
   insertAllowanceSettingsSchema,
@@ -11,29 +11,14 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export function registerRoutes(app: Express): Server {
   // Auth middleware
-  await setupAuth(app);
-
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  setupAuth(app);
 
   // Dashboard data routes
   app.get('/api/dashboard/parent', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const parent = await storage.getUser(parentId);
       
       if (!parent || parent.role !== 'parent') {
@@ -59,7 +44,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/dashboard/teen', isAuthenticated, async (req: any, res) => {
     try {
-      const teenId = req.user.claims.sub;
+      const teenId = req.user.id;
       const teen = await storage.getUser(teenId);
       
       if (!teen || teen.role !== 'teen') {
@@ -93,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Allowance settings routes
   app.get('/api/allowance-settings/:teenId', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const { teenId } = req.params;
       
       const settings = await storage.getAllowanceSettings(parentId, teenId);
@@ -106,7 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/allowance-settings', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const validatedData = insertAllowanceSettingsSchema.parse({
         ...req.body,
         parentId,
@@ -123,7 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Incident reporting routes
   app.post('/api/incidents', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const incidentSchema = insertIncidentSchema.extend({
         teenId: z.string(),
       });
@@ -175,7 +160,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Bonus routes
   app.post('/api/bonuses', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const { teenId, amount, description } = req.body;
 
       // Create bonus transaction
@@ -214,7 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Allowance payment routes
   app.post('/api/allowance/pay', isAuthenticated, async (req: any, res) => {
     try {
-      const parentId = req.user.claims.sub;
+      const parentId = req.user.id;
       const { teenId } = req.body;
 
       const settings = await storage.getAllowanceSettings(parentId, teenId);

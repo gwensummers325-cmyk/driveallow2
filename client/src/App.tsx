@@ -3,14 +3,16 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { useAuth } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/use-auth";
 import Landing from "@/pages/landing";
 import ParentDashboard from "@/pages/parent-dashboard";
 import TeenDashboard from "@/pages/teen-dashboard";
+import ParentAuth from "@/pages/parent-auth";
+import TeenAuth from "@/pages/teen-auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -25,11 +27,15 @@ function Router() {
 
   return (
     <Switch>
-      {!isAuthenticated ? (
-        <Route path="/" component={Landing} />
+      {!user ? (
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/auth/parent" component={ParentAuth} />
+          <Route path="/auth/teen" component={TeenAuth} />
+        </>
       ) : (
         <>
-          {(user as any)?.role === 'parent' ? (
+          {user.role === 'parent' ? (
             <Route path="/" component={ParentDashboard} />
           ) : (
             <Route path="/" component={TeenDashboard} />
@@ -44,10 +50,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
