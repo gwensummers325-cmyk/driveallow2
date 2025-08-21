@@ -6,7 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { User as DatabaseUser } from "@shared/schema";
-import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
 
 declare global {
   namespace Express {
@@ -30,10 +30,12 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
-  // Session configuration
-  const MemoryStore = createMemoryStore(session);
-  const sessionStore = new MemoryStore({
-    checkPeriod: 86400000, // 24 hours
+  // Session configuration with PostgreSQL storage
+  const PostgresStore = connectPg(session);
+  const sessionStore = new PostgresStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: false, // Table already exists
+    tableName: 'sessions',
   });
 
   const sessionSettings: session.SessionOptions = {
