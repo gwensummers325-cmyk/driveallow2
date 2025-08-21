@@ -119,6 +119,10 @@ export const incidents = pgTable("incidents", {
   penaltyAmount: decimal("penalty_amount", { precision: 10, scale: 2 }).notNull(),
   notes: text("notes"),
   transactionId: varchar("transaction_id").references(() => transactions.id),
+  autoReported: boolean("auto_reported").default(false),
+  severity: varchar("severity", { length: 10 }).default('medium'),
+  speedRecorded: varchar("speed_recorded"),
+  speedLimit: varchar("speed_limit"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

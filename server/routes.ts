@@ -376,6 +376,77 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Automated Detection Routes
+  app.post('/api/driving-data', async (req, res) => {
+    try {
+      const drivingData = req.body;
+      
+      // Validate required fields
+      if (!drivingData.teenId || !drivingData.speed || !drivingData.speedLimit) {
+        return res.status(400).json({ message: "Missing required driving data fields" });
+      }
+
+      // Process the driving data for violations
+      const { ViolationDetector } = await import('./violation-detector');
+      const violations = await ViolationDetector.processRealTimeData(drivingData);
+      
+      res.json({ 
+        processed: true, 
+        violations: violations.length,
+        detectedViolations: violations.map(v => ({
+          type: v.type,
+          severity: v.severity,
+          description: v.description,
+          penalty: v.penaltyAmount
+        }))
+      });
+    } catch (error) {
+      console.error("Error processing driving data:", error);
+      res.status(500).json({ message: "Failed to process driving data" });
+    }
+  });
+
+  app.get('/api/monitoring-status/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const teenId = req.params.teenId;
+      
+      // Check if teen exists
+      const teen = await storage.getUser(teenId);
+      if (!teen) {
+        return res.status(404).json({ message: "Teen not found" });
+      }
+
+      // Get recent violations (last 7 days)
+      const recentIncidents = await storage.getIncidentsByTeenId(teenId);
+      const recentViolations = recentIncidents.filter(incident => {
+        const incidentDate = new Date(incident.createdAt!);
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return incidentDate >= weekAgo;
+      });
+
+      // Calculate monitoring metrics
+      const totalViolations = recentViolations.length;
+      const autoDetectedViolations = recentViolations.filter(v => v.autoReported).length;
+      const manuallyReported = totalViolations - autoDetectedViolations;
+      
+      // Calculate safety score (simplified)
+      const safetyScore = Math.max(0, 100 - (totalViolations * 10));
+
+      res.json({
+        isMonitoring: true,
+        safetyScore,
+        weeklyViolations: totalViolations,
+        autoDetected: autoDetectedViolations,
+        manuallyReported,
+        lastViolation: recentViolations[0] || null,
+        monitoringActive: true
+      });
+    } catch (error) {
+      console.error("Error fetching monitoring status:", error);
+      res.status(500).json({ message: "Failed to fetch monitoring status" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
