@@ -71,10 +71,13 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
       });
     },
     onSuccess: () => {
+      // Invalidate settings and dashboard data to refresh everything
       queryClient.invalidateQueries({ queryKey: ["/api/allowance-settings", teenId] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/teen"] });
       toast({
-        title: "Success",
-        description: "Settings saved successfully!",
+        title: "Success", 
+        description: "Settings updated! Teen cards will refresh with new values.",
       });
     },
     onError: (error) => {
