@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, DollarSign, Bell, Users } from "lucide-react";
+import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star } from "lucide-react";
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-200 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
+              <Car className="h-6 w-6 text-primary mr-2" />
               <h1 className="text-2xl font-bold text-primary">DriveWise</h1>
             </div>
             <Button onClick={() => window.location.href = '/api/login'}>
@@ -20,23 +21,123 @@ export default function Landing() {
       </header>
 
       {/* Hero Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Smart Allowance Management for Teen Drivers
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            DriveWise helps parents teach safe driving habits by managing teen allowances 
-            based on driving behavior, with real-time notifications and incentives for good driving.
-          </p>
-          <Button 
-            size="lg" 
-            onClick={() => window.location.href = '/api/login'}
-            className="text-lg px-8 py-3"
-          >
-            Get Started
-          </Button>
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 text-primary">
+            <Car className="h-24 w-24 rotate-45" />
+          </div>
+          <div className="absolute top-40 right-20 text-green-500">
+            <Shield className="h-16 w-16" />
+          </div>
+          <div className="absolute bottom-20 left-1/4 text-blue-500">
+            <Heart className="h-20 w-20" />
+          </div>
         </div>
+
+        <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          {/* Hero Content */}
+          <div className="text-center mb-20">
+            {/* Visual Story */}
+            <div className="mb-12 relative">
+              {/* Parents watching scene */}
+              <div className="flex justify-center items-center mb-8 relative">
+                <div className="flex items-center space-x-4 bg-white/80 backdrop-blur-sm rounded-full px-8 py-6 shadow-lg border">
+                  {/* Parents */}
+                  <div className="flex items-center space-x-2">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center">
+                      <Users className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <Eye className="h-5 w-5 text-gray-600" />
+                  </div>
+                  
+                  {/* Arrow showing watching */}
+                  <ArrowRight className="h-6 w-6 text-gray-400" />
+                  
+                  {/* Teen driving away */}
+                  <div className="relative">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center relative">
+                      <Car className="h-8 w-8 text-green-600" />
+                      {/* Safety indicators */}
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-white" />
+                      </div>
+                    </div>
+                    {/* Motion lines */}
+                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 flex space-x-1 opacity-40">
+                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                      <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+                    </div>
+                  </div>
+                  
+                  {/* Heart showing peace of mind */}
+                  <Heart className="h-8 w-8 text-red-400 fill-red-100" />
+                </div>
+              </div>
+            </div>
+
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Watch Your Teen Drive Away
+              <span className="block text-4xl md:text-5xl text-primary">
+                with Complete Peace of Mind
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-4xl mx-auto leading-relaxed">
+              DriveWise gives parents the confidence that their teen will drive safely, 
+              using smart allowance management that rewards good driving habits and 
+              provides instant feedback when it matters most.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <Button 
+                size="lg" 
+                onClick={() => window.location.href = '/api/login'}
+                className="text-lg px-10 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary shadow-lg"
+              >
+                Start Protecting Your Teen
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              
+              <div className="flex items-center space-x-2 text-gray-600">
+                <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+                <span className="text-sm">Trusted by thousands of families</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Peace of Mind Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+            <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">92%</h3>
+              <p className="text-gray-600">Improvement in safe driving habits</p>
+            </div>
+            
+            <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">100%</h3>
+              <p className="text-gray-600">Parents report peace of mind</p>
+            </div>
+            
+            <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">4.9/5</h3>
+              <p className="text-gray-600">Family satisfaction rating</p>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50">
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
@@ -124,7 +225,7 @@ export default function Landing() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }
