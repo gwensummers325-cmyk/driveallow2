@@ -10,6 +10,7 @@ import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift } from "l
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
+import { CreateTeenModal } from "@/components/create-teen-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { Layout } from "@/components/layout";
@@ -20,6 +21,7 @@ export default function ParentDashboard() {
   const queryClient = useQueryClient();
   const [showReportModal, setShowReportModal] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
+  const [showCreateTeenModal, setShowCreateTeenModal] = useState(false);
   const [selectedTeenId, setSelectedTeenId] = useState<string>("");
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
@@ -186,6 +188,16 @@ export default function ParentDashboard() {
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                   <Shield className="text-primary text-xl" />
                 </div>
+              </div>
+              <div className="mt-4">
+                <Button
+                  size="sm"
+                  onClick={() => setShowCreateTeenModal(true)}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Teen Driver
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -383,6 +395,11 @@ export default function ParentDashboard() {
         onClose={() => setShowBonusModal(false)}
         teenId={selectedTeenId}
         teenName={teens.find((t: any) => t.id === selectedTeenId)?.firstName || ''}
+      />
+
+      <CreateTeenModal
+        isOpen={showCreateTeenModal}
+        onClose={() => setShowCreateTeenModal(false)}
       />
       </div>
     </Layout>

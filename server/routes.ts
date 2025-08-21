@@ -11,6 +11,16 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { createTestAccounts } from "./create-test-accounts";
+import { scrypt, randomBytes } from "crypto";
+import { promisify } from "util";
+
+const scryptAsync = promisify(scrypt);
+
+async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
+  return `${buf.toString("hex")}.${salt}`;
+}
 
 export function registerRoutes(app: Express): Server {
   // Auth middleware
@@ -24,6 +34,80 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error creating test accounts:", error);
       res.status(500).json({ message: "Failed to create test accounts" });
+    }
+  });
+
+  // Create teen account (only for authenticated parents)
+  app.post('/api/teens', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can create teen accounts" });
+      }
+
+      const { firstName, lastName, username, email, password } = req.body;
+      
+      if (!firstName || !lastName || !username || !password) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await hashPassword(password);
+
+      // Create teen account
+      const teen = await storage.createUser({
+        username,
+        email: email || '',
+        firstName,
+        lastName,
+        role: 'teen',
+        password: hashedPassword,
+        parentId,
+      });
+
+      // Create initial allowance settings
+      await storage.upsertAllowanceSettings({
+        parentId,
+        teenId: teen.id,
+        weeklyAmount: "25.00",
+        frequency: "weekly",
+        allowOverdraft: true,
+        speedingMinorPenalty: "5.00",
+        speedingMajorPenalty: "10.00",
+        harshBrakingPenalty: "3.00",
+        aggressiveAccelPenalty: "3.00",
+        weeklyBonus: "5.00",
+        perfectWeekBonus: "10.00",
+        speedComplianceBonus: "2.00",
+      });
+
+      // Create initial balance
+      await storage.upsertAllowanceBalance({
+        teenId: teen.id,
+        currentBalance: "25.00",
+        lastAllowanceDate: new Date(),
+        nextAllowanceDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      });
+
+      res.status(201).json({
+        id: teen.id,
+        username: teen.username,
+        firstName: teen.firstName,
+        lastName: teen.lastName,
+        email: teen.email,
+        role: teen.role,
+      });
+    } catch (error) {
+      console.error("Error creating teen account:", error);
+      res.status(500).json({ message: "Failed to create teen account" });
     }
   });
 
