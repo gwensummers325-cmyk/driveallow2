@@ -105,7 +105,6 @@ export default function ParentDashboard() {
   }
 
   const { parent, teens, transactions } = dashboardData as any;
-  const primaryTeen = teens[0]; // For demo, use first teen
 
   const formatCurrency = (amount: string) => `$${parseFloat(amount).toFixed(2)}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
@@ -244,6 +243,114 @@ export default function ParentDashboard() {
           </Card>
         </div>
 
+        {/* Individual Teen Cards */}
+        {teens.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Your Teen Drivers</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {teens.map((teen: any) => (
+                <Card key={teen.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                          {teen.profileImageUrl ? (
+                            <img src={teen.profileImageUrl} alt="Profile" className="w-12 h-12 rounded-full object-cover" />
+                          ) : (
+                            <span className="text-white font-medium">
+                              {teen.firstName?.[0]}{teen.lastName?.[0]}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <CardTitle className="text-lg">{teen.firstName} {teen.lastName}</CardTitle>
+                          <p className="text-sm text-gray-600">{teen.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Balance */}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-green-700">Current Balance</p>
+                            <p className="text-2xl font-bold text-green-800">
+                              {formatCurrency(teen.balance?.currentBalance || '0.00')}
+                            </p>
+                          </div>
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <Wallet className="h-6 w-6 text-green-600" />
+                          </div>
+                        </div>
+                        <div className="mt-2 text-xs text-green-600">
+                          Next allowance: {teen.balance?.nextAllowanceDate 
+                            ? new Date(teen.balance.nextAllowanceDate).toLocaleDateString() 
+                            : 'Not scheduled'}
+                        </div>
+                      </div>
+
+                      {/* Allowance Settings */}
+                      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <p className="text-sm font-medium text-blue-700 mb-2">Weekly Allowance Settings</p>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-blue-600">Weekly Amount:</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.weeklyAmount || '50.00')}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-600">Speeding Penalty:</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.speedingMinorPenalty || '5.00')}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => {
+                            setSelectedTeenId(teen.id);
+                            setShowReportModal(true);
+                          }}
+                          className="text-xs"
+                        >
+                          <AlertTriangle className="h-3 w-3 mr-1" />
+                          Report
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="bg-green-600 hover:bg-green-700 text-xs"
+                          onClick={() => {
+                            setSelectedTeenId(teen.id);
+                            setShowBonusModal(true);
+                          }}
+                        >
+                          <Gift className="h-3 w-3 mr-1" />
+                          Bonus
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => payAllowanceMutation.mutate(teen.id)}
+                          disabled={payAllowanceMutation.isPending}
+                          className="text-xs"
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          Pay
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Activity */}
           <div className="lg:col-span-2">
@@ -339,41 +446,49 @@ export default function ParentDashboard() {
               </CardContent>
             </Card>
 
-            {/* Teen Status */}
-            {primaryTeen && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>
-                    {primaryTeen.firstName} {primaryTeen.lastName}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Status</span>
-                      <Badge variant="secondary" className="bg-green-100 text-green-800">
-                        Active
-                      </Badge>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Role</span>
-                      <span className="text-sm text-gray-900 capitalize">{primaryTeen.role}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600">Email</span>
-                      <span className="text-sm text-gray-900">{primaryTeen.email || 'Not set'}</span>
-                    </div>
+            {/* Family Summary */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Family Summary</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Total Teen Drivers</span>
+                    <span className="text-sm font-medium">{teens.length}</span>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Combined Balance</span>
+                    <span className="text-sm font-medium text-green-600">
+                      {formatCurrency(
+                        teens.reduce((sum: number, teen: any) => 
+                          sum + parseFloat(teen.balance?.currentBalance || '0.00'), 0
+                        ).toString()
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Weekly Allowance Total</span>
+                    <span className="text-sm font-medium">
+                      {formatCurrency(
+                        teens.reduce((sum: number, teen: any) => 
+                          sum + parseFloat(teen.settings?.weeklyAmount || '50.00'), 0
+                        ).toString()
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
         {/* Settings Panel */}
-        <div className="mt-8">
-          <SettingsPanel teenId={primaryTeen?.id} />
-        </div>
+        {teens.length > 0 && (
+          <div className="mt-8">
+            <SettingsPanel teenId={teens[0]?.id} />
+          </div>
+        )}
       </main>
 
       {/* Modals */}

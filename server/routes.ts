@@ -124,10 +124,20 @@ export function registerRoutes(app: Express): Server {
       const teens = await storage.getUsersByParentId(parentId);
       const transactions = await storage.getTransactionsByParentId(parentId, 20);
       
-      // Get data for first teen or all teens
+      // Get balance and allowance settings for each teen
+      const teensWithData = await Promise.all(teens.map(async (teen: any) => {
+        const balance = await storage.getAllowanceBalance(teen.id);
+        const settings = await storage.getAllowanceSettings(parentId, teen.id);
+        return {
+          ...teen,
+          balance: balance || { currentBalance: '0.00' },
+          settings: settings || {}
+        };
+      }));
+      
       const dashboardData = {
         parent,
-        teens,
+        teens: teensWithData,
         transactions,
       };
 
