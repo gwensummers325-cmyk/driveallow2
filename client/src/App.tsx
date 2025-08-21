@@ -27,21 +27,17 @@ function Router() {
 
   return (
     <Switch>
-      {!user ? (
-        <>
-          <Route path="/" component={Landing} />
-          <Route path="/auth/parent" component={ParentAuth} />
-          <Route path="/auth/teen" component={TeenAuth} />
-        </>
-      ) : (
-        <>
-          {user.role === 'parent' ? (
-            <Route path="/" component={ParentDashboard} />
-          ) : (
-            <Route path="/" component={TeenDashboard} />
-          )}
-        </>
-      )}
+      <Route path="/auth/parent" component={ParentAuth} />
+      <Route path="/auth/teen" component={TeenAuth} />
+      <Route path="/">
+        {!user ? (
+          <Landing />
+        ) : user.role === 'parent' ? (
+          <ParentDashboard />
+        ) : (
+          <TeenDashboard />
+        )}
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
