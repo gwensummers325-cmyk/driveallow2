@@ -114,3 +114,20 @@
     font-family: var(--font-sans);
   }
 }
+
+/* Car driving animation */
+@keyframes driveOff {
+  0% {
+    left: 20px;
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0.3;
+  }
+}
+
+.car-drive-animation {
+  animation: driveOff 4s ease-in-out infinite;
+  animation-delay: 1s;
+}
