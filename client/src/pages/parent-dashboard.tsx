@@ -300,8 +300,24 @@ export default function ParentDashboard() {
                             <span className="font-medium ml-1">{formatCurrency(teen.settings?.allowanceAmount || '50.00')}</span>
                           </div>
                           <div>
-                            <span className="text-blue-600">Speeding Penalty:</span>
+                            <span className="text-blue-600">Payment Frequency:</span>
+                            <span className="font-medium ml-1 capitalize">{teen.settings?.frequency || 'weekly'}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-600">Speeding (3-10 mph):</span>
                             <span className="font-medium ml-1">{formatCurrency(teen.settings?.speedingMinorPenalty || '5.00')}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-600">Speeding (11+ mph):</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.speedingMajorPenalty || '10.00')}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-600">Harsh Braking:</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.harshBrakingPenalty || '5.00')}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-600">Aggressive Accel:</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.aggressiveAccelPenalty || '5.00')}</span>
                           </div>
                         </div>
                       </div>
