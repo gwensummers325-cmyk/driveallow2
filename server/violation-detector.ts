@@ -148,7 +148,7 @@ export class ViolationDetector {
         return;
       }
 
-      // Create incident record
+      // Create incident record (auto-reported)
       await storage.createIncident({
         teenId,
         parentId: teen.parentId,
@@ -156,6 +156,7 @@ export class ViolationDetector {
         location: data.location,
         notes: violation.description,
         penaltyAmount: violation.penaltyAmount,
+        autoReported: true, // Mark as auto-detected
       });
 
       // Create penalty transaction

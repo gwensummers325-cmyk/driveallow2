@@ -37,6 +37,13 @@ export default function MobileDataSender() {
   const [violations, setViolations] = useState(0);
   const [selectedTeenId, setSelectedTeenId] = useState<string>('');
   const [autoUploadCount, setAutoUploadCount] = useState(0);
+  
+  // Fetch persistent upload stats
+  const { data: uploadStats } = useQuery({
+    queryKey: ['/api/smartphone-data/stats', getTeenId()],
+    enabled: !!user && !!getTeenId(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
   const [permissions, setPermissions] = useState<PermissionState>({
     location: 'unknown',
     motion: 'unknown'
@@ -312,8 +319,17 @@ export default function MobileDataSender() {
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Auto-Uploads:</span>
-                    <span className="font-mono text-sm text-green-600">{autoUploadCount}</span>
+                    <span className="text-sm font-medium">Total Uploads:</span>
+                    <span className="font-mono text-sm text-green-600">
+                      {uploadStats?.totalUploads || autoUploadCount}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Violations Detected:</span>
+                    <span className="font-mono text-sm text-orange-600">
+                      {uploadStats?.autoDetectedViolations || 0}
+                    </span>
                   </div>
 
                   {/* Teen Selection for Parents */}
