@@ -129,7 +129,6 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               <h4 className="text-lg font-semibold">Features</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li>• Smart allowance management</li>
-                <li>• Real-time incident tracking</li>
                 <li>• Email notifications</li>
                 <li>• Parent & teen dashboards</li>
                 <li>• Bonus & penalty system</li>
@@ -144,9 +143,6 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                 <li>• 24/7 family support</li>
                 <li>• Secure data protection</li>
                 <li>• Privacy guaranteed</li>
-                <li>• Educational resources</li>
-                <li>• Teen driving tips</li>
-                <li>• Parent guidelines</li>
               </ul>
             </div>
 
@@ -157,10 +153,6 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
                   <span>support@driveallow.com</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Phone className="h-4 w-4" />
-                  <span>1-800-DRIVEALLOW</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="h-4 w-4 text-red-400" />
