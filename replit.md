@@ -16,6 +16,7 @@ Preferred communication style: Simple, everyday language.
 - Enhanced security with automatic device detection in login alerts
 - Removed Stripe Issuing integration (not suitable for teen driver use case)
 - Strengthened legal pages with comprehensive liability protections, mandatory arbitration clauses, enhanced privacy provisions for minors, and robust COPPA/CCPA compliance
+- Removed data simulator access to maintain teen monitoring integrity (teens have zero control over monitoring)
 
 # System Architecture
 
