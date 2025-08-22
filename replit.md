@@ -14,6 +14,7 @@ Preferred communication style: Simple, everyday language.
 - Added session duration tracking for logout notifications
 - Created professional HTML email templates with DriveAllow branding
 - Enhanced security with automatic device detection in login alerts
+- Removed Stripe Issuing integration (not suitable for teen driver use case)
 
 # System Architecture
 

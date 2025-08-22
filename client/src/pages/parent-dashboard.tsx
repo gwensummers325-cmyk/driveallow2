@@ -11,7 +11,6 @@ import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
 import { CreateTeenModal } from "@/components/create-teen-modal";
-import { StripeCardManagement } from "@/components/stripe-card-management";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { Layout } from "@/components/layout";
@@ -317,16 +316,6 @@ export default function ParentDashboard() {
                         <p className="text-xs text-gray-500 mt-1">Most violations detected automatically</p>
                       </div>
 
-                      {/* Stripe Card Management */}
-                      <div className="border-t pt-4">
-                        <StripeCardManagement 
-                          teenId={teen.id}
-                          isParent={true}
-                          onCardUpdate={() => {
-                            queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
-                          }}
-                        />
-                      </div>
 
                       {/* Actions */}
                       <div className="grid grid-cols-3 gap-2">
