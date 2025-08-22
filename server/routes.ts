@@ -581,6 +581,69 @@ export function registerRoutes(app: Express): Server {
   });
 
 
+  // Test email notifications endpoint
+  app.post('/api/test-notifications', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email address is required" });
+      }
+
+      // Test incident notification
+      await emailService.sendIncidentNotification(
+        email, // parent email
+        email, // teen email 
+        "Test Teen",
+        "speeding violation",
+        "Main Street near school",
+        "5.00",
+        "25.00",
+        "20.00"
+      );
+
+      // Test bonus notification
+      await emailService.sendBonusNotification(
+        email, // parent email
+        email, // teen email
+        "Test Teen",
+        "Safe driving all week!",
+        "10.00"
+      );
+
+      // Test login notification
+      await emailService.sendLoginNotification(
+        email,
+        "Test Teen",
+        "iPhone Mobile App"
+      );
+
+      // Test logout notification  
+      await emailService.sendLogoutNotification(
+        email,
+        "Test Teen",
+        "2 hours 15 minutes"
+      );
+
+      // Test allowance notification
+      await emailService.sendAllowanceNotification(
+        email,
+        "Test Teen", 
+        "20.00"
+      );
+
+      res.json({ 
+        message: "Test notifications sent successfully",
+        sentTo: email,
+        count: 5
+      });
+
+    } catch (error) {
+      console.error("Error sending test notifications:", error);
+      res.status(500).json({ message: "Failed to send test notifications" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
