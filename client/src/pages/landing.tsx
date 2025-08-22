@@ -33,7 +33,7 @@ export default function Landing() {
             {/* Left side - Text Content */}
             <div className="text-center lg:text-left">
               <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Drive. Safe. Earn.
+                Drive Safely. Earn.
               </h2>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
