@@ -179,7 +179,7 @@ export default function Landing() {
           </div>
           
           {/* Peace of Mind Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="text-center bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8 text-green-600" />
