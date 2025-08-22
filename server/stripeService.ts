@@ -13,15 +13,6 @@ export interface CreateCardRequest {
   teenId: string;
   parentId: string;
   cardType: 'virtual' | 'physical';
-  spendingLimit: number; // in cents
-}
-
-export interface UpdateSpendingLimitsRequest {
-  cardId: string;
-  dailyLimit: number; // in cents
-  monthlyLimit?: number; // in cents
-  allowedCategories?: string[];
-  blockedCategories?: string[];
 }
 
 export class StripeService {
@@ -73,7 +64,7 @@ export class StripeService {
     }
   }
 
-  // Create card for teen with initial spending controls
+  // Create card for teen without spending limits
   async createCard(request: CreateCardRequest): Promise<{ cardId: string; last4?: string }> {
     try {
       const teen = await storage.getUser(request.teenId);
@@ -84,14 +75,9 @@ export class StripeService {
       const card = await stripe.issuing.cards.create({
         cardholder: teen.stripeCardholderId,
         type: request.cardType,
+        currency: 'usd',
         status: 'active',
         spending_controls: {
-          spending_limits: [
-            {
-              amount: request.spendingLimit,
-              interval: 'daily' as const,
-            },
-          ],
           blocked_categories: [
             'alcoholic_beverages_and_bars',
             'gambling', 
@@ -120,34 +106,6 @@ export class StripeService {
     }
   }
 
-  // Update spending limits based on allowance balance and driving behavior
-  async updateSpendingLimits(request: UpdateSpendingLimitsRequest): Promise<void> {
-    try {
-      await stripe.issuing.cards.update(request.cardId, {
-        spending_controls: {
-          spending_limits: [
-            {
-              amount: request.dailyLimit,
-              interval: 'daily' as const,
-            },
-            ...(request.monthlyLimit ? [{
-              amount: request.monthlyLimit,
-              interval: 'monthly' as const,
-            }] : []),
-          ],
-          allowed_categories: request.allowedCategories as any,
-          blocked_categories: (request.blockedCategories || [
-            'alcoholic_beverages_and_bars',
-            'gambling',
-            'tobacco_products',
-          ]) as any,
-        },
-      });
-    } catch (error) {
-      console.error('Error updating spending limits:', error);
-      throw new Error('Failed to update spending limits');
-    }
-  }
 
   // Suspend card (for violations or parent control)
   async suspendCard(cardId: string): Promise<void> {
@@ -211,36 +169,6 @@ export class StripeService {
     }
   }
 
-  // Convert allowance balance to card spending limit
-  convertBalanceToSpendingLimit(balanceInDollars: number): number {
-    // Convert dollars to cents and ensure minimum/maximum limits
-    const cents = Math.round(balanceInDollars * 100);
-    const minLimit = 100; // $1.00 minimum
-    const maxLimit = 50000; // $500.00 maximum daily
-    
-    return Math.max(minLimit, Math.min(maxLimit, cents));
-  }
-
-  // Update card limits based on current allowance balance
-  async syncCardWithAllowance(teenId: string): Promise<void> {
-    try {
-      const teen = await storage.getUser(teenId);
-      const balance = await storage.getAllowanceBalance(teenId);
-      
-      if (!teen?.stripeCardId || !balance) {
-        return;
-      }
-
-      const dailyLimit = this.convertBalanceToSpendingLimit(parseFloat(balance.currentBalance));
-      
-      await this.updateSpendingLimits({
-        cardId: teen.stripeCardId,
-        dailyLimit,
-      });
-    } catch (error) {
-      console.error('Error syncing card with allowance:', error);
-    }
-  }
 }
 
 export const stripeService = new StripeService();

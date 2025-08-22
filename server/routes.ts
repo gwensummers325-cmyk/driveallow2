@@ -250,12 +250,6 @@ export function registerRoutes(app: Express): Server {
       const balanceAfter = await storage.getAllowanceBalance(validatedData.teenId);
       const balanceAfterAmount = balanceAfter?.currentBalance || '0.00';
 
-      // Sync card spending limits with new balance
-      try {
-        await stripeService.syncCardWithAllowance(validatedData.teenId);
-      } catch (syncError) {
-        console.error('Failed to sync card with allowance after incident:', syncError);
-      }
 
       // Send email notifications
       const teen = await storage.getUser(validatedData.teenId);
@@ -299,12 +293,6 @@ export function registerRoutes(app: Express): Server {
       // Update balance
       await storage.updateBalance(teenId, amount.toString());
 
-      // Sync card spending limits with new balance
-      try {
-        await stripeService.syncCardWithAllowance(teenId);
-      } catch (syncError) {
-        console.error('Failed to sync card with allowance after bonus:', syncError);
-      }
 
       // Send email notifications
       const teen = await storage.getUser(teenId);
@@ -360,12 +348,6 @@ export function registerRoutes(app: Express): Server {
         nextAllowanceDate: nextDate,
       });
 
-      // Sync card spending limits with new balance
-      try {
-        await stripeService.syncCardWithAllowance(teenId);
-      } catch (syncError) {
-        console.error('Failed to sync card with allowance after payment:', syncError);
-      }
 
       // Send email notification
       const teen = await storage.getUser(teenId);
@@ -662,25 +644,17 @@ export function registerRoutes(app: Express): Server {
         await storage.updateUserStripeInfo(teenId, { stripeCardholderId: cardholderId });
       }
 
-      // Get current allowance balance for spending limit
-      const balance = await storage.getAllowanceBalance(teenId);
-      const spendingLimit = stripeService.convertBalanceToSpendingLimit(
-        parseFloat(balance?.currentBalance || '25.00')
-      );
-
       // Create the card
       const cardResult = await stripeService.createCard({
         teenId,
         parentId,
         cardType: cardType as 'virtual' | 'physical',
-        spendingLimit,
       });
 
       res.json({
         cardId: cardResult.cardId,
         last4: cardResult.last4,
         cardType,
-        spendingLimit: spendingLimit / 100, // Convert back to dollars
       });
     } catch (error) {
       console.error("Error requesting allowance card:", error);
@@ -726,7 +700,7 @@ export function registerRoutes(app: Express): Server {
         recentTransactions: transactions.map(tx => ({
           id: tx.id,
           amount: tx.amount / 100, // Convert to dollars
-          merchant: tx.merchant?.name || 'Unknown',
+          merchant: (tx as any).merchant?.name || 'Unknown',
           created: tx.created,
           status: tx.dispute ? 'disputed' : 'completed',
         })),
@@ -737,31 +711,6 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Update card spending limits (automatically called when balance changes)
-  app.post('/api/stripe/sync-balance/:teenId', isAuthenticated, async (req: any, res) => {
-    try {
-      const { teenId } = req.params;
-      const parentId = req.user.id;
-      
-      const parent = await storage.getUser(parentId);
-      const teen = await storage.getUser(teenId);
-      
-      if (!parent || parent.role !== 'parent') {
-        return res.status(403).json({ message: "Only parents can sync balances" });
-      }
-      
-      if (!teen || teen.parentId !== parentId) {
-        return res.status(403).json({ message: "Can only sync for your teens" });
-      }
-
-      await stripeService.syncCardWithAllowance(teenId);
-      
-      res.json({ synced: true });
-    } catch (error) {
-      console.error("Error syncing card balance:", error);
-      res.status(500).json({ message: "Failed to sync card balance" });
-    }
-  });
 
   // Suspend/reactivate card
   app.post('/api/stripe/card/:teenId/:action', isAuthenticated, async (req: any, res) => {
@@ -841,8 +790,6 @@ export function registerRoutes(app: Express): Server {
                 description: `Card purchase: ${authorization.merchant?.name || 'Unknown merchant'}`,
               });
 
-              // Sync card limits with new balance
-              await stripeService.syncCardWithAllowance(cardHolder.id);
             }
           }
           break;

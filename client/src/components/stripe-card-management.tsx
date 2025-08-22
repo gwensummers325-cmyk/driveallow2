@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
-import { CreditCard, Pause, Play, AlertCircle, DollarSign } from 'lucide-react';
+import { CreditCard, Pause, Play, AlertCircle } from 'lucide-react';
 
 interface StripeCardManagementProps {
   teenId: string;
@@ -20,12 +20,6 @@ interface CardData {
     last4: string;
     type: 'virtual' | 'physical';
     status: string;
-    spending_controls?: {
-      spending_limits?: Array<{
-        amount: number;
-        interval: string;
-      }>;
-    };
   };
   recentTransactions?: Array<{
     id: string;
@@ -144,9 +138,6 @@ export function StripeCardManagement({ teenId, isParent, onCardUpdate }: StripeC
     );
   }
 
-  const dailyLimit = cardData?.card?.spending_controls?.spending_limits?.find(
-    limit => limit.interval === 'daily'
-  )?.amount;
 
   return (
     <Card data-testid="card-stripe-management">
@@ -157,8 +148,8 @@ export function StripeCardManagement({ teenId, isParent, onCardUpdate }: StripeC
         </CardTitle>
         <CardDescription>
           {isParent 
-            ? 'Manage your teen\'s real money allowance card with automatic spending controls'
-            : 'Your allowance card automatically syncs with your driving performance'
+            ? 'Manage your teen\'s real money allowance card'
+            : 'Your allowance card for real purchases and spending'
           }
         </CardDescription>
       </CardHeader>
@@ -174,8 +165,8 @@ export function StripeCardManagement({ teenId, isParent, onCardUpdate }: StripeC
                     Real Money Allowance Cards
                   </h4>
                   <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                    Request a real debit card that automatically adjusts spending limits based on driving behavior.
-                    Safe driving = more spending power. Violations = restricted access.
+                    Request a real debit card connected to your teen's allowance balance.
+                    Allowance earned through safe driving can be spent with the card.
                   </p>
                 </div>
               </div>
@@ -246,20 +237,6 @@ export function StripeCardManagement({ teenId, isParent, onCardUpdate }: StripeC
               </Badge>
             </div>
 
-            {/* Spending Limit */}
-            {dailyLimit && (
-              <div className="flex items-center gap-3 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <div>
-                  <div className="font-medium text-green-900 dark:text-green-100">
-                    Daily Spending Limit
-                  </div>
-                  <div className="text-sm text-green-700 dark:text-green-300">
-                    ${(dailyLimit / 100).toFixed(2)} per day (synced with allowance balance)
-                  </div>
-                </div>
-              </div>
-            )}
 
             {/* Card Controls (Parent Only) */}
             {isParent && (
