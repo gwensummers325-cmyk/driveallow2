@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star } from "lucide-react";
 import { useLocation } from "wouter";
 import { Layout } from "@/components/layout";
+import illustrationImage from "@assets/Gemini_Generated_Image_vpd2ukvpd2ukvpd2_1755869635476.png";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
@@ -104,131 +105,46 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Right side - Story Animation */}
+            {/* Right side - 3D Illustration */}
             <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-lg">
-                {/* Main Story Scene */}
-                <div className="story-scene relative h-80 bg-gradient-to-br from-slate-50 to-blue-50 rounded-3xl p-8 shadow-2xl border border-white/50">
+              <div className="relative w-full max-w-lg" style={{perspective: '1000px'}}>
+                {/* 3D Illustration Container */}
+                <div className="illustration-3d relative">
+                  {/* Background depth layer */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-100 via-white to-orange-100 rounded-3xl transform translate-x-2 translate-y-2 blur-sm opacity-30"></div>
                   
-                  {/* Home Icon */}
-                  <div className="absolute top-6 left-6">
-                    <div className="home-base bg-blue-600 w-8 h-6 relative">
-                      <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-5 border-r-5 border-b-4 border-l-transparent border-r-transparent border-b-blue-600"></div>
-                      <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-2 h-3 bg-yellow-300 rounded-sm"></div>
-                    </div>
-                  </div>
-
-                  {/* Parents watching from home */}
-                  <div className="absolute top-8 left-12">
-                    <div className="parents-watching bg-white rounded-2xl p-3 shadow-lg border border-gray-100 parent-gentle-wave">
-                      <div className="flex items-center space-x-2">
-                        {/* Mom silhouette */}
-                        <div className="relative">
-                          <div className="w-6 h-6 bg-gradient-to-br from-purple-300 to-purple-400 rounded-full relative overflow-hidden">
-                            <div className="absolute top-1 left-1 right-1 h-2 bg-purple-500 rounded-t-full opacity-60"></div>
-                            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-1 border-b border-purple-600 rounded-b"></div>
-                          </div>
-                          <div className="absolute -top-1 -right-1 w-2 h-2 text-yellow-400 animate-pulse">👋</div>
-                        </div>
-                        
-                        {/* Dad silhouette */}
-                        <div className="relative">
-                          <div className="w-6 h-6 bg-gradient-to-br from-blue-300 to-blue-400 rounded-full relative overflow-hidden">
-                            <div className="absolute top-0.5 left-1 right-1 h-1.5 bg-blue-500 rounded-t opacity-60"></div>
-                            <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-1 border-b border-blue-600 rounded-b"></div>
-                          </div>
-                        </div>
-                        
-                        <Heart className="h-4 w-4 text-pink-400 fill-pink-200 animate-pulse" />
-                      </div>
-                      <div className="text-xs text-gray-500 text-center mt-1 font-medium">Peace of Mind</div>
-                    </div>
-                  </div>
-
-                  {/* Curved road path */}
-                  <div className="absolute bottom-20 left-8 right-8">
-                    <svg className="w-full h-24" viewBox="0 0 300 100" preserveAspectRatio="none">
-                      <path 
-                        d="M0,80 Q150,20 300,60" 
-                        stroke="#e5e7eb" 
-                        strokeWidth="12" 
-                        fill="none"
-                        className="road-path"
+                  {/* Middle depth layer */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-green-50 rounded-3xl transform translate-x-1 translate-y-1 opacity-60 shadow-lg"></div>
+                  
+                  {/* Main illustration container */}
+                  <div className="relative bg-white rounded-3xl shadow-2xl border border-white/50 p-8 transform hover:rotateY-5 hover:rotateX-2 transition-all duration-700 hover:scale-105">
+                    {/* Inner shadow for depth */}
+                    <div className="absolute inset-4 rounded-2xl shadow-inner bg-gradient-to-br from-white/50 to-transparent"></div>
+                    
+                    {/* Main illustration */}
+                    <div className="relative z-10 transform hover:translateZ-10 transition-transform duration-500">
+                      <img 
+                        src={illustrationImage} 
+                        alt="Parents waving goodbye to teen driver" 
+                        className="w-full h-auto max-h-80 object-contain rounded-2xl transform hover:scale-105 transition-transform duration-300"
                       />
-                      <path 
-                        d="M0,80 Q150,20 300,60" 
-                        stroke="#fbbf24" 
-                        strokeWidth="2" 
-                        fill="none" 
-                        strokeDasharray="8,6"
-                        className="road-dashes"
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Modern car driving along path */}
-                  <div className="car-journey absolute bottom-16">
-                    <div className="car-modern relative transform-gpu car-smooth-drive">
-                      {/* Car body - modern design */}
-                      <div className="relative">
-                        <div className="car-main bg-gradient-to-r from-emerald-400 to-emerald-500 w-16 h-8 rounded-lg shadow-lg relative">
-                          {/* Windshield */}
-                          <div className="absolute top-1 left-2 right-1 h-3 bg-gradient-to-b from-sky-100 to-sky-200 rounded-t-lg border border-sky-200"></div>
-                          {/* Side windows */}
-                          <div className="absolute top-1.5 right-0.5 w-2 h-2 bg-sky-100 rounded-sm"></div>
-                          {/* Headlight */}
-                          <div className="absolute top-2 -left-0.5 w-1.5 h-1.5 bg-yellow-200 rounded-full car-headlight"></div>
-                          {/* Wheels */}
-                          <div className="absolute -bottom-1 left-1 w-2.5 h-2.5 bg-gray-700 rounded-full car-wheel"></div>
-                          <div className="absolute -bottom-1 right-2 w-2.5 h-2.5 bg-gray-700 rounded-full car-wheel"></div>
-                          {/* Wheel rims */}
-                          <div className="absolute -bottom-0.5 left-1.5 w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-                          <div className="absolute -bottom-0.5 right-2.5 w-1.5 h-1.5 bg-gray-300 rounded-full"></div>
-                        </div>
-                        
-                        {/* Safety badge */}
-                        <div className="absolute -top-3 -right-2 safety-badge">
-                          <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-lg animate-bounce">
-                            <span className="text-white text-xs font-bold">✓</span>
-                          </div>
-                        </div>
-                        
-                        {/* Motion lines */}
-                        <div className="motion-lines absolute top-1/2 -left-6 transform -translate-y-1/2">
-                          <div className="motion-line w-3 h-0.5 bg-emerald-300 rounded motion-trail" style={{animationDelay: '0s'}}></div>
-                          <div className="motion-line w-2 h-0.5 bg-emerald-300 rounded mt-1 motion-trail" style={{animationDelay: '0.1s'}}></div>
-                          <div className="motion-line w-1 h-0.5 bg-emerald-300 rounded mt-1 motion-trail" style={{animationDelay: '0.2s'}}></div>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-
-                  {/* Smart features floating around */}
-                  <div className="smart-feature absolute top-16 right-6 feature-float">
-                    <div className="bg-white rounded-xl p-2 shadow-lg border border-gray-100">
-                      <DollarSign className="h-5 w-5 text-green-500" />
-                      <div className="text-xs text-gray-600 font-medium mt-1">+$5</div>
+                    
+                    {/* Floating elements for extra depth */}
+                    <div className="absolute -top-4 -right-4 w-8 h-8 bg-green-500 rounded-full shadow-lg transform animate-bounce" style={{animationDelay: '0.5s'}}>
+                      <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">✓</div>
                     </div>
-                  </div>
-
-                  <div className="smart-feature absolute bottom-8 right-12 feature-float" style={{animationDelay: '1s'}}>
-                    <div className="bg-white rounded-xl p-2 shadow-lg border border-gray-100">
-                      <Shield className="h-5 w-5 text-blue-500" />
-                      <div className="text-xs text-gray-600 font-medium mt-1">Safe</div>
+                    
+                    <div className="absolute -bottom-4 -left-4 w-10 h-10 bg-blue-500 rounded-full shadow-lg flex items-center justify-center transform animate-pulse">
+                      <DollarSign className="h-5 w-5 text-white" />
                     </div>
-                  </div>
-
-                  {/* Progress indicator */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-white rounded-full px-4 py-2 shadow-lg border border-gray-100">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="text-xs text-gray-600 font-medium">Driving Safely</span>
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                      </div>
-                    </div>
+                    
+                    {/* Light reflection effect */}
+                    <div className="absolute top-6 left-6 w-16 h-16 bg-white/20 rounded-full blur-xl transform rotate-45"></div>
                   </div>
                   
+                  {/* Ground shadow */}
+                  <div className="absolute -bottom-6 left-4 right-4 h-6 bg-black/10 rounded-full blur-lg transform skew-x-12"></div>
                 </div>
               </div>
             </div>
