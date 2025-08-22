@@ -35,9 +35,46 @@ export default function Landing() {
                 Drive. Safe. Earn.
               </h2>
               
-              <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
+              <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
                 DriveAllow incentivizes safe teen driving using smart allowance management that rewards good driving habits.
               </p>
+
+              {/* Social Proof Testimonials */}
+              <div className="mb-10 space-y-6">
+                {/* Parent Testimonial */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center mb-3">
+                    <div className="flex space-x-1 mr-3">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Sarah M.</span> • Parent
+                    </div>
+                  </div>
+                  <p className="text-gray-700 italic">
+                    "Finally, peace of mind! My daughter's driving has improved dramatically since we started using DriveAllow. The automatic tracking and allowance system work perfectly together."
+                  </p>
+                </div>
+
+                {/* Teen Testimonial */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center mb-3">
+                    <div className="flex space-x-1 mr-3">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Alex T.</span> • Teen Driver
+                    </div>
+                  </div>
+                  <p className="text-gray-700 italic">
+                    "I love earning bonuses for safe driving! DriveAllow helped me become a better driver and I get rewarded for it. Way better than just getting lectured."
+                  </p>
+                </div>
+              </div>
               
               <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center space-y-4 sm:space-y-0 sm:space-x-6">
                 <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
