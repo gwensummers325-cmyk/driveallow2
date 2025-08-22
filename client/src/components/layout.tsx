@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Car, ArrowLeft, Mail, Phone, Shield, Heart } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 
 interface LayoutProps {
@@ -183,9 +183,10 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               © 2025 DriveAllow. All rights reserved. Building safer roads, one teen at a time.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
-              <button className="hover:text-white transition-colors">Privacy Policy</button>
-              <button className="hover:text-white transition-colors">Terms of Service</button>
-              <button className="hover:text-white transition-colors">Safety Guidelines</button>
+              <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+              <Link href="/cookie-policy" className="hover:text-white transition-colors">Cookie Policy</Link>
+              <Link href="/accessibility" className="hover:text-white transition-colors">Accessibility</Link>
             </div>
           </div>
         </div>

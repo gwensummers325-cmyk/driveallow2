@@ -11,6 +11,10 @@ import MobileDataSender from "@/pages/mobile-data-sender";
 import ParentAuth from "@/pages/parent-auth";
 import TeenAuth from "@/pages/teen-auth";
 import NotFound from "@/pages/not-found";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
+import Accessibility from "@/pages/accessibility";
+import CookiePolicy from "@/pages/cookie-policy";
 
 function Router() {
   const { user, isLoading } = useAuth();
@@ -31,6 +35,10 @@ function Router() {
       <Route path="/auth/parent" component={ParentAuth} />
       <Route path="/auth/teen" component={TeenAuth} />
       <Route path="/mobile-data" component={MobileDataSender} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/accessibility" component={Accessibility} />
+      <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/">
         {!user ? (
           <Landing />
