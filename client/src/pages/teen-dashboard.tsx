@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target } from "lucide-react";
 import { MonitoringStatus } from "@/components/monitoring-status";
+import { StripeCardManagement } from "@/components/stripe-card-management";
 import { Layout } from "@/components/layout";
 
 export default function TeenDashboard() {
@@ -256,6 +257,12 @@ export default function TeenDashboard() {
 
           {/* Goals & Earning Opportunities */}
           <div className="space-y-6">
+            {/* Allowance Card */}
+            <StripeCardManagement 
+              teenId={teen.id}
+              isParent={false}
+            />
+
             {/* Weekly Goals */}
             <Card>
               <CardHeader>

@@ -25,6 +25,7 @@ export interface IStorage {
   createUser(user: UpsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   getUsersByParentId(parentId: string): Promise<User[]>;
+  updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User>;
   
   // Allowance settings operations
   getAllowanceSettings(parentId: string, teenId: string): Promise<AllowanceSettings | undefined>;
@@ -199,6 +200,18 @@ export class DatabaseStorage implements IStorage {
       lastAllowanceDate: currentBalance?.lastAllowanceDate,
       nextAllowanceDate: currentBalance?.nextAllowanceDate,
     });
+  }
+
+  async updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...stripeInfo,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
   }
 }
 

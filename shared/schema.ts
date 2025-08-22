@@ -71,6 +71,11 @@ export const users: any = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   role: userRoleEnum("role").notNull().default('teen'),
   parentId: varchar("parent_id").references(() => users.id),
+  // Stripe fields
+  stripeCustomerId: varchar("stripe_customer_id").unique(),
+  stripeCardholderId: varchar("stripe_cardholder_id").unique(),
+  stripeCardId: varchar("stripe_card_id").unique(),
+  cardStatus: varchar("card_status").default('pending'), // pending, requested, active, suspended
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

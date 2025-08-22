@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { emailService } from "./emailService";
+import { stripeService } from "./stripeService";
 import { 
   insertAllowanceSettingsSchema,
   insertTransactionSchema,
@@ -249,6 +250,13 @@ export function registerRoutes(app: Express): Server {
       const balanceAfter = await storage.getAllowanceBalance(validatedData.teenId);
       const balanceAfterAmount = balanceAfter?.currentBalance || '0.00';
 
+      // Sync card spending limits with new balance
+      try {
+        await stripeService.syncCardWithAllowance(validatedData.teenId);
+      } catch (syncError) {
+        console.error('Failed to sync card with allowance after incident:', syncError);
+      }
+
       // Send email notifications
       const teen = await storage.getUser(validatedData.teenId);
       const parent = await storage.getUser(parentId);
@@ -290,6 +298,13 @@ export function registerRoutes(app: Express): Server {
 
       // Update balance
       await storage.updateBalance(teenId, amount.toString());
+
+      // Sync card spending limits with new balance
+      try {
+        await stripeService.syncCardWithAllowance(teenId);
+      } catch (syncError) {
+        console.error('Failed to sync card with allowance after bonus:', syncError);
+      }
 
       // Send email notifications
       const teen = await storage.getUser(teenId);
@@ -344,6 +359,13 @@ export function registerRoutes(app: Express): Server {
         lastAllowanceDate: new Date(),
         nextAllowanceDate: nextDate,
       });
+
+      // Sync card spending limits with new balance
+      try {
+        await stripeService.syncCardWithAllowance(teenId);
+      } catch (syncError) {
+        console.error('Failed to sync card with allowance after payment:', syncError);
+      }
 
       // Send email notification
       const teen = await storage.getUser(teenId);
@@ -574,6 +596,269 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error fetching monitoring status:", error);
       res.status(500).json({ message: "Failed to fetch monitoring status" });
+    }
+  });
+
+  // === STRIPE ISSUING INTEGRATION ===
+  
+  // Setup Stripe customer for parent (legal guardian)
+  app.post('/api/stripe/setup-parent', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can set up payment accounts" });
+      }
+
+      if (parent.stripeCustomerId) {
+        return res.json({ customerId: parent.stripeCustomerId });
+      }
+
+      const customerId = await stripeService.createCustomer(
+        parent.email || `${parent.username}@example.com`,
+        `${parent.firstName} ${parent.lastName}`
+      );
+
+      await storage.updateUserStripeInfo(parentId, { stripeCustomerId: customerId });
+
+      res.json({ customerId });
+    } catch (error) {
+      console.error("Error setting up parent Stripe account:", error);
+      res.status(500).json({ message: "Failed to set up payment account" });
+    }
+  });
+
+  // Request allowance card for teen
+  app.post('/api/stripe/request-card', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { teenId, cardType = 'virtual' } = req.body;
+      
+      const parent = await storage.getUser(parentId);
+      const teen = await storage.getUser(teenId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can request cards" });
+      }
+      
+      if (!teen || teen.parentId !== parentId) {
+        return res.status(403).json({ message: "Can only request cards for your teens" });
+      }
+
+      // Ensure parent has Stripe customer account
+      if (!parent.stripeCustomerId) {
+        return res.status(400).json({ message: "Parent must set up payment account first" });
+      }
+
+      // Create cardholder for teen if not exists
+      let cardholderId = teen.stripeCardholderId;
+      if (!cardholderId) {
+        cardholderId = await stripeService.createCardholder(
+          teenId,
+          parent.stripeCustomerId,
+          `${teen.firstName} ${teen.lastName}`
+        );
+        await storage.updateUserStripeInfo(teenId, { stripeCardholderId: cardholderId });
+      }
+
+      // Get current allowance balance for spending limit
+      const balance = await storage.getAllowanceBalance(teenId);
+      const spendingLimit = stripeService.convertBalanceToSpendingLimit(
+        parseFloat(balance?.currentBalance || '25.00')
+      );
+
+      // Create the card
+      const cardResult = await stripeService.createCard({
+        teenId,
+        parentId,
+        cardType: cardType as 'virtual' | 'physical',
+        spendingLimit,
+      });
+
+      res.json({
+        cardId: cardResult.cardId,
+        last4: cardResult.last4,
+        cardType,
+        spendingLimit: spendingLimit / 100, // Convert back to dollars
+      });
+    } catch (error) {
+      console.error("Error requesting allowance card:", error);
+      res.status(500).json({ message: "Failed to request allowance card" });
+    }
+  });
+
+  // Get card status and details
+  app.get('/api/stripe/card/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { teenId } = req.params;
+      const userId = req.user.id;
+      
+      // Security check
+      if (req.user.role === 'teen' && userId !== teenId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      if (req.user.role === 'parent') {
+        const teen = await storage.getUser(teenId);
+        if (!teen || teen.parentId !== userId) {
+          return res.status(403).json({ message: "Access denied" });
+        }
+      }
+
+      const teen = await storage.getUser(teenId);
+      if (!teen?.stripeCardId) {
+        return res.json({ hasCard: false });
+      }
+
+      const card = await stripeService.getCard(teen.stripeCardId);
+      const transactions = await stripeService.getCardTransactions(teen.stripeCardId, 10);
+
+      res.json({
+        hasCard: true,
+        card: {
+          id: card.id,
+          last4: card.last4,
+          type: card.type,
+          status: card.status,
+          spending_controls: card.spending_controls,
+        },
+        recentTransactions: transactions.map(tx => ({
+          id: tx.id,
+          amount: tx.amount / 100, // Convert to dollars
+          merchant: tx.merchant?.name || 'Unknown',
+          created: tx.created,
+          status: tx.dispute ? 'disputed' : 'completed',
+        })),
+      });
+    } catch (error) {
+      console.error("Error fetching card details:", error);
+      res.status(500).json({ message: "Failed to fetch card details" });
+    }
+  });
+
+  // Update card spending limits (automatically called when balance changes)
+  app.post('/api/stripe/sync-balance/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { teenId } = req.params;
+      const parentId = req.user.id;
+      
+      const parent = await storage.getUser(parentId);
+      const teen = await storage.getUser(teenId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can sync balances" });
+      }
+      
+      if (!teen || teen.parentId !== parentId) {
+        return res.status(403).json({ message: "Can only sync for your teens" });
+      }
+
+      await stripeService.syncCardWithAllowance(teenId);
+      
+      res.json({ synced: true });
+    } catch (error) {
+      console.error("Error syncing card balance:", error);
+      res.status(500).json({ message: "Failed to sync card balance" });
+    }
+  });
+
+  // Suspend/reactivate card
+  app.post('/api/stripe/card/:teenId/:action', isAuthenticated, async (req: any, res) => {
+    try {
+      const { teenId, action } = req.params;
+      const parentId = req.user.id;
+      
+      if (!['suspend', 'reactivate'].includes(action)) {
+        return res.status(400).json({ message: "Invalid action" });
+      }
+      
+      const parent = await storage.getUser(parentId);
+      const teen = await storage.getUser(teenId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can control cards" });
+      }
+      
+      if (!teen || teen.parentId !== parentId || !teen.stripeCardId) {
+        return res.status(403).json({ message: "Invalid teen or no card found" });
+      }
+
+      if (action === 'suspend') {
+        await stripeService.suspendCard(teen.stripeCardId);
+        await storage.updateUserStripeInfo(teenId, { cardStatus: 'suspended' });
+      } else {
+        await stripeService.reactivateCard(teen.stripeCardId);
+        await storage.updateUserStripeInfo(teenId, { cardStatus: 'active' });
+      }
+      
+      res.json({ action, success: true });
+    } catch (error) {
+      console.error(`Error ${req.params.action}ing card:`, error);
+      res.status(500).json({ message: `Failed to ${req.params.action} card` });
+    }
+  });
+
+  // Webhook endpoint for Stripe issuing events
+  app.post('/api/stripe/webhook', async (req, res) => {
+    try {
+      const event = req.body;
+      
+      // In production, verify webhook signature here
+      // const sig = req.headers['stripe-signature'];
+      // const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+      
+      switch (event.type) {
+        case 'issuing_authorization.request':
+          // Handle real-time authorization request
+          const authorization = event.data.object;
+          const cardId = authorization.card.id;
+          
+          // Find teen by card ID
+          const users = await storage.getUsersByParentId(''); // This needs optimization
+          const cardHolder = users.find((u: any) => u.stripeCardId === cardId);
+          
+          if (cardHolder) {
+            const balance = await storage.getAllowanceBalance(cardHolder.id);
+            const currentBalance = parseFloat(balance?.currentBalance || '0');
+            const authAmount = authorization.amount / 100; // Convert to dollars
+            
+            // Approve if sufficient balance
+            const approved = authAmount <= currentBalance;
+            
+            await stripeService.authorizeTransaction(authorization.id, approved);
+            
+            if (approved && authAmount > 0) {
+              // Deduct from allowance balance
+              await storage.updateBalance(cardHolder.id, `-${authAmount}`);
+              
+              // Create transaction record
+              await storage.createTransaction({
+                teenId: cardHolder.id,
+                parentId: cardHolder.parentId!,
+                type: 'penalty', // Using penalty type for debit transactions
+                amount: `-${authAmount}`,
+                description: `Card purchase: ${authorization.merchant?.name || 'Unknown merchant'}`,
+              });
+
+              // Sync card limits with new balance
+              await stripeService.syncCardWithAllowance(cardHolder.id);
+            }
+          }
+          break;
+          
+        case 'issuing_card.created':
+          console.log('Card created:', event.data.object.id);
+          break;
+          
+        default:
+          console.log(`Unhandled event type: ${event.type}`);
+      }
+      
+      res.json({ received: true });
+    } catch (error) {
+      console.error('Webhook error:', error);
+      res.status(400).json({ error: 'Webhook handling failed' });
     }
   });
 
