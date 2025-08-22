@@ -307,19 +307,29 @@ export default function ParentDashboard() {
                       </div>
 
 
+                      {/* Auto-Detection Status */}
+                      <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div className="flex items-center space-x-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-xs text-gray-600">Auto-monitoring active</span>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">Most violations detected automatically</p>
+                      </div>
+
                       {/* Actions */}
                       <div className="grid grid-cols-3 gap-2">
                         <Button
                           size="sm"
-                          variant="destructive"
+                          variant="outline"
                           onClick={() => {
                             setSelectedTeenId(teen.id);
                             setShowReportModal(true);
                           }}
-                          className="text-xs"
+                          className="text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                          title="Report incidents not captured by automatic monitoring"
                         >
                           <AlertTriangle className="h-3 w-3 mr-1" />
-                          Report
+                          Manual Report
                         </Button>
                         <Button
                           size="sm"
