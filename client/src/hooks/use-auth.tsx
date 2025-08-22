@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Account created!",
-        description: `Welcome to DriveWise, ${user.firstName}!`,
+        description: `Welcome to DriveAllow, ${user.firstName}!`,
       });
     },
     onError: (error: Error) => {

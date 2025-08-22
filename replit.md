@@ -1,6 +1,6 @@
 # Overview
 
-DriveWise is a smart allowance management system for teen drivers that helps parents teach safe driving habits through financial incentives and penalties. The application tracks driving behavior, manages allowances, and provides real-time notifications for both parents and teens. Parents can set allowance parameters, report driving incidents, and award bonuses, while teens can monitor their balance and driving performance.
+DriveAllow is a smart allowance management system for teen drivers that helps parents teach safe driving habits through financial incentives and penalties. The application tracks driving behavior, manages allowances, and provides real-time notifications for both parents and teens. Parents can set allowance parameters, report driving incidents, and award bonuses, while teens can monitor their balance and driving performance.
 
 # User Preferences
 
@@ -12,7 +12,7 @@ Preferred communication style: Simple, everyday language.
 - Implemented automatic login/logout email notifications for parents
 - Configured Ionos SMTP integration for reliable email delivery
 - Added session duration tracking for logout notifications
-- Created professional HTML email templates with DriveWise branding
+- Created professional HTML email templates with DriveAllow branding
 - Enhanced security with automatic device detection in login alerts
 
 # System Architecture

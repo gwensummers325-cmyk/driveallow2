@@ -48,7 +48,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               
               <div className="flex items-center cursor-pointer" onClick={() => setLocation("/")}>
                 <Car className="h-6 w-6 text-primary mr-2" />
-                <h1 className="text-2xl font-bold text-primary">DriveWise</h1>
+                <h1 className="text-2xl font-bold text-primary">DriveAllow</h1>
               </div>
             </div>
             
@@ -113,7 +113,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
             <div className="space-y-4">
               <div className="flex items-center">
                 <Car className="h-6 w-6 text-primary mr-2" />
-                <h3 className="text-xl font-bold">DriveWise</h3>
+                <h3 className="text-xl font-bold">DriveAllow</h3>
               </div>
               <p className="text-gray-400 text-sm">
                 Smart allowance management for teen drivers. Teaching safe driving habits through financial incentives.
@@ -156,11 +156,11 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               <div className="space-y-3 text-sm text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
-                  <span>support@drivewise.com</span>
+                  <span>support@driveallow.com</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
-                  <span>1-800-DRIVEWISE</span>
+                  <span>1-800-DRIVEALLOW</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="h-4 w-4 text-red-400" />
@@ -180,7 +180,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
           {/* Bottom Bar */}
           <div className="mt-8 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
-              © 2024 DriveWise. All rights reserved. Building safer roads, one teen at a time.
+              © 2024 DriveAllow. All rights reserved. Building safer roads, one teen at a time.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
               <button className="hover:text-white transition-colors">Privacy Policy</button>

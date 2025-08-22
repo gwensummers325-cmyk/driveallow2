@@ -36,7 +36,7 @@ export default function Landing() {
               </h2>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
-                DriveWise gives parents the confidence that their teen will drive safely, 
+                DriveAllow gives parents the confidence that their teen will drive safely, 
                 using smart allowance management that rewards good driving habits and 
                 provides instant feedback when it matters most.
               </p>

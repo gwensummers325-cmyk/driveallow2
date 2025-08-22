@@ -52,7 +52,7 @@ class EmailService {
     balanceBefore?: string,
     balanceAfter?: string
   ): Promise<void> {
-    const subject = `DriveWise Alert: Driving Incident Detected for ${teenName}`;
+    const subject = `DriveAllow Alert: Driving Incident Detected for ${teenName}`;
     const balanceInfo = balanceBefore && balanceAfter ? `
 - Balance Before: $${balanceBefore}
 - Penalty Deducted: -$${penaltyAmount}
@@ -67,12 +67,12 @@ Incident Details:
 - Location: ${location}${balanceInfo}
 - Time: ${new Date().toLocaleString()}
 
-Please review the incident in your DriveWise dashboard.
+Please review the incident in your DriveAllow dashboard.
     `;
 
     const html = `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1976D2;">DriveWise Alert</h2>
+        <h2 style="color: #1976D2;">DriveAllow Alert</h2>
         <p>A driving incident has been reported for <strong>${teenName}</strong>.</p>
         
         <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -88,7 +88,7 @@ Please review the incident in your DriveWise dashboard.
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         </div>
         
-        <p>Please review the incident in your DriveWise dashboard.</p>
+        <p>Please review the incident in your DriveAllow dashboard.</p>
       </div>
     `;
 
@@ -106,7 +106,7 @@ Please review the incident in your DriveWise dashboard.
     bonusType: string,
     bonusAmount: string
   ): Promise<void> {
-    const subject = `DriveWise Bonus: ${teenName} Earned a Reward!`;
+    const subject = `DriveAllow Bonus: ${teenName} Earned a Reward!`;
     const text = `
 Great news! ${teenName} has earned a bonus for safe driving.
 
@@ -120,7 +120,7 @@ Keep up the great work!
 
     const html = `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1976D2;">DriveWise Bonus</h2>
+        <h2 style="color: #1976D2;">DriveAllow Bonus</h2>
         <p>Great news! <strong>${teenName}</strong> has earned a bonus for safe driving.</p>
         
         <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -145,11 +145,11 @@ Keep up the great work!
     teenName: string,
     allowanceAmount: string
   ): Promise<void> {
-    const subject = `DriveWise: Your Weekly Allowance is Here!`;
+    const subject = `DriveAllow: Your Weekly Allowance is Here!`;
     const text = `
 Hi ${teenName}!
 
-Your weekly allowance of $${allowanceAmount} has been added to your DriveWise balance.
+Your weekly allowance of $${allowanceAmount} has been added to your DriveAllow balance.
 
 Time: ${new Date().toLocaleString()}
 
@@ -158,7 +158,7 @@ Check your dashboard to see your updated balance.
 
     const html = `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1976D2;">DriveWise Allowance</h2>
+        <h2 style="color: #1976D2;">DriveAllow Allowance</h2>
         <p>Hi <strong>${teenName}</strong>!</p>
         
         <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -179,10 +179,10 @@ Check your dashboard to see your updated balance.
     teenName: string,
     deviceInfo?: string
   ): Promise<void> {
-    const subject = `DriveWise Alert: ${teenName} Logged In`;
+    const subject = `DriveAllow Alert: ${teenName} Logged In`;
     const loginTime = new Date().toLocaleString();
     const text = `
-${teenName} has logged into DriveWise.
+${teenName} has logged into DriveAllow.
 
 Login Details:
 - Teen: ${teenName}
@@ -194,8 +194,8 @@ Driving monitoring is now active.
 
     const html = `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1976D2;">DriveWise Login Alert</h2>
-        <p><strong>${teenName}</strong> has logged into DriveWise.</p>
+        <h2 style="color: #1976D2;">DriveAllow Login Alert</h2>
+        <p><strong>${teenName}</strong> has logged into DriveAllow.</p>
         
         <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin: 0 0 10px 0; color: #388E3C;">Login Details</h3>
@@ -216,10 +216,10 @@ Driving monitoring is now active.
     teenName: string,
     sessionDuration?: string
   ): Promise<void> {
-    const subject = `DriveWise Alert: ${teenName} Logged Out`;
+    const subject = `DriveAllow Alert: ${teenName} Logged Out`;
     const logoutTime = new Date().toLocaleString();
     const text = `
-${teenName} has logged out of DriveWise.
+${teenName} has logged out of DriveAllow.
 
 Session Details:
 - Teen: ${teenName}
@@ -231,8 +231,8 @@ Driving monitoring has ended.
 
     const html = `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #1976D2;">DriveWise Logout Alert</h2>
-        <p><strong>${teenName}</strong> has logged out of DriveWise.</p>
+        <h2 style="color: #1976D2;">DriveAllow Logout Alert</h2>
+        <p><strong>${teenName}</strong> has logged out of DriveAllow.</p>
         
         <div style="background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin: 0 0 10px 0; color: #F57C00;">Session Details</h3>
