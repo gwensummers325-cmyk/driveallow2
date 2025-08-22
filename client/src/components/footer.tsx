@@ -64,11 +64,6 @@ export function Footer() {
                   Teen Dashboard
                 </Link>
               </li>
-              <li>
-                <Link href="/mobile-data" className="text-gray-300 hover:text-white transition-colors">
-                  Mobile Tracking
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
