@@ -246,11 +246,57 @@ export class ViolationDetector {
     return Math.round(accel.y * 10) / 10;
   }
 
-  // Get speed limit for current location (placeholder - would use mapping API)
+  // Get speed limit for current location using HERE Maps API
   private static async getSpeedLimit(lat: number, lng: number): Promise<number> {
-    // In production, this would query a mapping service like Google Maps API
-    // For now, return typical speed limits based on simple area classification
-    
+    try {
+      if (!process.env.HERE_MAPS_API_KEY) {
+        console.warn('HERE_MAPS_API_KEY not found, using fallback speed limits');
+        return ViolationDetector.getFallbackSpeedLimit(lat, lng);
+      }
+
+      // HERE Maps Routing API v8 - get route with speed limit data
+      const url = `https://router.hereapi.com/v8/routes?transportMode=car&origin=${lat},${lng}&destination=${lat + 0.001},${lng + 0.001}&return=polyline,summary,instructions&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.warn(`HERE Maps API error: ${response.status}, using fallback`);
+        return ViolationDetector.getFallbackSpeedLimit(lat, lng);
+      }
+      
+      const data = await response.json();
+      
+      // Extract speed limit from the route data
+      if (data.routes && data.routes[0] && data.routes[0].sections && data.routes[0].sections[0]) {
+        const section = data.routes[0].sections[0];
+        
+        // Look for speed limit in instructions or summary
+        if (section.summary && section.summary.speedLimitKph) {
+          // Convert km/h to mph
+          return Math.round(section.summary.speedLimitKph * 0.621371);
+        }
+        
+        // Check instructions for speed limit information
+        if (section.instructions) {
+          for (const instruction of section.instructions) {
+            if (instruction.roadName && instruction.speedLimit) {
+              return Math.round(instruction.speedLimit * 0.621371);
+            }
+          }
+        }
+      }
+      
+      // If no speed limit found in API response, use fallback
+      return ViolationDetector.getFallbackSpeedLimit(lat, lng);
+      
+    } catch (error) {
+      console.error('Error fetching speed limit from HERE Maps:', error);
+      return ViolationDetector.getFallbackSpeedLimit(lat, lng);
+    }
+  }
+
+  // Fallback speed limit detection when API is unavailable
+  private static getFallbackSpeedLimit(lat: number, lng: number): number {
     // Simple heuristic based on location patterns
     const latMod = Math.abs(lat % 0.01);
     const lngMod = Math.abs(lng % 0.01);
