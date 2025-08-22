@@ -45,6 +45,7 @@ export default function MobileDataSender() {
   const watchIdRef = useRef<number | null>(null);
   const lastPositionRef = useRef<GeolocationPosition | null>(null);
   const motionDataRef = useRef<DeviceMotionEvent | null>(null);
+  const handleMotionRef = useRef<((event: DeviceMotionEvent) => void) | null>(null);
 
   // Check and request permissions
   const requestPermissions = async () => {
@@ -122,6 +123,7 @@ export default function MobileDataSender() {
       const handleMotion = (event: DeviceMotionEvent) => {
         motionDataRef.current = event;
       };
+      handleMotionRef.current = handleMotion;
 
       window.addEventListener('devicemotion', handleMotion);
 
@@ -159,7 +161,9 @@ export default function MobileDataSender() {
       if (geoInterval) {
         clearInterval(geoInterval);
       }
-      window.removeEventListener('devicemotion', handleMotion);
+      if (handleMotionRef.current) {
+        window.removeEventListener('devicemotion', handleMotionRef.current);
+      }
     };
   }, [isTracking, permissions]);
 
