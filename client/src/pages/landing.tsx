@@ -41,38 +41,38 @@ export default function Landing() {
               </p>
 
               {/* Social Proof Testimonials */}
-              <div className="mb-10 space-y-6">
+              <div className="mb-8 space-y-3">
                 {/* Parent Testimonial */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                  <div className="flex items-center mb-3">
-                    <div className="flex space-x-1 mr-3">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/50">
+                  <div className="flex items-center mb-2">
+                    <div className="flex space-x-1 mr-2">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        <Star key={i} className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                       ))}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-xs text-gray-600">
                       <span className="font-semibold text-gray-800">Sarah M.</span> • Parent
                     </div>
                   </div>
-                  <p className="text-gray-700 italic">
-                    "Finally, peace of mind! My daughter's driving has improved dramatically since we started using DriveAllow. The automatic tracking and allowance system work perfectly together."
+                  <p className="text-sm text-gray-700 italic">
+                    "Finally, peace of mind! My daughter's driving has improved dramatically since we started using DriveAllow."
                   </p>
                 </div>
 
                 {/* Teen Testimonial */}
-                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                  <div className="flex items-center mb-3">
-                    <div className="flex space-x-1 mr-3">
+                <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-md border border-white/50">
+                  <div className="flex items-center mb-2">
+                    <div className="flex space-x-1 mr-2">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        <Star key={i} className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                       ))}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-xs text-gray-600">
                       <span className="font-semibold text-gray-800">Alex T.</span> • Teen Driver
                     </div>
                   </div>
-                  <p className="text-gray-700 italic">
-                    "I love earning bonuses for safe driving! DriveAllow helped me become a better driver and I get rewarded for it. Way better than just getting lectured."
+                  <p className="text-sm text-gray-700 italic">
+                    "I love earning bonuses for safe driving! Way better than just getting lectured."
                   </p>
                 </div>
               </div>
