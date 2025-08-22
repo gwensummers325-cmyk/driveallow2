@@ -64,20 +64,20 @@ export class ViolationDetector {
     const violations: ViolationResult[] = [];
 
     // Check for speeding violations
-    const speedingViolation = this.checkSpeedingViolation(data);
+    const speedingViolation = ViolationDetector.checkSpeedingViolation(data);
     if (speedingViolation) {
       violations.push(speedingViolation);
     }
 
     // Check for aggressive driving violations
-    const aggressiveViolation = this.checkAggressiveDriving(data);
+    const aggressiveViolation = ViolationDetector.checkAggressiveDriving(data);
     if (aggressiveViolation) {
       violations.push(aggressiveViolation);
     }
 
     // Process each violation automatically
     for (const violation of violations) {
-      await this.processViolation(data.teenId, data, violation);
+      await ViolationDetector.processViolation(data.teenId, data, violation);
     }
 
     return violations;
@@ -205,15 +205,22 @@ export class ViolationDetector {
         location: sensorData.location || await this.reverseGeocode(sensorData.gps.latitude, sensorData.gps.longitude)
       };
       
-      // Check for violations using existing detection logic
-      const violation = this.detectViolation(drivingData);
-      if (violation) {
-        await this.processViolation(sensorData.teenId, violation, drivingData);
-        violations.push(violation);
+      // Check for speeding violations
+      const speedingViolation = ViolationDetector.checkSpeedingViolation(drivingData);
+      if (speedingViolation) {
+        violations.push(speedingViolation);
+        await ViolationDetector.processViolation(sensorData.teenId, drivingData, speedingViolation);
+      }
+
+      // Check for aggressive driving violations
+      const aggressiveViolation = ViolationDetector.checkAggressiveDriving(drivingData);
+      if (aggressiveViolation) {
+        violations.push(aggressiveViolation);
+        await ViolationDetector.processViolation(sensorData.teenId, drivingData, aggressiveViolation);
       }
       
       // Store driving data for analysis
-      await this.storeDrivingData(drivingData);
+      await ViolationDetector.storeDrivingData(drivingData);
       
     } catch (error) {
       console.error('Error processing smartphone sensor data:', error);
