@@ -36,9 +36,7 @@ export default function Landing() {
               </h2>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-10 leading-relaxed">
-                DriveAllow gives parents the confidence that their teen will drive safely, 
-                using smart allowance management that rewards good driving habits and 
-                provides instant feedback when it matters most.
+                DriveAllow incentivizes safe teen driving using smart allowance management that rewards good driving habits.
               </p>
               
               <div className="flex flex-col sm:flex-row items-center lg:items-start lg:justify-start justify-center space-y-4 sm:space-y-0 sm:space-x-6">
