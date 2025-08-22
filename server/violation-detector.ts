@@ -64,14 +64,28 @@ export class ViolationDetector {
   static async processRealTimeData(data: DrivingData): Promise<ViolationResult[]> {
     const violations: ViolationResult[] = [];
 
-    // Check for speeding violations
-    const speedingViolation = ViolationDetector.checkSpeedingViolation(data);
+    // Get teen's parent ID to fetch allowance settings
+    const teen = await storage.getUser(data.teenId);
+    if (!teen || !teen.parentId) {
+      console.error('Teen or parent not found for violation processing');
+      return violations;
+    }
+
+    // Fetch teen-specific allowance settings
+    const settings = await storage.getAllowanceSettings(teen.parentId, data.teenId);
+    if (!settings) {
+      console.error('Allowance settings not found for teen');
+      return violations;
+    }
+
+    // Check for speeding violations with teen-specific settings
+    const speedingViolation = await ViolationDetector.checkSpeedingViolation(data, settings);
     if (speedingViolation) {
       violations.push(speedingViolation);
     }
 
-    // Check for aggressive driving violations
-    const aggressiveViolation = ViolationDetector.checkAggressiveDriving(data);
+    // Check for aggressive driving violations with teen-specific settings
+    const aggressiveViolation = await ViolationDetector.checkAggressiveDriving(data, settings);
     if (aggressiveViolation) {
       violations.push(aggressiveViolation);
     }
@@ -84,7 +98,7 @@ export class ViolationDetector {
     return violations;
   }
 
-  private static checkSpeedingViolation(data: DrivingData): ViolationResult | null {
+  private static async checkSpeedingViolation(data: DrivingData, settings: any): Promise<ViolationResult | null> {
     const speedDifference = data.speed - data.speedLimit;
     
     if (speedDifference > this.MAJOR_SPEEDING_THRESHOLD) {
@@ -92,7 +106,7 @@ export class ViolationDetector {
         type: 'speeding_major',
         severity: 'high',
         description: `Major speeding: ${data.speed}mph in ${data.speedLimit}mph zone (+${speedDifference}mph)`,
-        penaltyAmount: '10.00',
+        penaltyAmount: settings.speedingMajorPenalty,
         autoDetected: true
       };
     } else if (speedDifference > this.MINOR_SPEEDING_THRESHOLD) {
@@ -100,7 +114,7 @@ export class ViolationDetector {
         type: 'speeding_minor',
         severity: 'medium',
         description: `Speeding: ${data.speed}mph in ${data.speedLimit}mph zone (+${speedDifference}mph)`,
-        penaltyAmount: '5.00',
+        penaltyAmount: settings.speedingMinorPenalty,
         autoDetected: true
       };
     }
@@ -108,14 +122,14 @@ export class ViolationDetector {
     return null;
   }
 
-  private static checkAggressiveDriving(data: DrivingData): ViolationResult | null {
+  private static async checkAggressiveDriving(data: DrivingData, settings: any): Promise<ViolationResult | null> {
     // Check harsh braking (negative acceleration)
     if (data.acceleration <= this.HARSH_BRAKING_THRESHOLD) {
       return {
         type: 'harsh_braking',
         severity: 'medium',
         description: `Harsh braking detected (${Math.abs(data.acceleration).toFixed(1)} m/s² deceleration)`,
-        penaltyAmount: '3.00',
+        penaltyAmount: settings.harshBrakingPenalty,
         autoDetected: true
       };
     }
@@ -126,7 +140,7 @@ export class ViolationDetector {
         type: 'aggressive_acceleration',
         severity: 'medium',
         description: `Aggressive acceleration detected (${data.acceleration.toFixed(1)} m/s² acceleration)`,
-        penaltyAmount: '3.00',
+        penaltyAmount: settings.aggressiveAccelPenalty,
         autoDetected: true
       };
     }
@@ -208,6 +222,20 @@ export class ViolationDetector {
     const violations: ViolationResult[] = [];
     
     try {
+      // Get teen's parent ID to fetch allowance settings
+      const teen = await storage.getUser(sensorData.teenId);
+      if (!teen || !teen.parentId) {
+        console.error('Teen or parent not found for smartphone sensor processing');
+        return violations;
+      }
+
+      // Fetch teen-specific allowance settings
+      const settings = await storage.getAllowanceSettings(teen.parentId, sensorData.teenId);
+      if (!settings) {
+        console.error('Allowance settings not found for teen in smartphone processing');
+        return violations;
+      }
+
       // Convert smartphone sensor data to driving data format
       const drivingData: DrivingData = {
         teenId: sensorData.teenId,
@@ -220,15 +248,15 @@ export class ViolationDetector {
         location: sensorData.location || await this.reverseGeocode(sensorData.gps.latitude, sensorData.gps.longitude)
       };
       
-      // Check for speeding violations
-      const speedingViolation = ViolationDetector.checkSpeedingViolation(drivingData);
+      // Check for speeding violations with teen-specific settings
+      const speedingViolation = await ViolationDetector.checkSpeedingViolation(drivingData, settings);
       if (speedingViolation) {
         violations.push(speedingViolation);
         await ViolationDetector.processViolation(sensorData.teenId, drivingData, speedingViolation);
       }
 
-      // Check for aggressive driving violations
-      const aggressiveViolation = ViolationDetector.checkAggressiveDriving(drivingData);
+      // Check for aggressive driving violations with teen-specific settings
+      const aggressiveViolation = await ViolationDetector.checkAggressiveDriving(drivingData, settings);
       if (aggressiveViolation) {
         violations.push(aggressiveViolation);
         await ViolationDetector.processViolation(sensorData.teenId, drivingData, aggressiveViolation);
