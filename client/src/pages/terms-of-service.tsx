@@ -17,6 +17,9 @@ export default function TermsOfService() {
                 <p className="text-gray-700 leading-relaxed">
                   By accessing or using DriveAllow, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this service.
                 </p>
+                <p className="text-gray-700 leading-relaxed mt-4">
+                  <strong>IMPORTANT:</strong> These terms include a binding arbitration clause and class action waiver that affect your legal rights. Please read them carefully.
+                </p>
               </section>
 
               <section>
@@ -88,24 +91,48 @@ export default function TermsOfService() {
 
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">6. Service Limitations and Disclaimers</h2>
+                <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                  <p className="text-red-800 font-semibold">
+                    IMPORTANT SAFETY DISCLAIMER: DRIVEALLOW IS NOT A SUBSTITUTE FOR RESPONSIBLE DRIVING OR PARENTAL SUPERVISION.
+                  </p>
+                </div>
                 <div className="space-y-4">
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>Accuracy:</strong> While we strive for accuracy, DriveAllow relies on smartphone sensors and GPS which may have limitations. We do not guarantee 100% accurate detection of all driving behaviors.
+                    <strong>Technology Limitations:</strong> DriveAllow relies on smartphone sensors, GPS, and third-party data which may be inaccurate, delayed, or unavailable. We do not guarantee 100% accurate detection of driving behaviors, violations, or incidents. False positives and missed violations may occur.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>Emergency Services:</strong> DriveAllow is not an emergency service. In case of accidents or emergencies, contact emergency services immediately (911 in the US).
+                    <strong>No Emergency Services:</strong> DriveAllow is not an emergency service and should never be relied upon for emergency assistance. In case of accidents or emergencies, contact emergency services immediately (911 in the US). We are not responsible for delayed or failed emergency communications.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>Device Compatibility:</strong> Service quality depends on device capabilities, network connectivity, and proper app permissions.
+                    <strong>Device Dependency:</strong> Service functionality depends entirely on device capabilities, battery life, network connectivity, proper app permissions, and user compliance. Service may be unavailable without notice.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>No Accident Prevention:</strong> DriveAllow does not prevent accidents, traffic violations, or unsafe driving. The service is for monitoring and educational purposes only.
                   </p>
                 </div>
               </section>
 
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">7. Limitation of Liability</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  DriveAllow and its operators shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, or goodwill, arising from your use of the service. Our total liability is limited to the amount you paid for the service in the past 12 months.
-                </p>
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                  <p className="text-yellow-800 font-semibold">
+                    IMPORTANT LIABILITY LIMITATIONS - READ CAREFULLY
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>NO LIABILITY FOR DRIVING INCIDENTS:</strong> DriveAllow and its operators, employees, agents, and affiliates shall have NO LIABILITY WHATSOEVER for any traffic accidents, collisions, violations, injuries, deaths, property damage, or any other incidents that occur while using or not using the service, regardless of whether such incidents were detected, reported, or prevented by our service.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Excluded Damages:</strong> We shall not be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages, including without limitation: loss of profits, revenue, data, use, goodwill; business interruption; personal injury; property damage; or any other damages arising from your use of the service.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Liability Cap:</strong> Our total aggregate liability for all claims shall not exceed the lesser of (a) $100 or (b) the amount you paid for the service in the 12 months preceding the claim.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Assumption of Risk:</strong> By using DriveAllow, you acknowledge and assume all risks associated with teen driving and monitoring technology limitations.
+                  </p>
+                </div>
               </section>
 
               <section>
@@ -125,15 +152,40 @@ export default function TermsOfService() {
               <section>
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">10. Indemnification</h2>
                 <p className="text-gray-700 leading-relaxed">
-                  You agree to indemnify and hold harmless DriveAllow from any claims, damages, losses, costs, or expenses arising from your use of the service, violation of these terms, or infringement of any rights of another.
+                  You agree to defend, indemnify, and hold harmless DriveAllow, its officers, directors, employees, agents, licensors, and suppliers from and against all claims, damages, losses, costs, and expenses (including reasonable attorneys' fees) arising from or relating to:
                 </p>
+                <ul className="list-disc list-inside text-gray-700 space-y-2 mt-4">
+                  <li>Your use or misuse of the service</li>
+                  <li>Any driving incidents, accidents, or violations by monitored teens</li>
+                  <li>Your violation of these Terms of Service</li>
+                  <li>Your violation of any rights of another party</li>
+                  <li>Any false or misleading information you provide</li>
+                  <li>Any failure to supervise or properly instruct teen drivers</li>
+                  <li>Any reliance on or use of data provided by the service</li>
+                </ul>
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Governing Law</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  These Terms shall be governed by and construed in accordance with the laws of [Your State/Country], without regard to its conflict of law provisions. Any disputes shall be resolved in the courts of [Your Jurisdiction].
-                </p>
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">11. Dispute Resolution and Arbitration</h2>
+                <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                  <p className="text-blue-800 font-semibold">
+                    BINDING ARBITRATION AND CLASS ACTION WAIVER
+                  </p>
+                </div>
+                <div className="space-y-4">
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Governing Law:</strong> These Terms shall be governed by and construed in accordance with the laws of Delaware, United States, without regard to conflict of law provisions.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Mandatory Arbitration:</strong> Any dispute arising from these Terms or your use of DriveAllow must be resolved through binding individual arbitration under the American Arbitration Association Commercial Arbitration Rules. The arbitration will be conducted in Delaware or via videoconference.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Class Action Waiver:</strong> You agree to waive your right to participate in class actions, class arbitrations, or representative actions against DriveAllow.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    <strong>Exception:</strong> Either party may seek injunctive relief in court for intellectual property violations or breaches of confidentiality.
+                  </p>
+                </div>
               </section>
 
               <section>
@@ -144,12 +196,33 @@ export default function TermsOfService() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Contact Information</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Force Majeure</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  DriveAllow shall not be liable for any delays or failures in performance due to circumstances beyond our reasonable control, including but not limited to: acts of God, natural disasters, war, terrorism, government actions, network outages, or third-party service failures.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Intellectual Property</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  DriveAllow and its content, features, and functionality are owned by us and protected by copyright, trademark, and other intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of our service without written permission.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">14. Severability</h2>
+                <p className="text-gray-700 leading-relaxed">
+                  If any provision of these Terms is found to be unenforceable, that provision shall be enforced to the maximum extent possible, and the remaining provisions shall remain in full force and effect.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-semibold text-gray-900 mb-3">15. Contact Information</h2>
                 <p className="text-gray-700 leading-relaxed">
                   For questions about these Terms of Service, contact us at:<br />
                   Email: legal@driveallow.com<br />
-                  Address: [Your Business Address]<br />
-                  Phone: [Your Phone Number]
+                  Address: 1234 Business Lane, Suite 100, Dover, DE 19901<br />
+                  Phone: 1-800-DRIVEALLOW
                 </p>
               </section>
             </CardContent>

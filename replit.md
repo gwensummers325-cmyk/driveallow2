@@ -15,6 +15,7 @@ Preferred communication style: Simple, everyday language.
 - Created professional HTML email templates with DriveAllow branding
 - Enhanced security with automatic device detection in login alerts
 - Removed Stripe Issuing integration (not suitable for teen driver use case)
+- Strengthened legal pages with comprehensive liability protections, mandatory arbitration clauses, enhanced privacy provisions for minors, and robust COPPA/CCPA compliance
 
 # System Architecture
 
