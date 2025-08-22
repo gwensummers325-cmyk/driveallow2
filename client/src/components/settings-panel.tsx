@@ -26,7 +26,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState({
-    weeklyAmount: '50.00',
+    allowanceAmount: '50.00',
     frequency: 'weekly',
     speedingMinorPenalty: '5.00',
     speedingMajorPenalty: '10.00',
@@ -47,7 +47,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
     if (existingSettings) {
       const settings = existingSettings as any;
       setSettings({
-        weeklyAmount: settings.weeklyAmount,
+        allowanceAmount: settings.allowanceAmount,
         frequency: settings.frequency,
         speedingMinorPenalty: settings.speedingMinorPenalty,
         speedingMajorPenalty: settings.speedingMajorPenalty,
@@ -173,17 +173,17 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
               <h4 className="text-sm font-medium text-gray-900 mb-3">Allowance Configuration</h4>
               <div className="space-y-3">
                 <div>
-                  <Label htmlFor="weekly-amount">Weekly Amount</Label>
+                  <Label htmlFor="allowance-amount">Allowance Amount</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
-                      id="weekly-amount"
+                      id="allowance-amount"
                       type="number"
                       step="0.01"
                       min="0"
                       className="pl-6"
-                      value={settings.weeklyAmount}
-                      onChange={(e) => handleInputChange('weeklyAmount', e.target.value)}
+                      value={settings.allowanceAmount}
+                      onChange={(e) => handleInputChange('allowanceAmount', e.target.value)}
                     />
                   </div>
                 </div>

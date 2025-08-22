@@ -45,14 +45,12 @@ export async function createTestAccounts() {
     await storage.upsertAllowanceSettings({
       parentId: parent.id,
       teenId: teen.id,
-      weeklyAmount: "25.00",
+      allowanceAmount: "25.00",
       frequency: "weekly",
-      allowOverdraft: true,
       speedingMinorPenalty: "5.00",
       speedingMajorPenalty: "10.00",
       harshBrakingPenalty: "3.00",
       aggressiveAccelPenalty: "3.00",
-      weeklyBonus: "5.00",
       perfectWeekBonus: "10.00",
       speedComplianceBonus: "2.00",
     });

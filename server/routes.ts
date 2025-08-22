@@ -77,14 +77,12 @@ export function registerRoutes(app: Express): Server {
       await storage.upsertAllowanceSettings({
         parentId,
         teenId: teen.id,
-        weeklyAmount: "25.00",
+        allowanceAmount: "25.00",
         frequency: "weekly",
-        allowOverdraft: true,
         speedingMinorPenalty: "5.00",
         speedingMajorPenalty: "10.00",
         harshBrakingPenalty: "3.00",
         aggressiveAccelPenalty: "3.00",
-        weeklyBonus: "5.00",
         perfectWeekBonus: "10.00",
         speedComplianceBonus: "2.00",
       });
@@ -330,12 +328,12 @@ export function registerRoutes(app: Express): Server {
         teenId,
         parentId,
         type: 'allowance',
-        amount: settings.weeklyAmount,
+        amount: settings.allowanceAmount,
         description: 'Weekly allowance payment',
       });
 
       // Update balance and next payment date
-      await storage.updateBalance(teenId, settings.weeklyAmount);
+      await storage.updateBalance(teenId, settings.allowanceAmount);
       
       const nextDate = new Date();
       nextDate.setDate(nextDate.getDate() + 7); // Add 7 days for weekly

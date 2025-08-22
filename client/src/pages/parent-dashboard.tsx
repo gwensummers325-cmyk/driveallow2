@@ -293,11 +293,11 @@ export default function ParentDashboard() {
 
                       {/* Allowance Settings */}
                       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                        <p className="text-sm font-medium text-blue-700 mb-2">Weekly Allowance Settings</p>
+                        <p className="text-sm font-medium text-blue-700 mb-2">Allowance Settings</p>
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div>
-                            <span className="text-blue-600">Weekly Amount:</span>
-                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.weeklyAmount || '50.00')}</span>
+                            <span className="text-blue-600">Allowance Amount:</span>
+                            <span className="font-medium ml-1">{formatCurrency(teen.settings?.allowanceAmount || '50.00')}</span>
                           </div>
                           <div>
                             <span className="text-blue-600">Speeding Penalty:</span>
@@ -432,11 +432,11 @@ export default function ParentDashboard() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Weekly Allowance Total</span>
+                    <span className="text-sm text-gray-600">Allowance Total</span>
                     <span className="text-sm font-medium">
                       {formatCurrency(
                         teens.reduce((sum: number, teen: any) => 
-                          sum + parseFloat(teen.settings?.weeklyAmount || '50.00'), 0
+                          sum + parseFloat(teen.settings?.allowanceAmount || '50.00'), 0
                         ).toString()
                       )}
                     </span>
