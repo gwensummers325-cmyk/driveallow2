@@ -54,8 +54,8 @@ export interface ViolationResult {
 
 export class ViolationDetector {
   // Speed thresholds
-  private static MINOR_SPEEDING_THRESHOLD = 7; // mph over limit
-  private static MAJOR_SPEEDING_THRESHOLD = 15; // mph over limit
+  private static MINOR_SPEEDING_THRESHOLD = 2; // mph over limit (3+ mph triggers penalty)
+  private static MAJOR_SPEEDING_THRESHOLD = 10; // mph over limit (11+ mph triggers major penalty)
   
   // Acceleration thresholds (m/s²)
   private static HARSH_BRAKING_THRESHOLD = -4.0; // negative acceleration
