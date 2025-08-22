@@ -36,6 +36,7 @@ export default function MobileDataSender() {
   const [uploading, setUploading] = useState(false);
   const [violations, setViolations] = useState(0);
   const [selectedTeenId, setSelectedTeenId] = useState<string>('');
+  const [autoUploadCount, setAutoUploadCount] = useState(0);
   const [permissions, setPermissions] = useState<PermissionState>({
     location: 'unknown',
     motion: 'unknown'
@@ -97,6 +98,23 @@ export default function MobileDataSender() {
 
     return true; // Always continue - GPS is the main requirement
   };
+
+  // Auto-upload data every 30 seconds
+  useEffect(() => {
+    let uploadInterval: NodeJS.Timeout;
+    
+    if (isTracking && sensorData.length > 0) {
+      uploadInterval = setInterval(() => {
+        uploadDataAutomatically();
+      }, 30000); // Upload every 30 seconds
+    }
+    
+    return () => {
+      if (uploadInterval) {
+        clearInterval(uploadInterval);
+      }
+    };
+  }, [isTracking, sensorData.length]);
 
   // Get real device sensor data
   useEffect(() => {
@@ -196,14 +214,11 @@ export default function MobileDataSender() {
     return 'test-teen-1'; // Fallback
   };
 
-  const uploadData = async () => {
-    if (sensorData.length === 0) return;
+  const uploadDataAutomatically = async () => {
+    if (sensorData.length === 0 || uploading) return;
     
     const teenId = getTeenId();
-    if (!teenId) {
-      setSensorError('Please select a teen to associate this data with.');
-      return;
-    }
+    if (!teenId) return;
     
     setUploading(true);
     try {
@@ -223,13 +238,21 @@ export default function MobileDataSender() {
       const result = await response.json();
       setViolations(prev => prev + result.totalViolations);
       setLastUpload(new Date());
+      setAutoUploadCount(prev => prev + 1);
       setSensorData([]); // Clear uploaded data
       
+      console.log(`Auto-uploaded ${formattedData.length} data points (${result.totalViolations} violations detected)`);
+      
     } catch (error) {
-      console.error('Failed to upload sensor data:', error);
+      console.error('Failed to auto-upload sensor data:', error);
     } finally {
       setUploading(false);
     }
+  };
+
+  // Manual upload (for testing only - remove in production)
+  const uploadData = async () => {
+    await uploadDataAutomatically();
   };
 
   return (
@@ -267,6 +290,11 @@ export default function MobileDataSender() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Data Points:</span>
                     <span className="font-mono text-sm">{sensorData.length}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Auto-Uploads:</span>
+                    <span className="font-mono text-sm text-green-600">{autoUploadCount}</span>
                   </div>
 
                   {/* Teen Selection for Parents */}
@@ -365,14 +393,18 @@ export default function MobileDataSender() {
                       </Button>
                     )}
                     
-                    <Button 
-                      onClick={uploadData} 
-                      disabled={sensorData.length === 0 || uploading}
-                      className="w-full"
-                      variant="secondary"
-                    >
-                      {uploading ? 'Uploading...' : `Upload ${sensorData.length} Points`}
-                    </Button>
+                    {/* Auto-upload status */}
+                    {isTracking && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <p className="text-xs text-green-700">
+                            Auto-uploading every 30 seconds
+                            {uploading && ' (Uploading now...)'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -479,15 +511,15 @@ export default function MobileDataSender() {
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Requires location and motion permissions - you'll be prompted to allow access</p>
+                      <p><strong>Automatic upload:</strong> Data is sent to parents every 30 seconds - no manual control</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Best results when used on a smartphone while actually driving or moving</p>
+                      <p>Real-time monitoring allows parents to see driving behavior as it happens</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                      <p>The system will detect real speeding, harsh braking, and aggressive acceleration from your movements</p>
+                      <p>Violations are automatically detected and reported - teens cannot hide driving incidents</p>
                     </div>
                   </div>
                 </CardContent>
