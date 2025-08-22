@@ -197,6 +197,18 @@ export default function MobileDataSender() {
     }
   };
 
+  // Auto-start tracking for teens when they load the page
+  useEffect(() => {
+    if (user?.role === 'teen' && !isTracking) {
+      // Auto-start after a short delay
+      const autoStartTimer = setTimeout(() => {
+        startTracking();
+      }, 2000);
+      
+      return () => clearTimeout(autoStartTimer);
+    }
+  }, [user]);
+
   const stopTracking = () => {
     setIsTracking(false);
     if (watchIdRef.current) {
@@ -263,8 +275,15 @@ export default function MobileDataSender() {
             <div className="flex items-center gap-3 mb-4">
               <Smartphone className="h-8 w-8 text-blue-600" />
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">Smartphone Data Simulator</h1>
-                <p className="text-gray-600">Simulate real-time sensor data collection for driving behavior analysis</p>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {user?.role === 'teen' ? 'Driving Monitor' : 'Smartphone Data Simulator'}
+                </h1>
+                <p className="text-gray-600">
+                  {user?.role === 'teen' 
+                    ? 'Automatic monitoring of your driving behavior for safety and allowance management'
+                    : 'Simulate real-time sensor data collection for driving behavior analysis'
+                  }
+                </p>
               </div>
             </div>
           </div>
@@ -382,15 +401,32 @@ export default function MobileDataSender() {
                   )}
 
                   <div className="space-y-2">
-                    {!isTracking ? (
-                      <Button onClick={startTracking} className="w-full">
-                        <Lock className="h-4 w-4 mr-2" />
-                        Start Real Sensor Data
-                      </Button>
+                    {/* Show different controls based on user role */}
+                    {user?.role === 'parent' ? (
+                      // Parents can control data collection
+                      <>
+                        {!isTracking ? (
+                          <Button onClick={startTracking} className="w-full">
+                            <Lock className="h-4 w-4 mr-2" />
+                            Start Real Sensor Data
+                          </Button>
+                        ) : (
+                          <Button onClick={stopTracking} variant="outline" className="w-full">
+                            Stop Collection
+                          </Button>
+                        )}
+                      </>
                     ) : (
-                      <Button onClick={stopTracking} variant="outline" className="w-full">
-                        Stop Collection
-                      </Button>
+                      // Teens have no control - automatic only
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                          <p className="text-xs text-blue-700">
+                            <strong>Automatic monitoring active</strong><br />
+                            Data collection runs automatically - no manual control
+                          </p>
+                        </div>
+                      </div>
                     )}
                     
                     {/* Auto-upload status */}
@@ -511,15 +547,15 @@ export default function MobileDataSender() {
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p><strong>Automatic upload:</strong> Data is sent to parents every 30 seconds - no manual control</p>
+                      <p><strong>Fully automatic:</strong> {user?.role === 'teen' ? 'Monitoring starts automatically when you open the app' : 'Data collection and upload happen without teen control'}</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                      <p>Real-time monitoring allows parents to see driving behavior as it happens</p>
+                      <p><strong>Background upload:</strong> Data sent to parents every 30 seconds automatically</p>
                     </div>
                     <div className="flex items-start gap-3">
                       <AlertTriangle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
-                      <p>Violations are automatically detected and reported - teens cannot hide driving incidents</p>
+                      <p><strong>Complete transparency:</strong> All driving behavior is monitored and reported in real-time</p>
                     </div>
                   </div>
                 </CardContent>
