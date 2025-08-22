@@ -28,7 +28,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
   const [settings, setSettings] = useState({
     weeklyAmount: '50.00',
     frequency: 'weekly',
-    allowOverdraft: true,
     speedingMinorPenalty: '5.00',
     speedingMajorPenalty: '10.00',
     harshBrakingPenalty: '5.00',
@@ -51,7 +50,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
       setSettings({
         weeklyAmount: settings.weeklyAmount,
         frequency: settings.frequency,
-        allowOverdraft: settings.allowOverdraft,
         speedingMinorPenalty: settings.speedingMinorPenalty,
         speedingMajorPenalty: settings.speedingMajorPenalty,
         harshBrakingPenalty: settings.harshBrakingPenalty,
@@ -206,14 +204,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                   </Select>
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="allow-overdraft"
-                    checked={settings.allowOverdraft}
-                    onCheckedChange={(checked) => handleInputChange('allowOverdraft', checked)}
-                  />
-                  <Label htmlFor="allow-overdraft" className="text-sm">Allow overdraft</Label>
-                </div>
               </div>
             </div>
 
