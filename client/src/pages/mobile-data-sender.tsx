@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -37,13 +38,6 @@ export default function MobileDataSender() {
   const [violations, setViolations] = useState(0);
   const [selectedTeenId, setSelectedTeenId] = useState<string>('');
   const [autoUploadCount, setAutoUploadCount] = useState(0);
-  
-  // Fetch persistent upload stats
-  const { data: uploadStats } = useQuery({
-    queryKey: ['/api/smartphone-data/stats', getTeenId()],
-    enabled: !!user && !!getTeenId(),
-    refetchInterval: 30000, // Refresh every 30 seconds
-  });
   const [permissions, setPermissions] = useState<PermissionState>({
     location: 'unknown',
     motion: 'unknown'
@@ -232,6 +226,13 @@ export default function MobileDataSender() {
     }
     return 'test-teen-1'; // Fallback
   };
+
+  // Fetch persistent upload stats
+  const { data: uploadStats } = useQuery({
+    queryKey: ['/api/smartphone-data/stats', getTeenId()],
+    enabled: !!user && !!getTeenId(),
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
 
   const uploadDataAutomatically = async () => {
     if (sensorData.length === 0 || uploading) return;
