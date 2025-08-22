@@ -332,16 +332,18 @@ export function registerRoutes(app: Express): Server {
         description: 'Weekly allowance payment',
       });
 
-      // Update balance 
-      const updatedBalance = await storage.updateBalance(teenId, settings.allowanceAmount);
+      // Update balance and payment dates in one operation
+      const currentBalance = await storage.getAllowanceBalance(teenId);
+      const currentAmount = parseFloat(currentBalance?.currentBalance || '0');
+      const changeAmount = parseFloat(settings.allowanceAmount);
+      const newBalance = (currentAmount + changeAmount).toFixed(2);
       
-      // Update payment dates
       const nextDate = new Date();
       nextDate.setDate(nextDate.getDate() + 7); // Add 7 days for weekly
       
       await storage.upsertAllowanceBalance({
         teenId,
-        currentBalance: updatedBalance.currentBalance, // Use the actual updated balance
+        currentBalance: newBalance,
         lastAllowanceDate: new Date(),
         nextAllowanceDate: nextDate,
       });
