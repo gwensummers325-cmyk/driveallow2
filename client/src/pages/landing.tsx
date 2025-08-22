@@ -149,6 +149,34 @@ export default function Landing() {
               </div>
             </div>
           </div>
+
+          {/* How It Works */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-12">
+            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">How It Works</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+                  1
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Set Up Allowances</h4>
+                <p className="text-gray-600">Configure weekly allowances, penalty amounts, and incentive bonuses for your teen driver.</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+                  2
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Track Driving</h4>
+                <p className="text-gray-600">Report driving incidents manually or track violations like speeding and harsh braking.</p>
+              </div>
+              <div className="text-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+                  3
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Earn & Learn</h4>
+                <p className="text-gray-600">Automatic deductions for violations and bonuses for safe driving help teens learn responsible habits.</p>
+              </div>
+            </div>
+          </div>
           
           {/* Peace of Mind Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
@@ -177,33 +205,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* How It Works */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-20">
-            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">How It Works</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
-                  1
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Set Up Allowances</h4>
-                <p className="text-gray-600">Configure weekly allowances, penalty amounts, and incentive bonuses for your teen driver.</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
-                  2
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Track Driving</h4>
-                <p className="text-gray-600">Report driving incidents manually or track violations like speeding and harsh braking.</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
-                  3
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Earn & Learn</h4>
-                <p className="text-gray-600">Automatic deductions for violations and bonuses for safe driving help teens learn responsible habits.</p>
-              </div>
-            </div>
-          </div>
         </main>
       </div>
 
