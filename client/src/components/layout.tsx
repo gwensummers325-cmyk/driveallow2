@@ -180,7 +180,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
           {/* Bottom Bar */}
           <div className="mt-8 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
-              © 2024 DriveAllow. All rights reserved. Building safer roads, one teen at a time.
+              © 2025 DriveAllow. All rights reserved. Building safer roads, one teen at a time.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
               <button className="hover:text-white transition-colors">Privacy Policy</button>
