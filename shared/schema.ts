@@ -91,7 +91,6 @@ export const allowanceSettings = pgTable("allowance_settings", {
   speedingMajorPenalty: decimal("speeding_major_penalty", { precision: 10, scale: 2 }).notNull().default('10.00'),
   harshBrakingPenalty: decimal("harsh_braking_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
   aggressiveAccelPenalty: decimal("aggressive_accel_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
-  weeklyBonus: decimal("weekly_bonus", { precision: 10, scale: 2 }).notNull().default('5.00'),
   perfectWeekBonus: decimal("perfect_week_bonus", { precision: 10, scale: 2 }).notNull().default('10.00'),
   speedComplianceBonus: decimal("speed_compliance_bonus", { precision: 10, scale: 2 }).notNull().default('2.00'),
   createdAt: timestamp("created_at").defaultNow(),

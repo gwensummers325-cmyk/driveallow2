@@ -32,7 +32,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
     speedingMajorPenalty: '10.00',
     harshBrakingPenalty: '5.00',
     aggressiveAccelPenalty: '5.00',
-    weeklyBonus: '5.00',
     perfectWeekBonus: '10.00',
     speedComplianceBonus: '2.00',
   });
@@ -54,7 +53,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
         speedingMajorPenalty: settings.speedingMajorPenalty,
         harshBrakingPenalty: settings.harshBrakingPenalty,
         aggressiveAccelPenalty: settings.aggressiveAccelPenalty,
-        weeklyBonus: settings.weeklyBonus,
         perfectWeekBonus: settings.perfectWeekBonus,
         speedComplianceBonus: settings.speedComplianceBonus,
       });
@@ -277,21 +275,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Safe Driving Incentives</h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">7 days violation-free</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      className="w-16 text-xs"
-                      value={settings.weeklyBonus}
-                      onChange={(e) => handleInputChange('weeklyBonus', e.target.value)}
-                    />
-                  </div>
-                </div>
-                
                 <div className="flex items-center justify-between">
                   <Label className="text-xs text-gray-600">Perfect week (no violations)</Label>
                   <div className="flex items-center">
