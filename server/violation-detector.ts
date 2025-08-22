@@ -1,4 +1,5 @@
 import { storage } from './storage';
+import { emailService } from './emailService';
 
 export interface DrivingData {
   teenId: string;
@@ -169,17 +170,30 @@ export class ViolationDetector {
         location: data.location,
       });
 
-      // Update balance
+      // Get balance before deduction
       const currentBalance = await storage.getAllowanceBalance(teenId);
-      const newBalance = parseFloat(currentBalance?.currentBalance || '0.00') - parseFloat(violation.penaltyAmount);
+      const balanceBeforeAmount = currentBalance?.currentBalance || '0.00';
       
+      // Update balance
+      const newBalance = parseFloat(balanceBeforeAmount) - parseFloat(violation.penaltyAmount);
       await storage.upsertAllowanceBalance({
         teenId,
         currentBalance: newBalance.toString(),
       });
 
-      // TODO: Send email notifications would be implemented here
-      // This would use the email service to notify parents and teens
+      // Send email notifications
+      if (teen?.email && parent?.email) {
+        await emailService.sendIncidentNotification(
+          parent.email,
+          teen.email,
+          `${teen.firstName} ${teen.lastName}`,
+          violation.type.replace('_', ' '),
+          data.location || 'Unknown location',
+          violation.penaltyAmount,
+          balanceBeforeAmount,
+          newBalance.toFixed(2)
+        );
+      }
 
       console.log(`✅ Processed automatic violation for ${teen.firstName}: ${violation.description}`);
     } catch (error) {

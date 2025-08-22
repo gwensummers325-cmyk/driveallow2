@@ -48,16 +48,23 @@ class EmailService {
     teenName: string,
     incidentType: string,
     location: string,
-    penaltyAmount: string
+    penaltyAmount: string,
+    balanceBefore?: string,
+    balanceAfter?: string
   ): Promise<void> {
     const subject = `DriveWise Alert: Driving Incident Detected for ${teenName}`;
+    const balanceInfo = balanceBefore && balanceAfter ? `
+- Balance Before: $${balanceBefore}
+- Penalty Deducted: -$${penaltyAmount}
+- Balance After: $${balanceAfter}` : `
+- Penalty: $${penaltyAmount}`;
+
     const text = `
 A driving incident has been reported for ${teenName}.
 
 Incident Details:
 - Type: ${incidentType}
-- Location: ${location}
-- Penalty: $${penaltyAmount}
+- Location: ${location}${balanceInfo}
 - Time: ${new Date().toLocaleString()}
 
 Please review the incident in your DriveWise dashboard.
@@ -72,7 +79,12 @@ Please review the incident in your DriveWise dashboard.
           <h3 style="margin: 0 0 10px 0; color: #D32F2F;">Incident Details</h3>
           <p><strong>Type:</strong> ${incidentType}</p>
           <p><strong>Location:</strong> ${location}</p>
-          <p><strong>Penalty:</strong> $${penaltyAmount}</p>
+          ${balanceBefore && balanceAfter ? `
+          <div style="background: #fff; padding: 15px; border-radius: 6px; margin: 10px 0; border-left: 4px solid #D32F2F;">
+            <p style="margin: 5px 0;"><strong>Balance Before:</strong> $${balanceBefore}</p>
+            <p style="margin: 5px 0; color: #D32F2F;"><strong>Penalty Deducted:</strong> -$${penaltyAmount}</p>
+            <p style="margin: 5px 0;"><strong>Balance After:</strong> $${balanceAfter}</p>
+          </div>` : `<p><strong>Penalty:</strong> $${penaltyAmount}</p>`}
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         </div>
         

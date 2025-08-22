@@ -238,8 +238,16 @@ export function registerRoutes(app: Express): Server {
         notes: validatedData.notes,
       });
 
+      // Get balance before deduction
+      const balanceBefore = await storage.getAllowanceBalance(validatedData.teenId);
+      const balanceBeforeAmount = balanceBefore?.currentBalance || '0.00';
+      
       // Update balance
       await storage.updateBalance(validatedData.teenId, `-${validatedData.penaltyAmount}`);
+      
+      // Get balance after deduction
+      const balanceAfter = await storage.getAllowanceBalance(validatedData.teenId);
+      const balanceAfterAmount = balanceAfter?.currentBalance || '0.00';
 
       // Send email notifications
       const teen = await storage.getUser(validatedData.teenId);
@@ -252,7 +260,9 @@ export function registerRoutes(app: Express): Server {
           `${teen.firstName} ${teen.lastName}`,
           validatedData.type.replace('_', ' '),
           validatedData.location || 'Unknown location',
-          validatedData.penaltyAmount
+          validatedData.penaltyAmount,
+          balanceBeforeAmount,
+          balanceAfterAmount
         );
       }
 
