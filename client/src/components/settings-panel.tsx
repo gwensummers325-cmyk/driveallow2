@@ -136,13 +136,13 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>Allowance & Penalty Settings</CardTitle>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <CardTitle className="text-lg md:text-xl">Allowance & Penalty Settings</CardTitle>
           {teens.length > 1 && onTeenChange && (
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
               <Label className="text-sm text-gray-600">Configure for:</Label>
               <Select value={teenId || ''} onValueChange={onTeenChange}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full sm:w-48">
                   <SelectValue placeholder="Select teen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -167,7 +167,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {/* Allowance Settings */}
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Allowance Configuration</h4>

@@ -52,10 +52,10 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               {user ? (
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">
+                <div className="flex items-center space-x-2 md:space-x-4">
+                  <span className="text-xs md:text-sm text-gray-600 hidden sm:block">
                     Welcome, {user.firstName}
                   </span>
                   <Button
@@ -63,24 +63,27 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                     size="sm"
                     onClick={handleLogout}
                     disabled={logoutMutation.isPending}
+                    className="text-xs md:text-sm px-2 md:px-3"
                   >
                     {logoutMutation.isPending ? "Signing Out..." : "Sign Out"}
                   </Button>
                 </div>
               ) : (
-                <div className="flex space-x-3">
+                <div className="flex space-x-2 md:space-x-3">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => setLocation('/auth/parent')}
+                    className="text-xs md:text-sm px-2 md:px-3"
                   >
-                    Parent Sign In
+                    <span className="hidden sm:inline">Parent </span>Sign In
                   </Button>
                   <Button 
                     size="sm"
                     onClick={() => setLocation('/auth/teen')}
+                    className="text-xs md:text-sm px-2 md:px-3"
                   >
-                    Teen Sign In
+                    <span className="hidden sm:inline">Teen </span>Sign In
                   </Button>
                 </div>
               )}

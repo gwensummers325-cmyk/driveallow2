@@ -109,10 +109,10 @@ export default function TeenDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">DriveAllow</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-primary">DriveAllow</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="secondary">Teen View</Badge>
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Badge variant="secondary" className="text-xs md:text-sm">Teen View</Badge>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   {teen.profileImageUrl ? (
@@ -123,7 +123,7 @@ export default function TeenDashboard() {
                     </span>
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 hidden sm:block">
                   {teen.firstName} {teen.lastName}
                 </span>
               </div>

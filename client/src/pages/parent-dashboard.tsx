@@ -143,10 +143,10 @@ export default function ParentDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary">DriveAllow</h1>
+              <h1 className="text-xl md:text-2xl font-bold text-primary">DriveAllow</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Badge variant="secondary">Parent View</Badge>
+            <div className="flex items-center space-x-2 md:space-x-4">
+              <Badge variant="secondary" className="text-xs md:text-sm">Parent View</Badge>
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   {parent.profileImageUrl ? (
@@ -157,7 +157,7 @@ export default function ParentDashboard() {
                     </span>
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-gray-700 hidden sm:block">
                   {parent.firstName} {parent.lastName}
                 </span>
               </div>
@@ -294,7 +294,7 @@ export default function ParentDashboard() {
                       {/* Allowance Settings */}
                       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <p className="text-sm font-medium text-blue-700 mb-2">Allowance Settings</p>
-                        <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                           <div>
                             <span className="text-blue-600">Allowance Amount:</span>
                             <span className="font-medium ml-1">{formatCurrency(teen.settings?.allowanceAmount || '50.00')}</span>
@@ -334,7 +334,7 @@ export default function ParentDashboard() {
 
 
                       {/* Actions */}
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <Button
                           size="sm"
                           variant="outline"
@@ -342,33 +342,33 @@ export default function ParentDashboard() {
                             setSelectedTeenId(teen.id);
                             setShowReportModal(true);
                           }}
-                          className="text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                          className="text-xs md:text-sm border-orange-200 text-orange-700 hover:bg-orange-50 min-h-[36px]"
                           title="Report incidents not captured by automatic monitoring"
                         >
                           <AlertTriangle className="h-3 w-3 mr-1" />
-                          Manual Report
+                          <span className="hidden xs:inline">Manual </span>Report
                         </Button>
                         <Button
                           size="sm"
                           variant="default"
-                          className="bg-green-600 hover:bg-green-700 text-xs"
+                          className="bg-green-600 hover:bg-green-700 text-xs md:text-sm min-h-[36px]"
                           onClick={() => {
                             setSelectedTeenId(teen.id);
                             setShowBonusModal(true);
                           }}
                         >
                           <Gift className="h-3 w-3 mr-1" />
-                          Bonus
+                          Add Bonus
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => payAllowanceMutation.mutate(teen.id)}
                           disabled={payAllowanceMutation.isPending}
-                          className="text-xs"
+                          className="text-xs md:text-sm min-h-[36px]"
                         >
                           <Plus className="h-3 w-3 mr-1" />
-                          Pay
+                          {payAllowanceMutation.isPending ? "Paying..." : "Pay Now"}
                         </Button>
                       </div>
                     </div>

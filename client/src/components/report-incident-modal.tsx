@@ -117,9 +117,9 @@ export function ReportIncidentModal({ isOpen, onClose, teenId }: ReportIncidentM
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md sm:max-w-lg max-w-[95vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Report Driving Incident</DialogTitle>
+          <DialogTitle className="text-lg md:text-xl">Report Driving Incident</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -177,13 +177,18 @@ export function ReportIncidentModal({ isOpen, onClose, teenId }: ReportIncidentM
             />
           </div>
           
-          <div className="flex space-x-3 pt-4">
-            <Button type="button" variant="outline" className="flex-1" onClick={handleClose}>
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+            <Button 
+              type="button" 
+              variant="outline" 
+              className="flex-1 min-h-[44px]" 
+              onClick={handleClose}
+            >
               Cancel
             </Button>
             <Button 
               type="submit" 
-              className="flex-1 bg-red-600 hover:bg-red-700"
+              className="flex-1 bg-red-600 hover:bg-red-700 min-h-[44px]"
               disabled={reportIncidentMutation.isPending}
             >
               {reportIncidentMutation.isPending ? 'Reporting...' : 'Report Incident'}
