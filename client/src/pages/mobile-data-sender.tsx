@@ -74,28 +74,28 @@ export default function MobileDataSender() {
       return false;
     }
 
-    // Request motion permission (iOS 13+)
+    // Request motion permission (iOS 13+) - but don't fail if it doesn't work
     if (typeof (DeviceMotionEvent as any).requestPermission === 'function') {
       try {
         const permission = await (DeviceMotionEvent as any).requestPermission();
         setPermissions(prev => ({ ...prev, motion: permission }));
         if (permission !== 'granted') {
-          setSensorError('Motion sensor access denied. Please allow motion access.');
-          return false;
+          console.log('Motion sensor access denied, continuing with GPS only');
+          setPermissions(prev => ({ ...prev, motion: 'denied' }));
         }
       } catch (error) {
-        setSensorError('Motion sensor permission failed.');
-        return false;
+        console.log('Motion sensor permission failed, continuing with GPS only');
+        setPermissions(prev => ({ ...prev, motion: 'denied' }));
       }
     } else if ('DeviceMotionEvent' in window) {
       // Android and older iOS
       setPermissions(prev => ({ ...prev, motion: 'granted' }));
     } else {
-      setSensorError('Motion sensors not supported on this device.');
-      return false;
+      console.log('Motion sensors not supported, using GPS only');
+      setPermissions(prev => ({ ...prev, motion: 'denied' }));
     }
 
-    return true;
+    return true; // Always continue - GPS is the main requirement
   };
 
   // Get real device sensor data
@@ -132,7 +132,7 @@ export default function MobileDataSender() {
         const position = lastPositionRef.current;
         const motion = motionDataRef.current;
 
-        if (position && motion && motion.acceleration) {
+        if (position) {
           const reading: SensorReading = {
             timestamp: new Date().toISOString(),
             gps: {
@@ -142,9 +142,10 @@ export default function MobileDataSender() {
               accuracy: position.coords.accuracy
             },
             accelerometer: {
-              x: motion.acceleration.x || 0, // lateral acceleration
-              y: motion.acceleration.y || 0, // forward/backward acceleration  
-              z: motion.acceleration.z || 0, // vertical acceleration
+              // Use motion data if available, otherwise use zeros
+              x: (motion && motion.acceleration) ? motion.acceleration.x || 0 : 0,
+              y: (motion && motion.acceleration) ? motion.acceleration.y || 0 : 0,
+              z: (motion && motion.acceleration) ? motion.acceleration.z || 0 : 0,
               timestamp: Date.now()
             }
           };
@@ -337,6 +338,17 @@ export default function MobileDataSender() {
                       <div className="flex items-start gap-2">
                         <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
                         <p className="text-xs text-red-700">{sensorError}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {permissions.location === 'granted' && permissions.motion === 'denied' && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                        <p className="text-xs text-yellow-700">
+                          GPS only mode: Motion sensors unavailable but location tracking works!
+                        </p>
                       </div>
                     </div>
                   )}
