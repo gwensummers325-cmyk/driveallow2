@@ -332,15 +332,16 @@ export function registerRoutes(app: Express): Server {
         description: 'Weekly allowance payment',
       });
 
-      // Update balance and next payment date
-      await storage.updateBalance(teenId, settings.allowanceAmount);
+      // Update balance 
+      const updatedBalance = await storage.updateBalance(teenId, settings.allowanceAmount);
       
+      // Update payment dates
       const nextDate = new Date();
       nextDate.setDate(nextDate.getDate() + 7); // Add 7 days for weekly
       
       await storage.upsertAllowanceBalance({
         teenId,
-        currentBalance: '0', // This will be updated by updateBalance
+        currentBalance: updatedBalance.currentBalance, // Use the actual updated balance
         lastAllowanceDate: new Date(),
         nextAllowanceDate: nextDate,
       });
@@ -352,7 +353,7 @@ export function registerRoutes(app: Express): Server {
         await emailService.sendAllowanceNotification(
           teen.email,
           `${teen.firstName} ${teen.lastName}`,
-          settings.weeklyAmount
+          settings.allowanceAmount
         );
       }
 
