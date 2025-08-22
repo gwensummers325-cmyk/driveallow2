@@ -5,12 +5,16 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
+import { emailService } from "./emailService";
 import { User as DatabaseUser } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 
 declare global {
   namespace Express {
     interface User extends DatabaseUser {}
+    interface Session {
+      loginTime?: number;
+    }
   }
 }
 
@@ -125,17 +129,43 @@ export function setupAuth(app: Express) {
 
   // Login endpoint
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err: any, user: DatabaseUser | false, info: any) => {
+    passport.authenticate("local", async (err: any, user: DatabaseUser | false, info: any) => {
       if (err) {
         return res.status(500).json({ message: "Authentication error" });
       }
       if (!user) {
         return res.status(401).json({ message: info?.message || "Invalid credentials" });
       }
-      req.login(user, (err) => {
+      req.login(user, async (err) => {
         if (err) {
           return res.status(500).json({ message: "Login failed" });
         }
+
+        // Store login time in session for session duration calculation
+        (req.session as any).loginTime = Date.now();
+
+        // Send login notification if user is a teen
+        if (user.role === 'teen' && user.parentId) {
+          try {
+            const parent = await storage.getUser(user.parentId);
+            if (parent && parent.email) {
+              const userAgent = req.headers['user-agent'] || 'Unknown device';
+              const deviceInfo = userAgent.includes('Mobile') ? 'Mobile device' : 
+                                userAgent.includes('iPhone') ? 'iPhone' :
+                                userAgent.includes('Android') ? 'Android device' : 
+                                'Computer';
+              
+              await emailService.sendLoginNotification(
+                parent.email,
+                `${user.firstName} ${user.lastName}`,
+                deviceInfo
+              );
+            }
+          } catch (error) {
+            console.error('Failed to send login notification:', error);
+          }
+        }
+
         res.json({
           id: user.id,
           username: user.username,
@@ -150,9 +180,38 @@ export function setupAuth(app: Express) {
   });
 
   // Logout endpoint
-  app.post("/api/logout", (req, res, next) => {
-    req.logout((err) => {
+  app.post("/api/logout", async (req: any, res, next) => {
+    const user = req.user as DatabaseUser;
+    const loginTime = (req.session as any).loginTime;
+    
+    // Calculate session duration if available
+    let sessionDuration = 'Unknown';
+    if (loginTime) {
+      const duration = Date.now() - loginTime;
+      const hours = Math.floor(duration / (1000 * 60 * 60));
+      const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+      sessionDuration = `${hours}h ${minutes}m`;
+    }
+
+    req.logout(async (err: any) => {
       if (err) return next(err);
+
+      // Send logout notification if user was a teen
+      if (user && user.role === 'teen' && user.parentId) {
+        try {
+          const parent = await storage.getUser(user.parentId);
+          if (parent && parent.email) {
+            await emailService.sendLogoutNotification(
+              parent.email,
+              `${user.firstName} ${user.lastName}`,
+              sessionDuration
+            );
+          }
+        } catch (error) {
+          console.error('Failed to send logout notification:', error);
+        }
+      }
+
       res.sendStatus(200);
     });
   });

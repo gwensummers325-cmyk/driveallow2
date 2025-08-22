@@ -6,6 +6,15 @@ DriveWise is a smart allowance management system for teen drivers that helps par
 
 Preferred communication style: Simple, everyday language.
 
+# Recent Changes
+
+**August 22, 2025:**
+- Implemented automatic login/logout email notifications for parents
+- Configured Ionos SMTP integration for reliable email delivery
+- Added session duration tracking for logout notifications
+- Created professional HTML email templates with DriveWise branding
+- Enhanced security with automatic device detection in login alerts
+
 # System Architecture
 
 ## Frontend Architecture

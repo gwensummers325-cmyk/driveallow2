@@ -13,13 +13,17 @@ class EmailService {
   constructor() {
     // Configure email transporter
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      host: process.env.SMTP_HOST || 'smtp.ionos.com',
       port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false,
+      secure: false, // Use STARTTLS
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      tls: {
+        ciphers: 'SSLv3',
+        rejectUnauthorized: false
+      }
     });
   }
 
@@ -156,6 +160,80 @@ Check your dashboard to see your updated balance.
     `;
 
     await this.sendEmail({ to: teenEmail, subject, text, html });
+  }
+
+  async sendLoginNotification(
+    parentEmail: string,
+    teenName: string,
+    deviceInfo?: string
+  ): Promise<void> {
+    const subject = `DriveWise Alert: ${teenName} Logged In`;
+    const loginTime = new Date().toLocaleString();
+    const text = `
+${teenName} has logged into DriveWise.
+
+Login Details:
+- Teen: ${teenName}
+- Time: ${loginTime}
+- Device: ${deviceInfo || 'Unknown device'}
+
+Driving monitoring is now active.
+    `;
+
+    const html = `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1976D2;">DriveWise Login Alert</h2>
+        <p><strong>${teenName}</strong> has logged into DriveWise.</p>
+        
+        <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin: 0 0 10px 0; color: #388E3C;">Login Details</h3>
+          <p><strong>Teen:</strong> ${teenName}</p>
+          <p><strong>Time:</strong> ${loginTime}</p>
+          <p><strong>Device:</strong> ${deviceInfo || 'Unknown device'}</p>
+        </div>
+        
+        <p>Driving monitoring is now active.</p>
+      </div>
+    `;
+
+    await this.sendEmail({ to: parentEmail, subject, text, html });
+  }
+
+  async sendLogoutNotification(
+    parentEmail: string,
+    teenName: string,
+    sessionDuration?: string
+  ): Promise<void> {
+    const subject = `DriveWise Alert: ${teenName} Logged Out`;
+    const logoutTime = new Date().toLocaleString();
+    const text = `
+${teenName} has logged out of DriveWise.
+
+Session Details:
+- Teen: ${teenName}
+- Logout Time: ${logoutTime}
+- Session Duration: ${sessionDuration || 'Unknown'}
+
+Driving monitoring has ended.
+    `;
+
+    const html = `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1976D2;">DriveWise Logout Alert</h2>
+        <p><strong>${teenName}</strong> has logged out of DriveWise.</p>
+        
+        <div style="background: #fff3e0; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin: 0 0 10px 0; color: #F57C00;">Session Details</h3>
+          <p><strong>Teen:</strong> ${teenName}</p>
+          <p><strong>Logout Time:</strong> ${logoutTime}</p>
+          <p><strong>Session Duration:</strong> ${sessionDuration || 'Unknown'}</p>
+        </div>
+        
+        <p>Driving monitoring has ended.</p>
+      </div>
+    `;
+
+    await this.sendEmail({ to: parentEmail, subject, text, html });
   }
 }
 
