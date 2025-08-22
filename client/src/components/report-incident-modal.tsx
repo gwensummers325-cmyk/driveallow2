@@ -28,8 +28,8 @@ interface ReportIncidentModalProps {
 }
 
 const incidentTypes = [
-  { value: 'speeding_minor', label: 'Speed Violation (1-10 mph over)', penalty: '5.00' },
-  { value: 'speeding_major', label: 'Speed Violation (11+ mph over)', penalty: '15.00' },
+  { value: 'speeding_minor', label: 'Speed Violation (3-10 mph over)', penalty: '5.00' },
+  { value: 'speeding_major', label: 'Speed Violation (11+ mph over)', penalty: '10.00' },
   { value: 'harsh_braking', label: 'Harsh Braking', penalty: '5.00' },
   { value: 'aggressive_acceleration', label: 'Aggressive Acceleration', penalty: '5.00' },
   { value: 'other', label: 'Other', penalty: '10.00' },

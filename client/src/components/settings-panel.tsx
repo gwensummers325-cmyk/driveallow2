@@ -30,7 +30,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
     frequency: 'weekly',
     allowOverdraft: true,
     speedingMinorPenalty: '5.00',
-    speedingMajorPenalty: '15.00',
+    speedingMajorPenalty: '10.00',
     harshBrakingPenalty: '5.00',
     aggressiveAccelPenalty: '5.00',
     weeklyBonus: '5.00',
@@ -222,7 +222,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
               <h4 className="text-sm font-medium text-gray-900 mb-3">Violation Penalties</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Speeding (1-10 mph over)</Label>
+                  <Label className="text-xs text-gray-600">Speeding (3-10 mph over)</Label>
                   <div className="flex items-center">
                     <span className="text-gray-500 mr-1">$</span>
                     <Input
