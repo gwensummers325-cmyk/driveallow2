@@ -6,7 +6,8 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle, Trash2 } from "lucide-react";
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -23,6 +24,7 @@ export default function ParentDashboard() {
   const [showReportModal, setShowReportModal] = useState(false);
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [showCreateTeenModal, setShowCreateTeenModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedTeenId, setSelectedTeenId] = useState<string>("");
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
@@ -61,6 +63,38 @@ export default function ParentDashboard() {
       toast({
         title: "Error",
         description: "Failed to pay allowance. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteTeenMutation = useMutation({
+    mutationFn: async (teenId: string) => {
+      await apiRequest("DELETE", `/api/teens/${teenId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      toast({
+        title: "Success",
+        description: "Teen account removed successfully.",
+      });
+      setShowDeleteModal(false);
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/parent";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to remove teen account. Please try again.",
         variant: "destructive",
       });
     },
@@ -439,7 +473,7 @@ export default function ParentDashboard() {
 
 
                       {/* Actions */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <Button
                           size="sm"
                           variant="outline"
@@ -464,6 +498,18 @@ export default function ParentDashboard() {
                         >
                           <Gift className="h-3 w-3 mr-1" />
                           Add Bonus
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="text-xs md:text-sm min-h-[36px] col-span-2 sm:col-span-2"
+                          onClick={() => {
+                            setSelectedTeenId(teen.id);
+                            setShowDeleteModal(true);
+                          }}
+                        >
+                          <Trash2 className="h-3 w-3 mr-1" />
+                          Remove Teen
                         </Button>
                       </div>
                     </div>
@@ -593,6 +639,44 @@ export default function ParentDashboard() {
         isOpen={showCreateTeenModal}
         onClose={() => setShowCreateTeenModal(false)}
       />
+      
+      {/* Delete Teen Confirmation Modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Remove Teen Driver</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to remove {teens.find((t: any) => t.id === selectedTeenId)?.firstName || 'this teen'} from your account?
+              <br /><br />
+              This action will permanently delete:
+              <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                <li>All driving history and incidents</li>
+                <li>Current allowance balance</li>
+                <li>Transaction history</li>
+                <li>Account settings</li>
+              </ul>
+              <br />
+              Your subscription will be automatically adjusted to reflect the reduced number of drivers.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowDeleteModal(false)}
+              disabled={deleteTeenMutation.isPending}
+            >
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive" 
+              onClick={() => deleteTeenMutation.mutate(selectedTeenId)}
+              disabled={deleteTeenMutation.isPending}
+            >
+              {deleteTeenMutation.isPending ? "Removing..." : "Remove Teen"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       </div>
     </Layout>
   );

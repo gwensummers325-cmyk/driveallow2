@@ -28,6 +28,7 @@ export interface IStorage {
   createUser(user: UpsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   getUsersByParentId(parentId: string): Promise<User[]>;
+  deleteUser(userId: string): Promise<void>;
   updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User>;
   
   // Allowance settings operations
@@ -93,6 +94,17 @@ export class DatabaseStorage implements IStorage {
 
   async getUsersByParentId(parentId: string): Promise<User[]> {
     return await db.select().from(users).where(eq(users.parentId, parentId));
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    // Delete associated data first (cascading delete)
+    await db.delete(allowanceBalances).where(eq(allowanceBalances.teenId, userId));
+    await db.delete(allowanceSettings).where(eq(allowanceSettings.teenId, userId));
+    await db.delete(transactions).where(eq(transactions.teenId, userId));
+    await db.delete(incidents).where(eq(incidents.teenId, userId));
+    
+    // Finally delete the user
+    await db.delete(users).where(eq(users.id, userId));
   }
 
   async getAllowanceSettings(parentId: string, teenId: string): Promise<AllowanceSettings | undefined> {

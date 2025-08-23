@@ -282,6 +282,51 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Delete teen account (only for authenticated parents)
+  app.delete('/api/teens/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const teenId = req.params.teenId;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can delete teen accounts" });
+      }
+
+      // Verify the teen belongs to this parent
+      const teen = await storage.getUser(teenId);
+      if (!teen || teen.parentId !== parentId) {
+        return res.status(404).json({ message: "Teen not found or not associated with this parent" });
+      }
+
+      // Delete the teen account and all associated data
+      await storage.deleteUser(teenId);
+      
+      // Update parent's subscription with new teen count
+      const subscription = await storage.getSubscription(parentId);
+      if (subscription) {
+        const newTeenCount = await storage.getTeenCountForParent(parentId);
+        const pricing = storage.calculateSubscriptionPrice(subscription.tier, newTeenCount);
+        
+        await storage.updateSubscription(parentId, {
+          teenCount: newTeenCount,
+          basePrice: pricing.basePrice,
+          additionalTeenPrice: pricing.additionalPrice,
+          totalPrice: pricing.totalPrice,
+        });
+      }
+
+      res.json({ 
+        message: "Teen account deleted successfully",
+        deletedTeenId: teenId,
+        newTeenCount: await storage.getTeenCountForParent(parentId)
+      });
+    } catch (error) {
+      console.error("Error deleting teen account:", error);
+      res.status(500).json({ message: "Failed to delete teen account" });
+    }
+  });
+
   // Dashboard data routes
   app.get('/api/dashboard/parent', isAuthenticated, async (req: any, res) => {
     try {
