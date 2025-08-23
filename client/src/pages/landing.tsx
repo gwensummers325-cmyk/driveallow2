@@ -32,7 +32,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
             {/* Left side - Text Content */}
             <div className="text-center lg:text-left">
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight font-montserrat">
                 Drive Safe. Get Rewarded.
               </h2>
               
