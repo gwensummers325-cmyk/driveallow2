@@ -63,7 +63,7 @@ export function setupAuth(app: Express) {
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
-        const user = await storage.getUserByUsername(username);
+        const user = await storage.getUserByUsername(username.toLowerCase());
         if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false, { message: 'Invalid username or password' });
         }
@@ -108,7 +108,7 @@ export function setupAuth(app: Express) {
       }
       
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(username.toLowerCase());
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
@@ -118,7 +118,7 @@ export function setupAuth(app: Express) {
 
       // Create parent user
       const user = await storage.createUser({
-        username,
+        username: username.toLowerCase(),
         password: hashedPassword,
         email,
         firstName,
@@ -181,7 +181,7 @@ export function setupAuth(app: Express) {
       const { username, password, email, firstName, lastName, role, parentId } = req.body;
       
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(username.toLowerCase());
       if (existingUser) {
         return res.status(400).json({ message: "Username already exists" });
       }
@@ -191,7 +191,7 @@ export function setupAuth(app: Express) {
 
       // Create user
       const user = await storage.createUser({
-        username,
+        username: username.toLowerCase(),
         password: hashedPassword,
         email,
         firstName,
