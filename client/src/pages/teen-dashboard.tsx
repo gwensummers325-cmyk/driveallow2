@@ -32,25 +32,25 @@ export default function TeenDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Handle start/stop driving
+  // Manual override functions (for testing only) 
   const handleStartDriving = () => {
-    const tripId = `trip-${Date.now()}`;
+    const tripId = `manual-trip-${Date.now()}`;
     setCurrentTripId(tripId);
     setIsDriving(true);
-    phoneMonitor.startMonitoring(tripId);
+    phoneMonitor.manualStartMonitoring(tripId);
     toast({
-      title: "Driving Started",
-      description: "📱 Phone usage monitoring is now active. Stay focused!",
+      title: "Manual Override",
+      description: "📱 Phone monitoring manually activated for testing",
     });
   };
 
   const handleStopDriving = () => {
-    const violations = phoneMonitor.stopMonitoring();
+    const violations = phoneMonitor.manualStopMonitoring();
     setIsDriving(false);
     setCurrentTripId(null);
     
     toast({
-      title: "Driving Ended",
+      title: "Manual Override",
       description: violations.length > 0 
         ? `⚠️ ${violations.length} phone usage violations detected`
         : "✅ No phone usage violations - great job!",

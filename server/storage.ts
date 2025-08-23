@@ -262,18 +262,6 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.role, role));
   }
 
-  async getIncidentsByDateRange(teenId: string, startDate: Date, endDate: Date): Promise<any[]> {
-    return await db
-      .select()
-      .from(incidents)
-      .where(
-        and(
-          eq(incidents.teenId, teenId),
-          sql`${incidents.incidentDate} >= ${startDate.toISOString()}`,
-          sql`${incidents.incidentDate} <= ${endDate.toISOString()}`
-        )
-      );
-  }
 }
 
 export const storage = new DatabaseStorage();
