@@ -124,6 +124,31 @@
   }
 }
 
+/* Headline Animation */
+@keyframes headlineFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes headlinePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.headline-animate {
+  animation: headlineFadeInUp 1s ease-out, headlinePulse 3s ease-in-out infinite 1s;
+}
+
 /* Story Scene Animations */
 @keyframes parentGentleWave {
   0%, 100% {
