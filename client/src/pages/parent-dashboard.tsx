@@ -329,7 +329,7 @@ export default function ParentDashboard() {
                       </Button>
                     </div>
                   );
-                })
+                })})
               </div>
               <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                 <div className="flex items-center justify-between">
