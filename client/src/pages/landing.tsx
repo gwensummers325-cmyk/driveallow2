@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star } from "lucide-react";
+import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone } from "lucide-react";
 import { useLocation } from "wouter";
 import { Layout } from "@/components/layout";
 import illustrationImage from "@assets/Gemini_Generated_Image_vpd2ukvpd2ukvpd2_1755869635476.png";
@@ -243,14 +243,14 @@ export default function Landing() {
 
           <Card>
             <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Bell className="h-6 w-6 text-warning" />
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Smartphone className="h-6 w-6 text-purple-600" />
               </div>
-              <CardTitle className="text-lg">Email Alerts</CardTitle>
+              <CardTitle className="text-lg">Phone Use Monitoring</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center">
-                Instant email notifications for both parents and teens when incidents occur or bonuses are earned.
+                Track phone usage while driving to prevent distractions and promote safer driving habits.
               </CardDescription>
             </CardContent>
           </Card>
