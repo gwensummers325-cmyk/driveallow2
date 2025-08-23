@@ -24,7 +24,8 @@ export function PlanSelection({ selectedPlan, onPlanSelect, onContinue }: PlanSe
         'Safety scoring',
         'Email notifications',
         'Weekly allowance automation',
-        'Up to 2 drivers included'
+        '✅ Up to 2 drivers included',
+        '❌ No phone usage monitoring'
       ],
       additionalTeenPrice: 8.99
     },
@@ -32,13 +33,14 @@ export function PlanSelection({ selectedPlan, onPlanSelect, onContinue }: PlanSe
       id: 'safety_plus' as const,
       name: 'Safety Plus',
       price: 29.99,
-      description: 'Complete teen safety solution',
+      description: 'Complete teen safety solution with phone monitoring',
       icon: SmartphoneNfc,
       popular: true,
       features: [
         'All Safety First features',
-        'Phone usage monitoring',
-        'Up to 2 drivers included'
+        '📱 Phone usage during driving monitoring',
+        'Real-time phone usage alerts',
+        '✅ Up to 2 drivers included'
       ],
       additionalTeenPrice: 9.99
     }
