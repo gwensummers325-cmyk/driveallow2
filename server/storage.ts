@@ -16,7 +16,7 @@ import {
   type InsertAllowanceBalance,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, lte, or } from "drizzle-orm";
+import { eq, desc, and, gte, lte, or, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -253,6 +253,26 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, userId))
       .returning();
     return user;
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .where(eq(users.role, role));
+  }
+
+  async getIncidentsByDateRange(teenId: string, startDate: Date, endDate: Date): Promise<any[]> {
+    return await db
+      .select()
+      .from(incidents)
+      .where(
+        and(
+          eq(incidents.teenId, teenId),
+          sql`${incidents.incidentDate} >= ${startDate.toISOString()}`,
+          sql`${incidents.incidentDate} <= ${endDate.toISOString()}`
+        )
+      );
   }
 }
 

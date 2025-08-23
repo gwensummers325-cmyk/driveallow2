@@ -304,7 +304,7 @@ export default function ParentDashboard() {
                             {teen?.firstName} {teen?.lastName}
                           </span>
                           <span className="font-bold text-lg text-green-600">
-                            ${parseFloat(transaction.amount).toFixed(2)}
+                            {formatCurrency(transaction.amount)}
                           </span>
                         </div>
                         <div className="text-sm text-gray-600 mt-1">
@@ -335,7 +335,7 @@ export default function ParentDashboard() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-orange-800">Total Amount Owed:</span>
                   <span className="font-bold text-xl text-orange-900">
-                    ${owedTransactions.reduce((sum: number, t: any) => sum + parseFloat(t.amount), 0).toFixed(2)}
+                    {formatCurrency(owedTransactions.reduce((sum: number, t: any) => sum + parseFloat(t.amount || '0'), 0).toString())}
                   </span>
                 </div>
               </div>

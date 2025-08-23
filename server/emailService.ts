@@ -143,7 +143,8 @@ Keep up the great work!
   async sendAllowanceNotification(
     teenEmail: string,
     teenName: string,
-    allowanceAmount: string
+    allowanceAmount: string,
+    summary?: string
   ): Promise<void> {
     const subject = `DriveAllow: Your Weekly Allowance is Here!`;
     const text = `
@@ -164,6 +165,7 @@ Check your dashboard to see your updated balance.
         <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
           <h3 style="margin: 0 0 10px 0; color: #1976D2;">Weekly Allowance</h3>
           <p>Your weekly allowance of <strong>$${allowanceAmount}</strong> has been added to your balance.</p>
+          ${summary ? `<p style="color: #666; font-size: 14px; margin-top: 15px;"><strong>Calculation:</strong><br>${summary}</p>` : ''}
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
         </div>
         
