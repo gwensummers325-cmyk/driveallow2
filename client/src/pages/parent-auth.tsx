@@ -6,12 +6,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { Users, Shield, Heart, Car } from "lucide-react";
+import { Users, Shield, Heart, Car, ArrowLeft, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/layout";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { PlanSelection } from "@/components/plan-selection";
+import { PaymentSetup } from "@/components/payment-setup";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation } from "@tanstack/react-query";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
+
+type RegistrationStep = 'account' | 'plan' | 'payment';
 
 export default function ParentAuth() {
-  const { user, loginMutation, registerMutation } = useAuth();
+  const { user, loginMutation } = useAuth();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const [loginForm, setLoginForm] = useState({
     username: "",
@@ -26,6 +38,10 @@ export default function ParentAuth() {
     lastName: "",
   });
 
+  const [registrationStep, setRegistrationStep] = useState<RegistrationStep>('account');
+  const [selectedPlan, setSelectedPlan] = useState<'safety_first' | 'safety_plus' | null>(null);
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+
   if (user) {
     setLocation("/");
     return null;
@@ -36,12 +52,51 @@ export default function ParentAuth() {
     loginMutation.mutate(loginForm);
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleAccountInfoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    registerMutation.mutate({
-      ...registerForm,
-      role: "parent",
-    });
+    
+    // Validate required fields
+    if (!registerForm.firstName || !registerForm.lastName || !registerForm.email || 
+        !registerForm.username || !registerForm.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setRegistrationStep('plan');
+  };
+
+  const registerWithPaymentMutation = useMutation({
+    mutationFn: async ({ paymentMethodId }: { paymentMethodId: string }) => {
+      const response = await apiRequest("POST", "/api/register-with-payment", {
+        ...registerForm,
+        role: "parent",
+        selectedPlan,
+        paymentMethodId,
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Account Created!",
+        description: "Your 7-day free trial has started. Welcome to DriveAllow!",
+      });
+      setLocation("/");
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "Failed to create account",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePaymentSetup = async (paymentMethodId: string) => {
+    registerWithPaymentMutation.mutate({ paymentMethodId });
   };
 
   return (
@@ -99,13 +154,14 @@ export default function ParentAuth() {
             </CardHeader>
             
             <CardContent>
-              <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login">Sign In</TabsTrigger>
-                  <TabsTrigger value="register">Register</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="login">
+              {registrationStep === 'account' ? (
+                <Tabs defaultValue="login" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsTrigger value="login">Sign In</TabsTrigger>
+                    <TabsTrigger value="register">Register</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="username">Username</Label>
@@ -139,8 +195,8 @@ export default function ParentAuth() {
                   </form>
                 </TabsContent>
                 
-                <TabsContent value="register">
-                  <form onSubmit={handleRegister} className="space-y-4">
+                  <TabsContent value="register">
+                    <form onSubmit={handleAccountInfoSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">First Name</Label>
@@ -198,26 +254,78 @@ export default function ParentAuth() {
                       />
                     </div>
                     
+                      <Button 
+                        type="submit" 
+                        className="w-full" 
+                        data-testid="button-continue-account"
+                      >
+                        Continue to Plan Selection
+                        <ArrowRight className="h-4 w-4 ml-2" />
+                      </Button>
+                    </form>
+                  </TabsContent>
+                </Tabs>
+              ) : registrationStep === 'plan' ? (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
                     <Button 
-                      type="submit" 
-                      className="w-full" 
-                      disabled={registerMutation.isPending}
+                      variant="ghost" 
+                      onClick={() => setRegistrationStep('account')}
+                      className="flex items-center gap-2"
+                      data-testid="button-back-to-account"
                     >
-                      {registerMutation.isPending ? "Creating Account..." : "Create Parent Account"}
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
                     </Button>
-                  </form>
-                </TabsContent>
-              </Tabs>
+                    <div className="text-sm text-gray-500">
+                      Step 2 of 3
+                    </div>
+                  </div>
+                  
+                  <PlanSelection
+                    selectedPlan={selectedPlan}
+                    onPlanSelect={setSelectedPlan}
+                    onContinue={() => setRegistrationStep('payment')}
+                  />
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => setRegistrationStep('plan')}
+                      className="flex items-center gap-2"
+                      data-testid="button-back-to-plan"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </Button>
+                    <div className="text-sm text-gray-500">
+                      Step 3 of 3
+                    </div>
+                  </div>
+                  
+                  <Elements stripe={stripePromise}>
+                    <PaymentSetup
+                      selectedPlan={selectedPlan!}
+                      onPaymentSetup={handlePaymentSetup}
+                      isLoading={registerWithPaymentMutation.isPending}
+                    />
+                  </Elements>
+                </div>
+              )}
 
-              <div className="mt-6 text-center text-sm text-gray-600">
-                <span>Need teen access? </span>
-                <button 
-                  onClick={() => setLocation("/auth/teen")}
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Teen Sign In
-                </button>
-              </div>
+              {registrationStep === 'account' && (
+                <div className="mt-6 text-center text-sm text-gray-600">
+                  <span>Need teen access? </span>
+                  <button 
+                    onClick={() => setLocation("/auth/teen")}
+                    className="text-blue-600 hover:underline font-medium"
+                  >
+                    Teen Sign In
+                  </button>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

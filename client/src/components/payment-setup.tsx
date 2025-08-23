@@ -1,0 +1,157 @@
+import { useState } from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Check, Shield, SmartphoneNfc } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      fontSize: '16px',
+      color: '#424770',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#9e2146',
+    },
+  },
+};
+
+interface PaymentSetupProps {
+  selectedPlan: 'safety_first' | 'safety_plus';
+  onPaymentSetup: (paymentMethodId: string) => void;
+  isLoading: boolean;
+}
+
+export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: PaymentSetupProps) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const { toast } = useToast();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const planDetails = {
+    safety_first: {
+      name: 'Safety First',
+      price: 19.99,
+      features: [
+        'Driving behavior monitoring',
+        'Allowance management',
+        'Incident reporting',
+        'Safety scoring',
+        'Email notifications'
+      ]
+    },
+    safety_plus: {
+      name: 'Safety Plus',
+      price: 29.99,
+      features: [
+        'All Safety First features',
+        'Phone usage monitoring',
+        'Advanced analytics',
+        'Priority support',
+        'Custom incident alerts'
+      ]
+    }
+  };
+
+  const plan = planDetails[selectedPlan];
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const cardElement = elements.getElement(CardElement);
+
+    if (!cardElement) {
+      setIsProcessing(false);
+      return;
+    }
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+    });
+
+    if (error) {
+      toast({
+        title: "Payment Error",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    } else {
+      onPaymentSetup(paymentMethod.id);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Plan Summary */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            {selectedPlan === 'safety_plus' ? <SmartphoneNfc className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
+            {plan.name}
+            <Badge variant="secondary">${plan.price}/month</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            {plan.features.map((feature, index) => (
+              <li key={index} className="flex items-center gap-2 text-sm">
+                <Check className="h-4 w-4 text-green-500" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>7-day free trial</strong> - Your subscription starts after the trial period
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Payment Method */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Payment Method</CardTitle>
+          <p className="text-sm text-gray-600">
+            Your card will not be charged during the 7-day trial period
+          </p>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <CardElement options={CARD_ELEMENT_OPTIONS} />
+            </div>
+            
+            <div className="text-xs text-gray-500 space-y-1">
+              <p>• Your card information is securely processed by Stripe</p>
+              <p>• No charges during your 7-day free trial</p>
+              <p>• Cancel anytime before the trial ends</p>
+            </div>
+            
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={!stripe || isProcessing || isLoading}
+              data-testid="button-setup-payment"
+            >
+              {isProcessing ? "Setting up payment..." : "Start Free Trial"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

@@ -84,7 +84,98 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Register endpoint
+  // Register with payment method (for parents)
+  app.post("/api/register-with-payment", async (req, res, next) => {
+    try {
+      const { 
+        username, 
+        password, 
+        email, 
+        firstName, 
+        lastName, 
+        selectedPlan, 
+        paymentMethodId 
+      } = req.body;
+      
+      // Validate required fields
+      if (!username || !password || !email || !firstName || !lastName || !selectedPlan || !paymentMethodId) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Validate plan
+      if (!['safety_first', 'safety_plus'].includes(selectedPlan)) {
+        return res.status(400).json({ message: "Invalid plan selection" });
+      }
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsername(username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await hashPassword(password);
+
+      // Create parent user
+      const user = await storage.createUser({
+        username,
+        password: hashedPassword,
+        email,
+        firstName,
+        lastName,
+        role: 'parent',
+      });
+
+      // TODO: Store payment method with Stripe
+      // For now, we'll simulate this step
+      console.log(`Payment method ${paymentMethodId} stored for user ${user.id}`);
+
+      // Create trial subscription
+      const trialEndDate = new Date();
+      trialEndDate.setDate(trialEndDate.getDate() + 7); // 7-day trial
+
+      const pricing = storage.calculateSubscriptionPrice(selectedPlan, 1); // 1 teen initially
+      
+      await storage.createSubscription({
+        parentId: user.id,
+        tier: selectedPlan,
+        status: 'trial',
+        teenCount: 1,
+        basePrice: pricing.basePrice,
+        additionalTeenPrice: pricing.additionalPrice,
+        totalPrice: pricing.totalPrice,
+        trialEndDate,
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: trialEndDate,
+        phoneUsageAlertsEnabled: selectedPlan === 'safety_plus',
+        // stripeCustomerId: 'cus_xyz', // Would be set by Stripe
+        // stripeSubscriptionId: 'sub_xyz', // Would be set by Stripe
+        // stripePaymentMethodId: paymentMethodId, // Would be stored
+      });
+
+      req.login(user, (err) => {
+        if (err) return next(err);
+        res.status(201).json({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          subscription: {
+            tier: selectedPlan,
+            status: 'trial',
+            trialEndDate,
+          }
+        });
+      });
+    } catch (error) {
+      console.error("Registration with payment error:", error);
+      res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  // Register endpoint (for basic registration without payment)
   app.post("/api/register", async (req, res, next) => {
     try {
       const { username, password, email, firstName, lastName, role, parentId } = req.body;
