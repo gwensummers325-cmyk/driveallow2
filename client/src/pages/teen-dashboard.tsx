@@ -137,7 +137,7 @@ export default function TeenDashboard() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -211,49 +211,6 @@ export default function TeenDashboard() {
             </CardContent>
           </Card>
 
-          {/* Automatic Detection Status Card */}
-          <Card className={`${
-            phoneMonitorStatus.isDriving 
-              ? 'border-red-200 bg-red-50' 
-              : phoneMonitorStatus.drivingConfidence > 0.3
-              ? 'border-yellow-200 bg-yellow-50'
-              : 'border-green-200 bg-green-50'
-          }`}>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Auto Detection</p>
-                  <p className="text-lg font-bold">
-                    {phoneMonitorStatus.isDriving ? (
-                      <span className="text-red-600">Monitoring</span>
-                    ) : phoneMonitorStatus.drivingConfidence > 0.3 ? (
-                      <span className="text-yellow-600">Analyzing</span>
-                    ) : (
-                      <span className="text-green-600">Standby</span>
-                    )}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {Math.round(phoneMonitorStatus.speedMph)} mph
-                  </p>
-                </div>
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                  phoneMonitorStatus.isDriving 
-                    ? 'bg-red-100' 
-                    : phoneMonitorStatus.drivingConfidence > 0.3
-                    ? 'bg-yellow-100'
-                    : 'bg-green-100'
-                }`}>
-                  <Smartphone className={`text-xl ${
-                    phoneMonitorStatus.isDriving 
-                      ? 'text-red-600' 
-                      : phoneMonitorStatus.drivingConfidence > 0.3
-                      ? 'text-yellow-600'
-                      : 'text-green-600'
-                  }`} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
