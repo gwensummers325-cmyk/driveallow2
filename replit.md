@@ -8,6 +8,16 @@ Preferred communication style: Simple, everyday language.
 
 # Recent Changes
 
+**August 23, 2025:**
+- Enhanced legal disclosures to Greenlight-level comprehensiveness with detailed terms, privacy policies, and fee structures
+- Added comprehensive Fee Disclosures page with transparent pricing plans ($9.99-$29.99/month subscription tiers)
+- Strengthened Terms of Service with detailed arbitration clauses, account closure procedures, third-party service provider disclosures
+- Enhanced Privacy Policy with granular data collection categories, cookies/tracking technology details, recording/monitoring disclosures
+- Added comprehensive teen privacy protections with COPPA/CCPA compliance, parental consent requirements, and data retention policies
+- Implemented robust data sharing disclosures, international transfer safeguards, and user rights explanations
+- Created detailed customer service contact information and business address disclosures
+- Added electronic communications consent framework and billing/payment terms transparency
+
 **August 22, 2025:**
 - Implemented automatic login/logout email notifications for parents
 - Configured Ionos SMTP integration for reliable email delivery
@@ -15,7 +25,6 @@ Preferred communication style: Simple, everyday language.
 - Created professional HTML email templates with DriveAllow branding
 - Enhanced security with automatic device detection in login alerts
 - Removed Stripe Issuing integration (not suitable for teen driver use case)
-- Strengthened legal pages with comprehensive liability protections, mandatory arbitration clauses, enhanced privacy provisions for minors, and robust COPPA/CCPA compliance
 - Removed data simulator access to maintain teen monitoring integrity (teens have zero control over monitoring)
 
 # System Architecture
@@ -67,3 +76,5 @@ Preferred communication style: Simple, everyday language.
 - **Settings Management**: Configurable allowance amounts, penalty rates, and notification preferences
 - **Real-time Updates**: TanStack Query provides optimistic updates and automatic refetching
 - **Email Notifications**: Automated incident notifications sent to both parents and teens
+- **Comprehensive Legal Framework**: Greenlight-level legal disclosures including detailed Terms of Service, Privacy Policy, and Fee Disclosures
+- **Teen Privacy Protection**: COPPA/CCPA compliant with robust parental consent and minor data protection safeguards

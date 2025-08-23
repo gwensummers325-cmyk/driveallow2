@@ -12,6 +12,7 @@ import TeenAuth from "@/pages/teen-auth";
 import NotFound from "@/pages/not-found";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
+import FeeDisclosures from "@/pages/fee-disclosures";
 import Accessibility from "@/pages/accessibility";
 import CookiePolicy from "@/pages/cookie-policy";
 
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/auth/teen" component={TeenAuth} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/fee-disclosures" component={FeeDisclosures} />
       <Route path="/accessibility" component={Accessibility} />
       <Route path="/cookie-policy" component={CookiePolicy} />
       <Route path="/">
