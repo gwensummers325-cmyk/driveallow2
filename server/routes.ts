@@ -225,8 +225,8 @@ export function registerRoutes(app: Express): Server {
 
       // Create teen account
       const teen = await storage.createUser({
-        username,
-        email: email || '',
+        username: username.toLowerCase(),
+        email: email || null,
         firstName,
         lastName,
         role: 'teen',
