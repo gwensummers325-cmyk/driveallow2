@@ -270,6 +270,56 @@ export default function Landing() {
           </Card>
         </div>
 
+        {/* Call to Action Section */}
+        <div className="bg-gradient-to-r from-primary to-blue-600 text-white py-16 rounded-3xl mt-16">
+          <div className="max-w-4xl mx-auto text-center px-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Ready to Transform Your Teen's Driving?
+            </h2>
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+              Join thousands of families who've improved their teen's driving safety with DriveAllow's smart allowance system.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <Button 
+                size="lg"
+                variant="secondary"
+                onClick={() => setLocation('/auth/parent')}
+                className="bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                data-testid="cta-parent-signup"
+              >
+                <Users className="h-5 w-5 mr-2" />
+                Start as Parent
+              </Button>
+              
+              <Button 
+                size="lg"
+                onClick={() => setLocation('/auth/teen')}
+                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                data-testid="cta-teen-signup"
+              >
+                <Car className="h-5 w-5 mr-2" />
+                Join as Teen
+              </Button>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-blue-100">
+              <div className="flex items-center">
+                <Shield className="h-5 w-5 mr-2" />
+                <span>100% Safe & Secure</span>
+              </div>
+              <div className="flex items-center">
+                <Star className="h-5 w-5 mr-2 text-yellow-300" />
+                <span>4.9/5 Family Rating</span>
+              </div>
+              <div className="flex items-center">
+                <Heart className="h-5 w-5 mr-2 text-red-300" />
+                <span>Trusted by 10,000+ Families</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       </div>
     </Layout>
