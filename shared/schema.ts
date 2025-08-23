@@ -109,6 +109,8 @@ export const transactions = pgTable("transactions", {
   description: text("description").notNull(),
   location: varchar("location"),
   notes: text("notes"),
+  realWorldStatus: varchar("real_world_status", { enum: ["owed", "paid"] }).default("owed"),
+  paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -6,7 +6,7 @@ import { isUnauthorizedError } from "@/lib/authUtils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift } from "lucide-react";
+import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle } from "lucide-react";
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -26,6 +26,11 @@ export default function ParentDashboard() {
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
     queryKey: ["/api/dashboard/parent"],
+    enabled: !!user && !isLoading,
+  });
+
+  const { data: owedTransactions } = useQuery({
+    queryKey: ["/api/owed-transactions"],
     enabled: !!user && !isLoading,
   });
 
@@ -55,6 +60,38 @@ export default function ParentDashboard() {
       toast({
         title: "Error",
         description: "Failed to pay allowance. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const markAsPaidMutation = useMutation({
+    mutationFn: async (transactionId: string) => {
+      await apiRequest("POST", `/api/transactions/${transactionId}/mark-paid`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/owed-transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      toast({
+        title: "Success",
+        description: "Transaction marked as paid!",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/parent";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to mark transaction as paid.",
         variant: "destructive",
       });
     },
@@ -242,6 +279,69 @@ export default function ParentDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Owed Money Reminder */}
+        {owedTransactions && owedTransactions.length > 0 && (
+          <Card className="mb-8 border-orange-200 bg-orange-50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-orange-800">
+                <DollarSign className="h-5 w-5 mr-2" />
+                Money Owed to Teens
+              </CardTitle>
+              <p className="text-sm text-orange-700">
+                These allowances and bonuses have been added to your teen's balance but need to be paid in real life.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {owedTransactions.map((transaction: any) => {
+                  const teen = teens.find((t: any) => t.id === transaction.teenId);
+                  return (
+                    <div key={transaction.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-900">
+                            {teen?.firstName} {teen?.lastName}
+                          </span>
+                          <span className="font-bold text-lg text-green-600">
+                            ${parseFloat(transaction.amount).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <span className="capitalize bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
+                            {transaction.type}
+                          </span>
+                          {transaction.description}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {new Date(transaction.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => markAsPaidMutation.mutate(transaction.id)}
+                        disabled={markAsPaidMutation.isPending}
+                        className="ml-4 bg-green-600 hover:bg-green-700 text-white"
+                        size="sm"
+                        data-testid={`button-mark-paid-${transaction.id}`}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        {markAsPaidMutation.isPending ? 'Marking...' : 'Mark as Paid'}
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="mt-4 p-3 bg-orange-100 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-orange-800">Total Amount Owed:</span>
+                  <span className="font-bold text-xl text-orange-900">
+                    ${owedTransactions.reduce((sum: number, t: any) => sum + parseFloat(t.amount), 0).toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Individual Teen Cards */}
         {teens.length > 0 && (

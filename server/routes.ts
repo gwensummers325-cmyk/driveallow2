@@ -312,6 +312,45 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Real-world payment tracking routes
+  app.post('/api/transactions/:id/mark-paid', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      if (user.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can mark transactions as paid" });
+      }
+
+      const { id } = req.params;
+      
+      // Get transaction to verify ownership
+      const existingTransaction = await storage.getTransactionById(id);
+      if (!existingTransaction || existingTransaction.parentId !== user.id) {
+        return res.status(404).json({ message: "Transaction not found or unauthorized" });
+      }
+
+      const transaction = await storage.markTransactionAsPaid(id);
+      res.json(transaction);
+    } catch (error) {
+      console.error("Error marking transaction as paid:", error);
+      res.status(500).json({ message: "Failed to mark transaction as paid" });
+    }
+  });
+
+  app.get('/api/owed-transactions', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      if (user.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can view owed transactions" });
+      }
+
+      const owedTransactions = await storage.getOwedTransactionsByParent(user.id);
+      res.json(owedTransactions);
+    } catch (error) {
+      console.error("Error fetching owed transactions:", error);
+      res.status(500).json({ message: "Failed to fetch owed transactions" });
+    }
+  });
+
   // Allowance payment routes
   app.post('/api/allowance/pay', isAuthenticated, async (req: any, res) => {
     try {

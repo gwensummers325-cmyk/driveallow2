@@ -16,7 +16,7 @@ import {
   type InsertAllowanceBalance,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, gte, lte } from "drizzle-orm";
+import { eq, desc, and, gte, lte, or } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -134,6 +134,14 @@ export class DatabaseStorage implements IStorage {
       .limit(limit);
   }
 
+  async getTransactionById(id: string): Promise<Transaction | undefined> {
+    const [transaction] = await db
+      .select()
+      .from(transactions)
+      .where(eq(transactions.id, id));
+    return transaction;
+  }
+
   async createIncident(incidentData: InsertIncident): Promise<Incident> {
     const [incident] = await db
       .insert(incidents)
@@ -200,6 +208,35 @@ export class DatabaseStorage implements IStorage {
       lastAllowanceDate: currentBalance?.lastAllowanceDate,
       nextAllowanceDate: currentBalance?.nextAllowanceDate,
     });
+  }
+
+  async markTransactionAsPaid(transactionId: string): Promise<Transaction> {
+    const [transaction] = await db
+      .update(transactions)
+      .set({
+        realWorldStatus: "paid",
+        paidAt: new Date(),
+      })
+      .where(eq(transactions.id, transactionId))
+      .returning();
+    return transaction;
+  }
+
+  async getOwedTransactionsByParent(parentId: string): Promise<Transaction[]> {
+    return await db
+      .select()
+      .from(transactions)
+      .where(
+        and(
+          eq(transactions.parentId, parentId),
+          eq(transactions.realWorldStatus, "owed"),
+          or(
+            eq(transactions.type, "allowance"),
+            eq(transactions.type, "bonus")
+          )
+        )
+      )
+      .orderBy(desc(transactions.createdAt));
   }
 
   async updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User> {
