@@ -288,8 +288,9 @@ export function registerRoutes(app: Express): Server {
             
             if (!chargeResult.success) {
               console.error('Prorated billing failed:', chargeResult.error);
-              // Note: We continue with the teen creation even if prorated billing fails
-              // This avoids blocking teen creation due to payment issues
+              return res.status(400).json({ 
+                message: `Failed to process prorated billing: ${chargeResult.error}. Teen account creation canceled.` 
+              });
             }
           }
         }
