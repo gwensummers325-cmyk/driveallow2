@@ -10,7 +10,7 @@ interface LayoutProps {
 }
 
 export function Layout({ children, showBackButton = true, backPath }: LayoutProps) {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, logoutMutation } = useAuth();
 
   const handleBack = () => {
@@ -69,22 +69,26 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                   </Button>
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-3">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => setLocation('/auth/parent')}
-                    className="text-xs px-1.5 py-1 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
-                  >
-                    Parent Sign In
-                  </Button>
-                  <Button 
-                    size="sm"
-                    onClick={() => setLocation('/auth/teen')}
-                    className="text-xs px-1.5 py-1 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
-                  >
-                    Teen Sign In
-                  </Button>
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  {location !== '/auth/parent' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => setLocation('/auth/parent')}
+                      className="text-xs px-2 py-1.5 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
+                    >
+                      Parent Sign In
+                    </Button>
+                  )}
+                  {location !== '/auth/teen' && (
+                    <Button 
+                      size="sm"
+                      onClick={() => setLocation('/auth/teen')}
+                      className="text-xs px-2 py-1.5 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
+                    >
+                      Teen Sign In
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
