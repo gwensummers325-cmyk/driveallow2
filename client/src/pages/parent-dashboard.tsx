@@ -293,7 +293,7 @@ export default function ParentDashboard() {
                   <p className="text-sm font-medium text-gray-600">Total Managed</p>
                   <p className="text-2xl font-bold text-gray-900">
                     {formatCurrency(
-                      transactions
+                      (transactions || [])
                         .reduce((sum: number, t: any) => sum + parseFloat(t.amount), 0)
                         .toString()
                     )}
