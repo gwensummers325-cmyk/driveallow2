@@ -32,6 +32,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
     speedingMajorPenalty: '10.00',
     harshBrakingPenalty: '5.00',
     aggressiveAccelPenalty: '5.00',
+    phoneUsagePenalty: '15.00',
     perfectWeekBonus: '10.00',
     speedComplianceBonus: '2.00',
   });
@@ -53,6 +54,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
         speedingMajorPenalty: settings.speedingMajorPenalty,
         harshBrakingPenalty: settings.harshBrakingPenalty,
         aggressiveAccelPenalty: settings.aggressiveAccelPenalty,
+        phoneUsagePenalty: settings.phoneUsagePenalty || '15.00',
         perfectWeekBonus: settings.perfectWeekBonus,
         speedComplianceBonus: settings.speedComplianceBonus,
       });
@@ -267,6 +269,24 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                       onChange={(e) => handleInputChange('aggressiveAccelPenalty', e.target.value)}
                     />
                   </div>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Phone Usage While Driving</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="pl-6 text-sm"
+                      value={settings.phoneUsagePenalty}
+                      onChange={(e) => handleInputChange('phoneUsagePenalty', e.target.value)}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Automatic penalty applied when phone usage is detected during driving
+                  </p>
                 </div>
               </div>
             </div>

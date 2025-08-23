@@ -419,6 +419,10 @@ export default function ParentDashboard() {
                             <span className="text-blue-600 text-sm">Hard Accel:</span>
                             <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.aggressiveAccelPenalty || '5.00')}</span>
                           </div>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Phone Usage:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.phoneUsagePenalty || '15.00')}</span>
+                          </div>
                         </div>
                       </div>
 
