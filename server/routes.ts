@@ -225,12 +225,12 @@ export function registerRoutes(app: Express): Server {
       // Create the incident
       const incident = await storage.createIncident(validatedData);
 
-      // Create corresponding transaction
+      // Create corresponding transaction (store penalty as positive amount)
       const transaction = await storage.createTransaction({
         teenId: validatedData.teenId,
         parentId,
         type: 'penalty',
-        amount: `-${validatedData.penaltyAmount}`,
+        amount: validatedData.penaltyAmount,
         description: `Penalty for ${validatedData.type.replace('_', ' ')}`,
         location: validatedData.location,
         notes: validatedData.notes,
@@ -240,8 +240,8 @@ export function registerRoutes(app: Express): Server {
       const balanceBefore = await storage.getAllowanceBalance(validatedData.teenId);
       const balanceBeforeAmount = balanceBefore?.currentBalance || '0.00';
       
-      // Update balance
-      await storage.updateBalance(validatedData.teenId, `-${validatedData.penaltyAmount}`);
+      // Update balance (deduct penalty amount)
+      await storage.updateBalance(validatedData.teenId, validatedData.penaltyAmount, true);
       
       // Get balance after deduction
       const balanceAfter = await storage.getAllowanceBalance(validatedData.teenId);
@@ -287,8 +287,8 @@ export function registerRoutes(app: Express): Server {
         description: description || 'Manual bonus',
       });
 
-      // Update balance
-      await storage.updateBalance(teenId, amount.toString());
+      // Update balance (add bonus amount)
+      await storage.updateBalance(teenId, amount.toString(), false);
 
 
       // Send email notifications

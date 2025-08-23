@@ -281,7 +281,7 @@ export default function ParentDashboard() {
         </div>
 
         {/* Owed Money Reminder */}
-        {owedTransactions && owedTransactions.length > 0 && (
+        {owedTransactions && Array.isArray(owedTransactions) && owedTransactions.length > 0 && (
           <Card className="mb-8 border-orange-200 bg-orange-50">
             <CardHeader>
               <CardTitle className="flex items-center text-orange-800">
@@ -341,7 +341,7 @@ export default function ParentDashboard() {
               </div>
             </CardContent>
           </Card>
-        )}
+        ) || null}
 
         {/* Individual Teen Cards */}
         {teens.length > 0 && (

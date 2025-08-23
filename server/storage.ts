@@ -196,11 +196,15 @@ export class DatabaseStorage implements IStorage {
     return balance;
   }
 
-  async updateBalance(teenId: string, amount: string): Promise<AllowanceBalance> {
+  async updateBalance(teenId: string, amount: string, isDeduction = false): Promise<AllowanceBalance> {
     const currentBalance = await this.getAllowanceBalance(teenId);
     const currentAmount = parseFloat(currentBalance?.currentBalance || '0');
     const changeAmount = parseFloat(amount);
-    const newBalance = (currentAmount + changeAmount).toFixed(2);
+    const newBalance = isDeduction 
+      ? Math.max(0, currentAmount - changeAmount).toFixed(2)  // Prevent negative balances
+      : (currentAmount + changeAmount).toFixed(2);
+
+    console.log(`Balance update for ${teenId}: ${currentAmount} ${isDeduction ? '-' : '+'} ${changeAmount} = ${newBalance}`);
 
     return await this.upsertAllowanceBalance({
       teenId,
