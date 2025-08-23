@@ -69,23 +69,21 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                   </Button>
                 </div>
               ) : (
-                <div className="flex space-x-1 sm:space-x-2 md:space-x-3">
+                <div className="flex flex-wrap gap-1 sm:gap-2 md:gap-3">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => setLocation('/auth/parent')}
-                    className="text-xs md:text-sm px-1 sm:px-2 md:px-3 min-w-0"
+                    className="text-xs px-1.5 py-1 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
                   >
-                    <span className="sm:hidden">P</span>
-                    <span className="hidden sm:inline">Parent</span>
+                    Parent Sign In
                   </Button>
                   <Button 
                     size="sm"
                     onClick={() => setLocation('/auth/teen')}
-                    className="text-xs md:text-sm px-1 sm:px-2 md:px-3 min-w-0"
+                    className="text-xs px-1.5 py-1 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
                   >
-                    <span className="sm:hidden">T</span>
-                    <span className="hidden sm:inline">Teen</span>
+                    Teen Sign In
                   </Button>
                 </div>
               )}
