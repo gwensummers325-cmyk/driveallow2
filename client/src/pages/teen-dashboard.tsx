@@ -172,52 +172,100 @@ export default function TeenDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {/* Phone Monitoring Controls */}
+        {/* Automatic Phone Monitoring Status */}
         <div className="mb-8">
-          <Card className={`${isDriving ? 'border-red-200 bg-red-50' : 'border-gray-200'}`}>
+          <Card className={`${
+            phoneMonitorStatus.isDriving 
+              ? 'border-red-200 bg-red-50' 
+              : phoneMonitorStatus.drivingConfidence > 0.3
+              ? 'border-yellow-200 bg-yellow-50'
+              : 'border-green-200 bg-green-50'
+          }`}>
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Smartphone className="h-5 w-5 mr-2" />
-                Phone Usage Monitoring
-                {isDriving && (
-                  <Badge variant="destructive" className="ml-2">ACTIVE</Badge>
+                Automatic Phone Monitoring
+                {phoneMonitorStatus.isDriving && (
+                  <Badge variant="destructive" className="ml-2">DRIVING DETECTED</Badge>
+                )}
+                {phoneMonitorStatus.isAutoDetected && (
+                  <Badge variant="outline" className="ml-2">AUTO</Badge>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  {isDriving ? (
-                    <div className="space-y-2">
-                      <p className="text-sm text-gray-700">
-                        📱 Phone monitoring is active. Any phone usage will result in penalties.
-                      </p>
-                      <p className="text-xs text-red-600 font-medium">
-                        Violations this trip: {phoneMonitorStatus.violationsCount}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-700">
-                      Start driving to activate automatic phone usage monitoring.
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">Status</p>
+                    <p className="text-lg font-semibold">
+                      {phoneMonitorStatus.isDriving ? (
+                        <span className="text-red-600">🚗 Driving</span>
+                      ) : phoneMonitorStatus.drivingConfidence > 0.3 ? (
+                        <span className="text-yellow-600">🔍 Analyzing</span>
+                      ) : (
+                        <span className="text-green-600">🏁 Stopped</span>
+                      )}
                     </p>
-                  )}
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">Current Speed</p>
+                    <p className="text-lg font-semibold">
+                      {phoneMonitorStatus.speedMph > 0 
+                        ? `${Math.round(phoneMonitorStatus.speedMph)} mph`
+                        : '0 mph'
+                      }
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 uppercase tracking-wide">Trip Violations</p>
+                    <p className="text-lg font-semibold">
+                      <span className={phoneMonitorStatus.violationsCount > 0 ? 'text-red-600' : 'text-green-600'}>
+                        {phoneMonitorStatus.violationsCount}
+                      </span>
+                    </p>
+                  </div>
                 </div>
-                <Button 
-                  onClick={isDriving ? handleStopDriving : handleStartDriving}
-                  variant={isDriving ? "destructive" : "default"}
-                  className="ml-4"
-                  data-testid={isDriving ? "button-stop-driving" : "button-start-driving"}
-                >
-                  <Car className="h-4 w-4 mr-2" />
-                  {isDriving ? 'Stop Driving' : 'Start Driving'}
-                </Button>
+
+                {phoneMonitorStatus.isDriving && (
+                  <div className="bg-red-100 border border-red-200 rounded-lg p-3">
+                    <p className="text-sm text-red-800 font-medium mb-1">
+                      📱 Phone monitoring is active!
+                    </p>
+                    <p className="text-xs text-red-700">
+                      Any phone usage will automatically result in $15 penalties. Keep your hands on the wheel and eyes on the road.
+                    </p>
+                  </div>
+                )}
+
+                {!phoneMonitorStatus.isDriving && phoneMonitorStatus.drivingConfidence > 0.3 && (
+                  <div className="bg-yellow-100 border border-yellow-200 rounded-lg p-3">
+                    <p className="text-sm text-yellow-800 font-medium mb-1">
+                      🔍 Analyzing movement patterns...
+                    </p>
+                    <p className="text-xs text-yellow-700">
+                      System is detecting potential driving activity. Monitoring will activate automatically when driving is confirmed.
+                    </p>
+                  </div>
+                )}
+
+                {!phoneMonitorStatus.isDriving && phoneMonitorStatus.drivingConfidence <= 0.3 && (
+                  <div className="bg-green-100 border border-green-200 rounded-lg p-3">
+                    <p className="text-sm text-green-800 font-medium mb-1">
+                      ✅ Safe to use phone
+                    </p>
+                    <p className="text-xs text-green-700">
+                      No driving activity detected. Phone monitoring will automatically activate when you start driving.
+                    </p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -287,6 +335,50 @@ export default function TeenDashboard() {
               </div>
               <div className="mt-4">
                 <span className="text-sm text-error font-medium">This week</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Automatic Detection Status Card */}
+          <Card className={`${
+            phoneMonitorStatus.isDriving 
+              ? 'border-red-200 bg-red-50' 
+              : phoneMonitorStatus.drivingConfidence > 0.3
+              ? 'border-yellow-200 bg-yellow-50'
+              : 'border-green-200 bg-green-50'
+          }`}>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Auto Detection</p>
+                  <p className="text-lg font-bold">
+                    {phoneMonitorStatus.isDriving ? (
+                      <span className="text-red-600">Monitoring</span>
+                    ) : phoneMonitorStatus.drivingConfidence > 0.3 ? (
+                      <span className="text-yellow-600">Analyzing</span>
+                    ) : (
+                      <span className="text-green-600">Standby</span>
+                    )}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {Math.round(phoneMonitorStatus.speedMph)} mph
+                  </p>
+                </div>
+                <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                  phoneMonitorStatus.isDriving 
+                    ? 'bg-red-100' 
+                    : phoneMonitorStatus.drivingConfidence > 0.3
+                    ? 'bg-yellow-100'
+                    : 'bg-green-100'
+                }`}>
+                  <Smartphone className={`text-xl ${
+                    phoneMonitorStatus.isDriving 
+                      ? 'text-red-600' 
+                      : phoneMonitorStatus.drivingConfidence > 0.3
+                      ? 'text-yellow-600'
+                      : 'text-green-600'
+                  }`} />
+                </div>
               </div>
             </CardContent>
           </Card>
