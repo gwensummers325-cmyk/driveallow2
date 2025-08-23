@@ -295,29 +295,29 @@ export default function ParentDashboard() {
                       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                         <p className="text-sm font-medium text-blue-700 mb-3">Allowance Settings</p>
                         <div className="space-y-2">
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Allowance:</span>
-                            <span className="font-medium text-sm text-right">{formatCurrency(teen.settings?.allowanceAmount || '50.00')}</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Allowance:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.allowanceAmount || '50.00')}</span>
                           </div>
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Frequency:</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Frequency:</span>
                             <span className="font-medium text-sm capitalize text-right">{teen.settings?.frequency || 'weekly'}</span>
                           </div>
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Speed 3-10mph:</span>
-                            <span className="font-medium text-sm text-right">{formatCurrency(teen.settings?.speedingMinorPenalty || '5.00')}</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Speed 3-10mph:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.speedingMinorPenalty || '5.00')}</span>
                           </div>
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Speed 11+mph:</span>
-                            <span className="font-medium text-sm text-right">{formatCurrency(teen.settings?.speedingMajorPenalty || '10.00')}</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Speed 11+mph:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.speedingMajorPenalty || '10.00')}</span>
                           </div>
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Harsh Braking:</span>
-                            <span className="font-medium text-sm text-right">{formatCurrency(teen.settings?.harshBrakingPenalty || '5.00')}</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Harsh Braking:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.harshBrakingPenalty || '5.00')}</span>
                           </div>
-                          <div className="flex justify-between items-center gap-2">
-                            <span className="text-blue-600 text-sm flex-shrink-0">Hard Accel:</span>
-                            <span className="font-medium text-sm text-right">{formatCurrency(teen.settings?.aggressiveAccelPenalty || '5.00')}</span>
+                          <div className="grid grid-cols-2 gap-4 items-center">
+                            <span className="text-blue-600 text-sm">Hard Accel:</span>
+                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.aggressiveAccelPenalty || '5.00')}</span>
                           </div>
                         </div>
                       </div>
