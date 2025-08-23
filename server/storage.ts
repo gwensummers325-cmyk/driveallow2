@@ -4,6 +4,7 @@ import {
   transactions,
   incidents,
   allowanceBalances,
+  subscriptions,
   type User,
   type UpsertUser,
   type AllowanceSettings,
@@ -14,6 +15,8 @@ import {
   type InsertIncident,
   type AllowanceBalance,
   type InsertAllowanceBalance,
+  type Subscription,
+  type InsertSubscription,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, or, sql } from "drizzle-orm";
@@ -45,6 +48,13 @@ export interface IStorage {
   getAllowanceBalance(teenId: string): Promise<AllowanceBalance | undefined>;
   upsertAllowanceBalance(balance: InsertAllowanceBalance): Promise<AllowanceBalance>;
   updateBalance(teenId: string, amount: string): Promise<AllowanceBalance>;
+  
+  // Subscription operations
+  getSubscription(parentId: string): Promise<Subscription | undefined>;
+  createSubscription(subscription: InsertSubscription): Promise<Subscription>;
+  updateSubscription(parentId: string, updates: Partial<InsertSubscription>): Promise<Subscription>;
+  getTeenCountForParent(parentId: string): Promise<number>;
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
 }
 
 export class DatabaseStorage implements IStorage {
@@ -260,6 +270,57 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(users)
       .where(eq(users.role, role));
+  }
+
+  async getSubscription(parentId: string): Promise<Subscription | undefined> {
+    const [subscription] = await db
+      .select()
+      .from(subscriptions)
+      .where(eq(subscriptions.parentId, parentId));
+    return subscription;
+  }
+
+  async createSubscription(subscriptionData: InsertSubscription): Promise<Subscription> {
+    const [subscription] = await db
+      .insert(subscriptions)
+      .values(subscriptionData)
+      .returning();
+    return subscription;
+  }
+
+  async updateSubscription(parentId: string, updates: Partial<InsertSubscription>): Promise<Subscription> {
+    const [subscription] = await db
+      .update(subscriptions)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(subscriptions.parentId, parentId))
+      .returning();
+    return subscription;
+  }
+
+  async getTeenCountForParent(parentId: string): Promise<number> {
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(users)
+      .where(and(eq(users.parentId, parentId), eq(users.role, 'teen')));
+    return result[0]?.count || 0;
+  }
+
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string } {
+    const prices = {
+      safety_first: { base: 19.99, additional: 8.99 },
+      safety_plus: { base: 29.99, additional: 9.99 }
+    };
+    
+    const tierPricing = prices[tier];
+    const basePrice = tierPricing.base.toFixed(2);
+    const additionalTeens = Math.max(0, teenCount - 2);
+    const additionalPrice = (additionalTeens * tierPricing.additional).toFixed(2);
+    const totalPrice = (tierPricing.base + (additionalTeens * tierPricing.additional)).toFixed(2);
+    
+    return { basePrice, additionalPrice, totalPrice };
   }
 
 }

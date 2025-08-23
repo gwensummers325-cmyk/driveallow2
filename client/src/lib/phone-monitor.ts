@@ -341,6 +341,27 @@ class PhoneUsageMonitor {
     if (!this.currentTripId) return;
 
     try {
+      // First check if phone usage alerts are enabled for this user's subscription
+      const subscriptionResponse = await fetch('/api/subscription', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (subscriptionResponse.ok) {
+        const subscription = await subscriptionResponse.json();
+        
+        // Only report phone violations for Safety Plus subscribers or if phone usage alerts are enabled
+        if (!subscription.phoneUsageAlertsEnabled) {
+          console.log('📱 Phone usage monitoring disabled for current subscription tier (Safety First)');
+          return;
+        }
+      } else {
+        console.log('📱 Could not verify subscription tier, skipping phone violation report');
+        return;
+      }
+
       const response = await fetch('/api/phone-violations', {
         method: 'POST',
         headers: {

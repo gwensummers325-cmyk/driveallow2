@@ -10,6 +10,7 @@ import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSi
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
+import { SubscriptionPanel } from "@/components/subscription-panel";
 import { CreateTeenModal } from "@/components/create-teen-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
@@ -555,6 +556,11 @@ export default function ParentDashboard() {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Subscription Management */}
+        <div className="mt-8">
+          <SubscriptionPanel />
         </div>
 
         {/* Settings Panel */}

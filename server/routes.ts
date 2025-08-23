@@ -3,11 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { emailService } from "./emailService";
+import { trialManager } from "./trial-manager";
 import { 
   insertAllowanceSettingsSchema,
   insertTransactionSchema,
   insertIncidentSchema,
-  insertAllowanceBalanceSchema
+  insertAllowanceBalanceSchema,
+  insertSubscriptionSchema
 } from "@shared/schema";
 import { z } from "zod";
 import { createTestAccounts } from "./create-test-accounts";
@@ -34,6 +36,165 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error creating test accounts:", error);
       res.status(500).json({ message: "Failed to create test accounts" });
+    }
+  });
+
+  // Subscription management routes
+  app.get('/api/subscription', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can view subscription info" });
+      }
+
+      const subscription = await storage.getSubscription(parentId);
+      const teenCount = await storage.getTeenCountForParent(parentId);
+      
+      // If no subscription exists, create a trial
+      if (!subscription) {
+        const pricing = storage.calculateSubscriptionPrice('safety_first', teenCount);
+        const trialEndDate = new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 7); // 7-day trial
+        
+        const newSubscription = await storage.createSubscription({
+          parentId,
+          tier: 'safety_first',
+          status: 'trial',
+          teenCount,
+          basePrice: pricing.basePrice,
+          additionalTeenPrice: pricing.additionalPrice,
+          totalPrice: pricing.totalPrice,
+          trialEndDate,
+          phoneUsageAlertsEnabled: false,
+        });
+        
+        return res.json({ ...newSubscription, teenCount });
+      }
+      
+      res.json({ ...subscription, teenCount });
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ message: "Failed to fetch subscription" });
+    }
+  });
+
+  app.post('/api/subscription/select-tier', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { tier } = req.body;
+      
+      if (!tier || !['safety_first', 'safety_plus'].includes(tier)) {
+        return res.status(400).json({ message: "Invalid tier selected" });
+      }
+      
+      const parent = await storage.getUser(parentId);
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can select subscription tiers" });
+      }
+
+      const teenCount = await storage.getTeenCountForParent(parentId);
+      const pricing = storage.calculateSubscriptionPrice(tier, teenCount);
+      
+      let subscription = await storage.getSubscription(parentId);
+      
+      if (!subscription) {
+        // Create new subscription with 7-day trial
+        const trialEndDate = new Date();
+        trialEndDate.setDate(trialEndDate.getDate() + 7);
+        
+        subscription = await storage.createSubscription({
+          parentId,
+          tier,
+          status: 'trial',
+          teenCount,
+          basePrice: pricing.basePrice,
+          additionalTeenPrice: pricing.additionalPrice,
+          totalPrice: pricing.totalPrice,
+          trialEndDate,
+          phoneUsageAlertsEnabled: tier === 'safety_plus',
+        });
+      } else {
+        // Update existing subscription
+        subscription = await storage.updateSubscription(parentId, {
+          tier,
+          teenCount,
+          basePrice: pricing.basePrice,
+          additionalTeenPrice: pricing.additionalPrice,
+          totalPrice: pricing.totalPrice,
+          phoneUsageAlertsEnabled: tier === 'safety_plus',
+        });
+      }
+      
+      res.json({ ...subscription, teenCount });
+    } catch (error) {
+      console.error("Error selecting subscription tier:", error);
+      res.status(500).json({ message: "Failed to select subscription tier" });
+    }
+  });
+
+  app.post('/api/subscription/cancel', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can cancel subscriptions" });
+      }
+
+      const subscription = await storage.getSubscription(parentId);
+      if (!subscription) {
+        return res.status(404).json({ message: "No subscription found" });
+      }
+      
+      const updatedSubscription = await storage.updateSubscription(parentId, {
+        status: 'cancelled',
+        cancelAtPeriodEnd: true,
+        canceledAt: new Date(),
+      });
+      
+      res.json(updatedSubscription);
+    } catch (error) {
+      console.error("Error cancelling subscription:", error);
+      res.status(500).json({ message: "Failed to cancel subscription" });
+    }
+  });
+
+  app.get('/api/subscription/pricing/:tier', async (req: any, res) => {
+    try {
+      const { tier } = req.params;
+      const { teenCount = 1 } = req.query;
+      
+      if (!['safety_first', 'safety_plus'].includes(tier)) {
+        return res.status(400).json({ message: "Invalid tier" });
+      }
+      
+      const pricing = storage.calculateSubscriptionPrice(tier as 'safety_first' | 'safety_plus', parseInt(teenCount as string));
+      
+      res.json({
+        tier,
+        teenCount: parseInt(teenCount as string),
+        ...pricing,
+        features: {
+          safety_first: [
+            'Smart allowance management',
+            'Driving incident tracking',
+            'Email notifications',
+            'Parent and teen dashboards',
+            'Real-time monitoring'
+          ],
+          safety_plus: [
+            'All Safety First features',
+            'Phone usage during driving alerts',
+            'Advanced monitoring controls',
+            'Priority customer support'
+          ]
+        }[tier as 'safety_first' | 'safety_plus']
+      });
+    } catch (error) {
+      console.error("Error fetching pricing:", error);
+      res.status(500).json({ message: "Failed to fetch pricing" });
     }
   });
 
@@ -94,6 +255,19 @@ export function registerRoutes(app: Express): Server {
         lastAllowanceDate: new Date(),
         nextAllowanceDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
+      
+      // Update parent's subscription teen count
+      const subscription = await storage.getSubscription(parentId);
+      if (subscription) {
+        const newTeenCount = await storage.getTeenCountForParent(parentId);
+        const pricing = storage.calculateSubscriptionPrice(subscription.tier, newTeenCount);
+        await storage.updateSubscription(parentId, {
+          teenCount: newTeenCount,
+          basePrice: pricing.basePrice,
+          additionalTeenPrice: pricing.additionalPrice,
+          totalPrice: pricing.totalPrice,
+        });
+      }
 
       res.status(201).json({
         id: teen.id,
@@ -671,6 +845,37 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+
+  // Trial management endpoints (admin only - would typically be protected by admin role)
+  app.post('/api/admin/process-trials', async (req, res) => {
+    try {
+      const result = await trialManager.processExpiredTrials();
+      res.json(result);
+    } catch (error) {
+      console.error("Error processing trials:", error);
+      res.status(500).json({ message: "Failed to process trials" });
+    }
+  });
+
+  app.post('/api/admin/send-trial-reminders', async (req, res) => {
+    try {
+      const sentCount = await trialManager.sendTrialReminders();
+      res.json({ sentReminders: sentCount });
+    } catch (error) {
+      console.error("Error sending trial reminders:", error);
+      res.status(500).json({ message: "Failed to send trial reminders" });
+    }
+  });
+
+  app.get('/api/admin/trial-stats', async (req, res) => {
+    try {
+      const stats = await trialManager.getTrialStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error getting trial stats:", error);
+      res.status(500).json({ message: "Failed to get trial stats" });
+    }
+  });
 
   // Test email notifications endpoint
   app.post('/api/test-notifications', async (req, res) => {

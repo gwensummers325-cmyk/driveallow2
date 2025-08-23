@@ -62,6 +62,21 @@ export const violationSeverityEnum = pgEnum('violation_severity', [
   'critical'
 ]);
 
+// Subscription tier enum
+export const subscriptionTierEnum = pgEnum('subscription_tier', [
+  'safety_first',
+  'safety_plus'
+]);
+
+// Subscription status enum
+export const subscriptionStatusEnum = pgEnum('subscription_status', [
+  'trial',
+  'active',
+  'cancelled',
+  'past_due',
+  'expired'
+]);
+
 // Users table  
 export const users: any = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -201,13 +216,39 @@ export const monitoringAlerts = pgTable("monitoring_alerts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   teenId: varchar("teen_id").notNull().references(() => users.id),
   parentId: varchar("parent_id").notNull().references(() => users.id),
-  type: varchar("type").notNull(), // 'speed', 'harsh_brake', 'aggressive_accel', 'trip_start', 'trip_end'
+  type: varchar("type").notNull(), // 'speed', 'harsh_brake', 'aggressive_accel', 'trip_start', 'trip_end', 'phone_usage'
   message: text("message").notNull(),
   severity: violationSeverityEnum("severity").notNull().default('medium'),
   isRead: boolean("is_read").notNull().default(false),
   tripId: varchar("trip_id").references(() => drivingTrips.id),
   violationId: varchar("violation_id").references(() => drivingViolations.id),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Subscriptions table
+export const subscriptions = pgTable("subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentId: varchar("parent_id").notNull().references(() => users.id).unique(),
+  tier: subscriptionTierEnum("tier").notNull().default('safety_first'),
+  status: subscriptionStatusEnum("status").notNull().default('trial'),
+  teenCount: integer("teen_count").notNull().default(0),
+  basePrice: decimal("base_price", { precision: 10, scale: 2 }).notNull(),
+  additionalTeenPrice: decimal("additional_teen_price", { precision: 10, scale: 2 }).notNull().default('0.00'),
+  totalPrice: decimal("total_price", { precision: 10, scale: 2 }).notNull(),
+  // Trial management
+  trialStartDate: timestamp("trial_start_date").defaultNow(),
+  trialEndDate: timestamp("trial_end_date"),
+  // Billing
+  stripeSubscriptionId: varchar("stripe_subscription_id").unique(),
+  stripePriceId: varchar("stripe_price_id"),
+  currentPeriodStart: timestamp("current_period_start"),
+  currentPeriodEnd: timestamp("current_period_end"),
+  cancelAtPeriodEnd: boolean("cancel_at_period_end").default(false),
+  canceledAt: timestamp("canceled_at"),
+  // Phone usage alerts (Safety Plus only)
+  phoneUsageAlertsEnabled: boolean("phone_usage_alerts_enabled").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 // Relations
@@ -224,6 +265,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   transactions: many(transactions),
   incidents: many(incidents),
   allowanceBalance: one(allowanceBalances),
+  subscription: one(subscriptions),
 }));
 
 export const allowanceSettingsRelations = relations(allowanceSettings, ({ one }) => ({
@@ -325,6 +367,13 @@ export const monitoringAlertsRelations = relations(monitoringAlerts, ({ one }) =
   }),
 }));
 
+export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
+  parent: one(users, {
+    fields: [subscriptions.parentId],
+    references: [users.id],
+  }),
+}));
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -373,6 +422,12 @@ export const insertMonitoringAlertSchema = createInsertSchema(monitoringAlerts).
   createdAt: true,
 });
 
+export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -393,3 +448,5 @@ export type DrivingViolation = typeof drivingViolations.$inferSelect;
 export type InsertDrivingViolation = z.infer<typeof insertDrivingViolationSchema>;
 export type MonitoringAlert = typeof monitoringAlerts.$inferSelect;
 export type InsertMonitoringAlert = z.infer<typeof insertMonitoringAlertSchema>;
+export type Subscription = typeof subscriptions.$inferSelect;
+export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
