@@ -37,6 +37,12 @@ export default function ParentDashboard() {
     enabled: !!user && !isLoading,
   });
 
+  // Fetch subscription data to conditionally show features
+  const { data: subscription } = useQuery({
+    queryKey: ["/api/subscription"],
+    enabled: !!user && !isLoading,
+  }) as { data: any };
+
   const payAllowanceMutation = useMutation({
     mutationFn: async (teenId: string) => {
       await apiRequest("POST", "/api/allowance/pay", { teenId });
@@ -364,7 +370,7 @@ export default function ParentDashboard() {
                       </Button>
                     </div>
                   );
-                })})
+                })}
               </div>
               <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                 <div className="flex items-center justify-between">
@@ -454,10 +460,12 @@ export default function ParentDashboard() {
                             <span className="text-blue-600 text-sm">Hard Accel:</span>
                             <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.aggressiveAccelPenalty || '5.00')}</span>
                           </div>
-                          <div className="grid grid-cols-2 gap-4 items-center">
-                            <span className="text-blue-600 text-sm">Phone Usage:</span>
-                            <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.phoneUsagePenalty || '15.00')}</span>
-                          </div>
+                          {subscription?.tier === 'safety_plus' && (
+                            <div className="grid grid-cols-2 gap-4 items-center">
+                              <span className="text-blue-600 text-sm">Phone Usage:</span>
+                              <span className="font-medium text-sm text-right whitespace-nowrap">{formatCurrency(teen.settings?.phoneUsagePenalty || '15.00')}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 

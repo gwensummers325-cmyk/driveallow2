@@ -45,6 +45,7 @@ export function SubscriptionPanel() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
       toast({
         title: "Success",
         description: "Subscription tier updated successfully!",
