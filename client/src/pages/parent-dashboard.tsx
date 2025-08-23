@@ -297,27 +297,39 @@ export default function ParentDashboard() {
                 {owedTransactions.map((transaction: any) => {
                   const teen = teens.find((t: any) => t.id === transaction.teenId);
                   return (
-                    <div key={transaction.id} className="p-3 bg-white rounded-lg border border-orange-200">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-900">
-                          {teen?.firstName} {teen?.lastName}
-                        </span>
-                        <span className="font-bold text-lg text-green-600">
-                          ${parseFloat(transaction.amount).toFixed(2)}
-                        </span>
+                    <div key={transaction.id} className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-900">
+                            {teen?.firstName} {teen?.lastName}
+                          </span>
+                          <span className="font-bold text-lg text-green-600">
+                            ${parseFloat(transaction.amount).toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          <span className="capitalize bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
+                            {transaction.type}
+                          </span>
+                          {transaction.description}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {new Date(transaction.createdAt).toLocaleDateString()}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        <span className="capitalize bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mr-2">
-                          {transaction.type}
-                        </span>
-                        {transaction.description}
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
-                      </div>
+                      <Button
+                        onClick={() => markAsPaidMutation.mutate(transaction.id)}
+                        disabled={markAsPaidMutation.isPending}
+                        className="ml-4 bg-green-600 hover:bg-green-700 text-white"
+                        size="sm"
+                        data-testid={`button-mark-paid-${transaction.id}`}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        {markAsPaidMutation.isPending ? 'Marking...' : 'Mark as Paid'}
+                      </Button>
                     </div>
                   );
-                })}
+                })
               </div>
               <div className="mt-4 p-3 bg-orange-100 rounded-lg">
                 <div className="flex items-center justify-between">
@@ -329,7 +341,7 @@ export default function ParentDashboard() {
               </div>
             </CardContent>
           </Card>
-        ) || null}
+        )}
 
         {/* Individual Teen Cards */}
         {teens.length > 0 && (
@@ -447,16 +459,6 @@ export default function ParentDashboard() {
                         >
                           <Gift className="h-3 w-3 mr-1" />
                           Add Bonus
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => payAllowanceMutation.mutate(teen.id)}
-                          disabled={payAllowanceMutation.isPending}
-                          className="text-xs md:text-sm min-h-[36px]"
-                        >
-                          <Plus className="h-3 w-3 mr-1" />
-                          {payAllowanceMutation.isPending ? "Paying..." : "Pay Now"}
                         </Button>
                       </div>
                     </div>
