@@ -69,21 +69,23 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                   </Button>
                 </div>
               ) : (
-                <div className="flex space-x-2 md:space-x-3">
+                <div className="flex space-x-1 sm:space-x-2 md:space-x-3">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => setLocation('/auth/parent')}
-                    className="text-xs md:text-sm px-2 md:px-3"
+                    className="text-xs md:text-sm px-1 sm:px-2 md:px-3 min-w-0"
                   >
-                    <span className="hidden sm:inline">Parent </span>Sign In
+                    <span className="sm:hidden">P</span>
+                    <span className="hidden sm:inline">Parent</span>
                   </Button>
                   <Button 
                     size="sm"
                     onClick={() => setLocation('/auth/teen')}
-                    className="text-xs md:text-sm px-2 md:px-3"
+                    className="text-xs md:text-sm px-1 sm:px-2 md:px-3 min-w-0"
                   >
-                    <span className="hidden sm:inline">Teen </span>Sign In
+                    <span className="sm:hidden">T</span>
+                    <span className="hidden sm:inline">Teen</span>
                   </Button>
                 </div>
               )}
