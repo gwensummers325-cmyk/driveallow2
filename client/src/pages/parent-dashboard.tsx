@@ -612,11 +612,6 @@ export default function ParentDashboard() {
           </div>
         </div>
 
-        {/* Subscription Management */}
-        <div className="mt-8">
-          <SubscriptionPanel />
-        </div>
-
         {/* Settings Panel */}
         {teens.length > 0 && (
           <div className="mt-8">
@@ -627,6 +622,11 @@ export default function ParentDashboard() {
             />
           </div>
         )}
+
+        {/* Subscription Management */}
+        <div className="mt-8">
+          <SubscriptionPanel />
+        </div>
       </main>
 
       {/* Modals */}
