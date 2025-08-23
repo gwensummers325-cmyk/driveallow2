@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./auth";
 import { emailService } from "./emailService";
 import { trialManager } from "./trial-manager";
+import { StripeService } from "./stripe-service";
 import { 
   insertAllowanceSettingsSchema,
   insertTransactionSchema,
@@ -255,10 +256,45 @@ export function registerRoutes(app: Express): Server {
         nextAllowanceDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
       
-      // Update parent's subscription teen count
+      // Handle prorated billing and update subscription
       const subscription = await storage.getSubscription(parentId);
+      let oldTeenCount = 0;
+      let proratedAmount: string | null = null;
+      
       if (subscription) {
+        oldTeenCount = subscription.teenCount;
         const newTeenCount = await storage.getTeenCountForParent(parentId);
+        
+        // Check if this adds a teen beyond the base plan (more than 2 teens)
+        const isAddingPaidTeen = oldTeenCount >= 2 && newTeenCount > oldTeenCount;
+        
+        // For active subscriptions, charge prorated amount immediately
+        if (isAddingPaidTeen && subscription.status === 'active' && 
+            subscription.currentPeriodStart && subscription.currentPeriodEnd && 
+            parent.stripeCustomerId) {
+          
+          proratedAmount = storage.calculateProratedAmount(
+            subscription.tier,
+            new Date(subscription.currentPeriodStart),
+            new Date(subscription.currentPeriodEnd)
+          );
+          
+          if (proratedAmount && parseFloat(proratedAmount) > 0) {
+            const chargeResult = await StripeService.chargeProratedAmount(
+              parent.stripeCustomerId,
+              proratedAmount,
+              `Prorated charge for additional teen driver: ${teen.firstName} ${teen.lastName}`
+            );
+            
+            if (!chargeResult.success) {
+              console.error('Prorated billing failed:', chargeResult.error);
+              // Note: We continue with the teen creation even if prorated billing fails
+              // This avoids blocking teen creation due to payment issues
+            }
+          }
+        }
+        
+        // Update subscription pricing
         const pricing = storage.calculateSubscriptionPrice(subscription.tier, newTeenCount);
         await storage.updateSubscription(parentId, {
           teenCount: newTeenCount,
@@ -275,6 +311,7 @@ export function registerRoutes(app: Express): Server {
         lastName: teen.lastName,
         email: teen.email,
         role: teen.role,
+        proratedCharge: proratedAmount,
       });
     } catch (error) {
       console.error("Error creating teen account:", error);

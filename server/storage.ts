@@ -56,6 +56,7 @@ export interface IStorage {
   updateSubscription(parentId: string, updates: Partial<InsertSubscription>): Promise<Subscription>;
   getTeenCountForParent(parentId: string): Promise<number>;
   calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
+  calculateProratedAmount(tier: 'safety_first' | 'safety_plus', currentPeriodStart: Date, currentPeriodEnd: Date): string;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -333,6 +334,23 @@ export class DatabaseStorage implements IStorage {
     const totalPrice = (tierPricing.base + (additionalTeens * tierPricing.additional)).toFixed(2);
     
     return { basePrice, additionalPrice, totalPrice };
+  }
+
+  calculateProratedAmount(tier: 'safety_first' | 'safety_plus', currentPeriodStart: Date, currentPeriodEnd: Date): string {
+    const prices = {
+      safety_first: { additional: 8.99 },
+      safety_plus: { additional: 9.99 }
+    };
+    
+    const now = new Date();
+    const totalDays = Math.ceil((currentPeriodEnd.getTime() - currentPeriodStart.getTime()) / (1000 * 60 * 60 * 24));
+    const remainingDays = Math.ceil((currentPeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    
+    // Calculate prorated amount for additional teen
+    const monthlyPrice = prices[tier].additional;
+    const proratedAmount = (monthlyPrice * remainingDays) / totalDays;
+    
+    return Math.max(0, proratedAmount).toFixed(2);
   }
 
 }

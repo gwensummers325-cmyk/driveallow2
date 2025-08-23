@@ -31,11 +31,21 @@ export function CreateTeenModal({ isOpen, onClose }: CreateTeenModalProps) {
       });
       return response.json();
     },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Teen account created successfully!",
-      });
+    onSuccess: (response) => {
+      // Check if there was a prorated charge
+      if (response.proratedCharge && parseFloat(response.proratedCharge) > 0) {
+        toast({
+          title: "Teen Created Successfully!",
+          description: `${response.firstName} has been added to your account. A prorated charge of $${parseFloat(response.proratedCharge).toFixed(2)} has been applied for the remaining billing period.`,
+          duration: 6000, // Show longer for important billing information
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Teen account created successfully!",
+        });
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
       onClose();
       setFormData({
