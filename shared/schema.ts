@@ -9,6 +9,7 @@ import {
   text,
   boolean,
   pgEnum,
+  integer,
   unique,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
@@ -42,6 +43,7 @@ export const incidentTypeEnum = pgEnum('incident_type', [
   'speeding_major', 
   'harsh_braking',
   'aggressive_acceleration',
+  'phone_usage',
   'other'
 ]);
 
@@ -91,6 +93,7 @@ export const allowanceSettings = pgTable("allowance_settings", {
   speedingMajorPenalty: decimal("speeding_major_penalty", { precision: 10, scale: 2 }).notNull().default('10.00'),
   harshBrakingPenalty: decimal("harsh_braking_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
   aggressiveAccelPenalty: decimal("aggressive_accel_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
+  phoneUsagePenalty: decimal("phone_usage_penalty", { precision: 10, scale: 2 }).notNull().default('15.00'),
   perfectWeekBonus: decimal("perfect_week_bonus", { precision: 10, scale: 2 }).notNull().default('10.00'),
   speedComplianceBonus: decimal("speed_compliance_bonus", { precision: 10, scale: 2 }).notNull().default('2.00'),
   createdAt: timestamp("created_at").defaultNow(),
@@ -128,6 +131,10 @@ export const incidents = pgTable("incidents", {
   severity: varchar("severity", { length: 10 }).default('medium'),
   speedRecorded: varchar("speed_recorded"),
   speedLimit: varchar("speed_limit"),
+  // Phone usage specific fields
+  phoneUsageType: varchar("phone_usage_type"), // 'screen_interaction', 'app_switch', 'text_input', 'call_answered'
+  usageDuration: integer("usage_duration"), // in seconds
+  appName: varchar("app_name"), // which app was being used
   createdAt: timestamp("created_at").defaultNow(),
 });
 

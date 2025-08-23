@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -7,18 +7,56 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target } from "lucide-react";
+import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target, Smartphone } from "lucide-react";
 import { MonitoringStatus } from "@/components/monitoring-status";
 import { Layout } from "@/components/layout";
+import { phoneMonitor } from "@/lib/phone-monitor";
 
 export default function TeenDashboard() {
   const { toast } = useToast();
   const { user, isLoading } = useAuth();
+  const [isDriving, setIsDriving] = useState(false);
+  const [phoneMonitorStatus, setPhoneMonitorStatus] = useState(phoneMonitor.getStatus());
+  const [currentTripId, setCurrentTripId] = useState<string | null>(null);
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
     queryKey: ["/api/dashboard/teen"],
     enabled: !!user && !isLoading,
   });
+
+  // Update phone monitor status periodically
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhoneMonitorStatus(phoneMonitor.getStatus());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle start/stop driving
+  const handleStartDriving = () => {
+    const tripId = `trip-${Date.now()}`;
+    setCurrentTripId(tripId);
+    setIsDriving(true);
+    phoneMonitor.startMonitoring(tripId);
+    toast({
+      title: "Driving Started",
+      description: "📱 Phone usage monitoring is now active. Stay focused!",
+    });
+  };
+
+  const handleStopDriving = () => {
+    const violations = phoneMonitor.stopMonitoring();
+    setIsDriving(false);
+    setCurrentTripId(null);
+    
+    toast({
+      title: "Driving Ended",
+      description: violations.length > 0 
+        ? `⚠️ ${violations.length} phone usage violations detected`
+        : "✅ No phone usage violations - great job!",
+      variant: violations.length > 0 ? "destructive" : "default"
+    });
+  };
 
   // Redirect to home if not authenticated
   useEffect(() => {
@@ -134,6 +172,50 @@ export default function TeenDashboard() {
 
       {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        {/* Phone Monitoring Controls */}
+        <div className="mb-8">
+          <Card className={`${isDriving ? 'border-red-200 bg-red-50' : 'border-gray-200'}`}>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Smartphone className="h-5 w-5 mr-2" />
+                Phone Usage Monitoring
+                {isDriving && (
+                  <Badge variant="destructive" className="ml-2">ACTIVE</Badge>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  {isDriving ? (
+                    <div className="space-y-2">
+                      <p className="text-sm text-gray-700">
+                        📱 Phone monitoring is active. Any phone usage will result in penalties.
+                      </p>
+                      <p className="text-xs text-red-600 font-medium">
+                        Violations this trip: {phoneMonitorStatus.violationsCount}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-700">
+                      Start driving to activate automatic phone usage monitoring.
+                    </p>
+                  )}
+                </div>
+                <Button 
+                  onClick={isDriving ? handleStopDriving : handleStartDriving}
+                  variant={isDriving ? "destructive" : "default"}
+                  className="ml-4"
+                  data-testid={isDriving ? "button-stop-driving" : "button-start-driving"}
+                >
+                  <Car className="h-4 w-4 mr-2" />
+                  {isDriving ? 'Stop Driving' : 'Start Driving'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Overview Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card>

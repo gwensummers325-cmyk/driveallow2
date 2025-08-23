@@ -272,6 +272,57 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Phone usage violation reporting
+  app.post("/api/phone-violations", isAuthenticated, async (req, res) => {
+    const userId = req.user?.claims?.sub;
+    const { tripId, type, duration, timestamp, details } = req.body;
+    
+    try {
+      // Get user to verify teen role
+      const user = await storage.getUser(userId);
+      if (!user || user.role !== 'teen') {
+        return res.status(403).json({ message: "Only teens can report phone violations" });
+      }
+
+      // Get teen's allowance settings to determine penalty amount
+      const settings = await storage.getAllowanceSettings(user.parentId!, user.id);
+      const penaltyAmount = parseFloat(settings?.phoneUsagePenalty || '15.00');
+
+      // Create incident record
+      const incident = await storage.createIncident({
+        teenId: user.id,
+        parentId: user.parentId!,
+        type: 'phone_usage',
+        location: 'Unknown location',
+        penaltyAmount: penaltyAmount.toFixed(2),
+        notes: `${type}: ${details || 'Phone used while driving'}`,
+        autoReported: true,
+        phoneUsageType: type,
+        usageDuration: duration,
+      });
+
+      // Create penalty transaction
+      const transaction = await storage.createTransaction({
+        teenId: user.id,
+        parentId: user.parentId!,
+        type: 'penalty',
+        amount: penaltyAmount.toFixed(2),
+        description: `Phone usage violation: ${type}`,
+        location: 'Detected automatically',
+      });
+      
+      res.json({ 
+        success: true, 
+        incident,
+        transaction,
+        penaltyAmount 
+      });
+    } catch (error) {
+      console.error('Error reporting phone violation:', error);
+      res.status(500).json({ message: "Failed to report phone violation" });
+    }
+  });
+
   // Bonus routes
   app.post('/api/bonuses', isAuthenticated, async (req: any, res) => {
     try {
