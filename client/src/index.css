@@ -145,8 +145,30 @@
   }
 }
 
+@keyframes headlineCarDrive {
+  0% {
+    transform: translateX(-100px) rotate(-10deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(100vw + 100px)) rotate(10deg);
+    opacity: 0;
+  }
+}
+
 .headline-animate {
   animation: headlineFadeInUp 1s ease-out, headlinePulse 3s ease-in-out infinite 1s;
+}
+
+.headline-car {
+  animation: headlineCarDrive 4s ease-in-out infinite;
+  animation-delay: 2s;
 }
 
 /* Story Scene Animations */

@@ -31,10 +31,15 @@ export default function Landing() {
           {/* Hero Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
             {/* Left side - Text Content */}
-            <div className="text-center lg:text-left">
-              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight font-anton headline-animate">
+            <div className="text-center lg:text-left relative">
+              <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight font-anton headline-animate relative z-10">
                 Drive Safe. Get Rewarded.
               </h2>
+              
+              {/* Moving Car Animation */}
+              <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+                <Car className="absolute top-1/2 -translate-y-1/2 h-8 w-8 text-primary headline-car" />
+              </div>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
                 DriveAllow incentivizes safe teen driving using smart allowance management that rewards good driving habits.
