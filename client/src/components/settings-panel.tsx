@@ -209,60 +209,60 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Violation Penalties</h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Speeding (3-10 mph over)</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Speeding (3-10 mph over)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.speedingMinorPenalty}
                       onChange={(e) => handleInputChange('speedingMinorPenalty', e.target.value)}
                     />
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Speeding (11+ mph over)</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Speeding (11+ mph over)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.speedingMajorPenalty}
                       onChange={(e) => handleInputChange('speedingMajorPenalty', e.target.value)}
                     />
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Harsh Braking</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Harsh Braking</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.harshBrakingPenalty}
                       onChange={(e) => handleInputChange('harshBrakingPenalty', e.target.value)}
                     />
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Aggressive Acceleration</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Aggressive Acceleration</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.aggressiveAccelPenalty}
                       onChange={(e) => handleInputChange('aggressiveAccelPenalty', e.target.value)}
                     />
@@ -275,30 +275,30 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Safe Driving Incentives</h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Perfect week (no violations)</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Perfect week (no violations)</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.perfectWeekBonus}
                       onChange={(e) => handleInputChange('perfectWeekBonus', e.target.value)}
                     />
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <Label className="text-xs text-gray-600">Speed limit compliance</Label>
-                  <div className="flex items-center">
-                    <span className="text-gray-500 mr-1">$</span>
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Speed limit compliance</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <Input
                       type="number"
                       step="0.01"
                       min="0"
-                      className="w-16 text-xs"
+                      className="pl-6 text-sm"
                       value={settings.speedComplianceBonus}
                       onChange={(e) => handleInputChange('speedComplianceBonus', e.target.value)}
                     />
