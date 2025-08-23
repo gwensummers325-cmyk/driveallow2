@@ -135,7 +135,7 @@ export default function FeeDisclosures() {
                     <strong>Billing Cycle:</strong> Monthly fees are charged on the same day each month. Your billing date is established when you first subscribe and can be viewed in your account settings.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>Payment Methods:</strong> We accept major credit cards, debit cards, and PayPal. Payment information is processed securely through our certified payment partners.
+                    <strong>Payment Methods:</strong> Subscription fees would be processed through secure third-party payment processors. DriveAllow does not handle payment processing directly.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
                     <strong>Failed Payments:</strong> If a payment fails, we will attempt to charge your payment method up to 3 times over 7 days. Services may be suspended if payment cannot be processed.
@@ -162,13 +162,13 @@ export default function FeeDisclosures() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">Important Disclosures</h2>
                 <div className="space-y-4">
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>No Financial Institution:</strong> DriveAllow is not a bank or financial institution. We provide monitoring and allowance tracking services only. Any financial transactions are managed through your own banking relationships.
+                    <strong>Not a Financial Institution:</strong> DriveAllow is not a bank, credit union, or financial institution. We provide teen driving monitoring and allowance tracking services only. We do not handle, store, or process any actual money. All allowance amounts displayed are for tracking and educational purposes only.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
                     <strong>Data Usage:</strong> Our services require data connections. Standard mobile data charges from your carrier may apply when using location services and real-time monitoring features.
                   </p>
                   <p className="text-gray-700 leading-relaxed">
-                    <strong>Third-Party Fees:</strong> Some features may involve third-party services (mapping, notifications) that could incur separate charges. We will clearly disclose any such fees before activation.
+                    <strong>Third-Party Services:</strong> Our monitoring features use third-party services (mapping data, notifications) but do not involve financial transactions. Standard mobile data charges from your carrier may apply when using location services.
                   </p>
                 </div>
               </section>

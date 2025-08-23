@@ -64,8 +64,8 @@ export default function PrivacyPolicy() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-medium text-gray-800 mb-2">Financial Transaction Information</h3>
-                    <p className="text-gray-700 text-sm mb-2">Such as allowance settings, penalty amounts, transaction history, and account balances for any financial features of the service.</p>
+                    <h3 className="text-lg font-medium text-gray-800 mb-2">Allowance Tracking Information</h3>
+                    <p className="text-gray-700 text-sm mb-2">Such as allowance settings, penalty amounts, bonus tracking, and account activity for educational and monitoring purposes. No actual financial transactions are processed.</p>
                   </div>
                 </div>
               </section>

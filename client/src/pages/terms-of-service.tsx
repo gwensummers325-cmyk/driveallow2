@@ -45,7 +45,7 @@ export default function TermsOfService() {
                   <div>
                     <h3 className="text-lg font-medium text-gray-800 mb-2">B) Allowance Management System</h3>
                     <p className="text-gray-700 leading-relaxed">
-                      Automated allowance calculation, penalty application, bonus rewards, transaction tracking, and financial behavior incentives based on driving performance.
+                      Automated allowance tracking, penalty calculation, bonus point awards, and behavior tracking based on driving performance. All amounts are for educational and monitoring purposes only - no actual money is handled or transferred.
                     </p>
                   </div>
                   <div>
@@ -200,7 +200,7 @@ export default function TermsOfService() {
                     <li><strong>Mapping and Location Services:</strong> HERE Maps API for speed limit data and location verification</li>
                     <li><strong>Email Services:</strong> SMTP providers for incident notifications and system communications</li>
                     <li><strong>Database and Hosting:</strong> Cloud infrastructure providers for secure data storage and app hosting</li>
-                    <li><strong>Payment Processing:</strong> If payment features are added, we will partner with regulated financial institutions</li>
+                    <li><strong>Technology Services:</strong> We partner with technology companies for mapping, hosting, and communication services</li>
                   </ul>
                   <p className="text-gray-700 leading-relaxed">
                     These service providers are contractually bound to protect your information and use it only for providing services to DriveAllow. We regularly review our partners' security practices and data handling procedures.
