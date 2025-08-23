@@ -296,10 +296,10 @@ export default function Landing() {
                 size="lg"
                 onClick={() => setLocation('/auth/teen')}
                 className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
-                data-testid="cta-teen-signup"
+                data-testid="cta-teen-signin"
               >
                 <Car className="h-5 w-5 mr-2" />
-                Join as Teen
+                Sign In as Teen
               </Button>
             </div>
             
