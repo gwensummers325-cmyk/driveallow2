@@ -176,14 +176,17 @@ export function SubscriptionPanel() {
                 </h3>
                 <p className="text-gray-600 flex items-center mt-1">
                   <Users className="h-4 w-4 mr-1" />
-                  {subscription?.teenCount || 0} teen driver{(subscription?.teenCount || 0) !== 1 ? 's' : ''}
+                  {subscription?.teenCount > 2 
+                    ? `${subscription?.teenCount} drivers (2 included + ${subscription?.teenCount - 2} additional)`
+                    : `${subscription?.teenCount || 0} driver${(subscription?.teenCount || 0) !== 1 ? 's' : ''} (up to 2 included)`
+                  }
                 </p>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold">${subscription?.totalPrice}/month</div>
                 {subscription?.additionalTeenPrice !== '0.00' && (
                   <div className="text-sm text-gray-600">
-                    Base: ${subscription?.basePrice} + ${subscription?.additionalTeenPrice} additional
+                    Base: ${subscription?.basePrice} (2 drivers) + ${subscription?.additionalTeenPrice} additional drivers
                   </div>
                 )}
               </div>
@@ -250,7 +253,7 @@ export function SubscriptionPanel() {
               <div className="text-center">
                 <div className="text-3xl font-bold">${safetyFirstPricing?.totalPrice}/month</div>
                 <div className="text-sm text-gray-600">
-                  For {subscription?.teenCount || 1} teen driver{(subscription?.teenCount || 0) !== 1 ? 's' : ''}
+                  {subscription?.teenCount > 2 ? `${subscription?.teenCount} drivers (2 included + ${subscription?.teenCount - 2} additional)` : 'Up to 2 drivers included'}
                 </div>
               </div>
               
@@ -296,7 +299,7 @@ export function SubscriptionPanel() {
               <div className="text-center">
                 <div className="text-3xl font-bold">${safetyPlusPricing?.totalPrice}/month</div>
                 <div className="text-sm text-gray-600">
-                  For {subscription?.teenCount || 1} teen driver{(subscription?.teenCount || 0) !== 1 ? 's' : ''}
+                  {subscription?.teenCount > 2 ? `${subscription?.teenCount} drivers (2 included + ${subscription?.teenCount - 2} additional)` : 'Up to 2 drivers included'}
                 </div>
               </div>
               

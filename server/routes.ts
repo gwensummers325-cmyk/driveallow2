@@ -179,16 +179,15 @@ export function registerRoutes(app: Express): Server {
         features: {
           safety_first: [
             'Smart allowance management',
-            'Driving incident tracking',
+            'Driving incident tracking', 
             'Email notifications',
             'Parent and teen dashboards',
-            'Real-time monitoring'
+            'Up to 2 drivers included'
           ],
           safety_plus: [
             'All Safety First features',
             'Phone usage during driving alerts',
-            'Advanced monitoring controls',
-            'Priority customer support'
+            'Up to 2 drivers included'
           ]
         }[tier as 'safety_first' | 'safety_plus']
       });

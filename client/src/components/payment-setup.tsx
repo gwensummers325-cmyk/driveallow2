@@ -40,9 +40,10 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
       features: [
         'Driving behavior monitoring',
         'Allowance management',
-        'Incident reporting',
+        'Incident reporting', 
         'Safety scoring',
-        'Email notifications'
+        'Email notifications',
+        'Up to 2 drivers included'
       ]
     },
     safety_plus: {
@@ -51,9 +52,7 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
       features: [
         'All Safety First features',
         'Phone usage monitoring',
-        'Advanced analytics',
-        'Priority support',
-        'Custom incident alerts'
+        'Up to 2 drivers included'
       ]
     }
   };

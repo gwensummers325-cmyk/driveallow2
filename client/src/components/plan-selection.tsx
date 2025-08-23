@@ -19,11 +19,12 @@ export function PlanSelection({ selectedPlan, onPlanSelect, onContinue }: PlanSe
       icon: Shield,
       features: [
         'Driving behavior monitoring',
-        'Allowance management',
+        'Allowance management', 
         'Incident reporting',
         'Safety scoring',
         'Email notifications',
-        'Weekly allowance automation'
+        'Weekly allowance automation',
+        'Up to 2 drivers included'
       ],
       additionalTeenPrice: 8.99
     },
@@ -37,10 +38,7 @@ export function PlanSelection({ selectedPlan, onPlanSelect, onContinue }: PlanSe
       features: [
         'All Safety First features',
         'Phone usage monitoring',
-        'Advanced analytics',
-        'Priority support',
-        'Custom incident alerts',
-        'Real-time notifications'
+        'Up to 2 drivers included'
       ],
       additionalTeenPrice: 9.99
     }
@@ -92,7 +90,7 @@ export function PlanSelection({ selectedPlan, onPlanSelect, onContinue }: PlanSe
                   <div className="text-3xl font-bold">${plan.price}</div>
                   <div className="text-sm text-gray-600">per month</div>
                   <div className="text-xs text-gray-500 mt-1">
-                    +${plan.additionalTeenPrice}/month per additional teen
+                    +${plan.additionalTeenPrice}/month per additional driver (beyond 2)
                   </div>
                 </div>
               </CardHeader>
