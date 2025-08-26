@@ -845,9 +845,13 @@ export default function Landing() {
                   </div>
                 </div>
                 <div className="text-lg text-blue-100 mb-3">DriveAllow Pro - Unlimited Teen Drivers</div>
-                <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  7-day free trial included
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    7-day free trial included
+                  </div>
+                  <div className="text-blue-200 text-sm">•</div>
+                  <div className="text-blue-200 text-sm font-medium">Cancel anytime</div>
                 </div>
               </div>
             </div>
