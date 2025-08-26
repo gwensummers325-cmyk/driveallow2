@@ -22,7 +22,7 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 interface PaymentSetupProps {
-  selectedPlan: 'safety_first' | 'safety_plus';
+  selectedPlan: 'safety_first' | 'safety_plus' | 'driveallow_pro';
   onPaymentSetup: (paymentMethodId: string) => void;
   isLoading: boolean;
 }
@@ -53,6 +53,17 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
         'All Safety First features',
         'Phone usage monitoring',
         'Up to 2 drivers included'
+      ]
+    },
+    driveallow_pro: {
+      name: 'DriveAllow Pro',
+      price: 99,
+      features: [
+        'Unlimited teen drivers',
+        'Real-time driving behavior monitoring',
+        'Smart allowance management',
+        'Phone usage during driving alerts',
+        'All safety features included'
       ]
     }
   };

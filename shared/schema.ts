@@ -65,7 +65,8 @@ export const violationSeverityEnum = pgEnum('violation_severity', [
 // Subscription tier enum
 export const subscriptionTierEnum = pgEnum('subscription_tier', [
   'safety_first',
-  'safety_plus'
+  'safety_plus',
+  'driveallow_pro'
 ]);
 
 // Subscription status enum

@@ -103,7 +103,7 @@ export function setupAuth(app: Express) {
       }
 
       // Validate plan
-      if (!['safety_first', 'safety_plus'].includes(selectedPlan)) {
+      if (!['safety_first', 'safety_plus', 'driveallow_pro'].includes(selectedPlan)) {
         return res.status(400).json({ message: "Invalid plan selection" });
       }
       

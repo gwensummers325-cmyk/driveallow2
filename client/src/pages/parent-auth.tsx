@@ -18,7 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY!);
 
-type RegistrationStep = 'account' | 'plan' | 'payment';
+type RegistrationStep = 'account' | 'payment';
 
 export default function ParentAuth() {
   const { user, loginMutation } = useAuth();
@@ -39,7 +39,6 @@ export default function ParentAuth() {
   });
 
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>('account');
-  const [selectedPlan, setSelectedPlan] = useState<'safety_first' | 'safety_plus' | null>(null);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
 
   useEffect(() => {
@@ -67,7 +66,7 @@ export default function ParentAuth() {
       return;
     }
     
-    setRegistrationStep('plan');
+    setRegistrationStep('payment');
   };
 
   const registerWithPaymentMutation = useMutation({
@@ -75,7 +74,7 @@ export default function ParentAuth() {
       const response = await apiRequest("POST", "/api/register-with-payment", {
         ...registerForm,
         role: "parent",
-        selectedPlan,
+        selectedPlan: "driveallow_pro",
         paymentMethodId,
       });
       return response.json();
@@ -260,13 +259,13 @@ export default function ParentAuth() {
                         className="w-full" 
                         data-testid="button-continue-account"
                       >
-                        Continue to Plan Selection
+                        Continue to Payment
                         <ArrowRight className="h-4 w-4 ml-2" />
                       </Button>
                     </form>
                   </TabsContent>
                 </Tabs>
-              ) : registrationStep === 'plan' ? (
+              ) : (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <Button 
@@ -279,40 +278,21 @@ export default function ParentAuth() {
                       Back
                     </Button>
                     <div className="text-sm text-gray-500">
-                      Step 2 of 3
+                      Step 2 of 2
                     </div>
                   </div>
                   
-                  <PlanSelection
-                    selectedPlan={selectedPlan}
-                    onPlanSelect={setSelectedPlan}
-                    onContinue={() => setRegistrationStep('payment')}
-                  />
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <Button 
-                      variant="ghost" 
-                      onClick={() => setRegistrationStep('plan')}
-                      className="flex items-center gap-2"
-                      data-testid="button-back-to-plan"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Back
-                    </Button>
-                    <div className="text-sm text-gray-500">
-                      Step 3 of 3
-                    </div>
+                  <div className="space-y-6">
+                    <PlanSelection onContinue={() => {}} />
+                    
+                    <Elements stripe={stripePromise}>
+                      <PaymentSetup
+                        selectedPlan="driveallow_pro"
+                        onPaymentSetup={handlePaymentSetup}
+                        isLoading={registerWithPaymentMutation.isPending}
+                      />
+                    </Elements>
                   </div>
-                  
-                  <Elements stripe={stripePromise}>
-                    <PaymentSetup
-                      selectedPlan={selectedPlan!}
-                      onPaymentSetup={handlePaymentSetup}
-                      isLoading={registerWithPaymentMutation.isPending}
-                    />
-                  </Elements>
                 </div>
               )}
 

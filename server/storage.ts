@@ -55,8 +55,8 @@ export interface IStorage {
   createSubscription(subscription: InsertSubscription): Promise<Subscription>;
   updateSubscription(parentId: string, updates: Partial<InsertSubscription>): Promise<Subscription>;
   getTeenCountForParent(parentId: string): Promise<number>;
-  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
-  calculateProratedAmount(tier: 'safety_first' | 'safety_plus', currentPeriodStart: Date, currentPeriodEnd: Date): string;
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
+  calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', currentPeriodStart: Date, currentPeriodEnd: Date): string;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -321,36 +321,18 @@ export class DatabaseStorage implements IStorage {
     return result[0]?.count || 0;
   }
 
-  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string } {
-    const prices = {
-      safety_first: { base: 19.99, additional: 8.99 },
-      safety_plus: { base: 29.99, additional: 9.99 }
-    };
-    
-    const tierPricing = prices[tier];
-    const basePrice = tierPricing.base.toFixed(2);
-    const additionalTeens = Math.max(0, teenCount - 2);
-    const additionalPrice = (additionalTeens * tierPricing.additional).toFixed(2);
-    const totalPrice = (tierPricing.base + (additionalTeens * tierPricing.additional)).toFixed(2);
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string } {
+    // Single pricing for DriveAllow Pro - $99/month for unlimited teen drivers
+    const basePrice = "99.00";
+    const additionalPrice = "0.00"; // No additional cost for more teens
+    const totalPrice = "99.00";
     
     return { basePrice, additionalPrice, totalPrice };
   }
 
-  calculateProratedAmount(tier: 'safety_first' | 'safety_plus', currentPeriodStart: Date, currentPeriodEnd: Date): string {
-    const prices = {
-      safety_first: { additional: 8.99 },
-      safety_plus: { additional: 9.99 }
-    };
-    
-    const now = new Date();
-    const totalDays = Math.ceil((currentPeriodEnd.getTime() - currentPeriodStart.getTime()) / (1000 * 60 * 60 * 24));
-    const remainingDays = Math.ceil((currentPeriodEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    
-    // Calculate prorated amount for additional teen
-    const monthlyPrice = prices[tier].additional;
-    const proratedAmount = (monthlyPrice * remainingDays) / totalDays;
-    
-    return Math.max(0, proratedAmount).toFixed(2);
+  calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', currentPeriodStart: Date, currentPeriodEnd: Date): string {
+    // No prorated charges for DriveAllow Pro since unlimited teens are included
+    return "0.00";
   }
 
 }
