@@ -121,37 +121,6 @@ export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymen
 
   return (
     <div className="space-y-6">
-      {/* Plan Summary */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {selectedPlan === 'safety_plus' ? <SmartphoneNfc className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
-            {plan.name}
-            <Badge variant="secondary">${plan.price}/{plan.period || 'month'}</Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            {plan.features.map((feature, index) => (
-              <li key={index} className="flex items-center gap-2 text-sm">
-                <Check className="h-4 w-4 text-green-500" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>7-day free trial</strong> - Your subscription starts after the trial period
-              {billingPeriod === 'yearly' && (
-                <span className="block mt-1 font-medium text-green-700">
-                  Save $189 with yearly billing
-                </span>
-              )}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Payment Method */}
       <Card>
         <CardHeader>
