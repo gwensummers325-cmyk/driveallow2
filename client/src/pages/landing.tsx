@@ -282,8 +282,8 @@ export default function Landing() {
               </div>
 
               {/* Dashboard Toggle */}
-              <div className="flex justify-center mb-12">
-                <div className="bg-white p-2 rounded-xl shadow-lg border">
+              <div className="flex justify-center mb-12 px-4">
+                <div className="bg-white p-2 rounded-xl shadow-lg border w-full max-w-md flex justify-center">
                   <button
                     onClick={() => setActiveDashboard('parent')}
                     className={`px-8 py-3 rounded-lg font-semibold transition-all ${
@@ -312,11 +312,11 @@ export default function Landing() {
               </div>
 
               {/* Dashboard Content */}
-              <div className="relative w-full flex justify-center px-4">
+              <div className="relative">
                 {/* Parent Dashboard */}
-                <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${activeDashboard === 'parent' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
-                  <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                <div className={`transition-all duration-500 ${activeDashboard === 'parent' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
+                  <div className="bg-white rounded-2xl shadow-2xl p-8 border">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Left Column - Overview */}
                       <div className="space-y-6">
                         <div className="bg-gradient-to-r from-primary to-blue-600 text-white p-6 rounded-xl">
@@ -427,9 +427,9 @@ export default function Landing() {
                 </div>
 
                 {/* Teen Dashboard */}
-                <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${activeDashboard === 'teen' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
-                  <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                <div className={`transition-all duration-500 ${activeDashboard === 'teen' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
+                  <div className="bg-white rounded-2xl shadow-2xl p-8 border">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Left Column - Personal Stats */}
                       <div className="space-y-6">
                         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
