@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone, Mail, Activity, TrendingUp, AlertTriangle, Trophy, Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Layout } from "@/components/layout";
 import illustrationImage from "@assets/Gemini_Generated_Image_vpd2ukvpd2ukvpd2_1755869635476.png";
 
@@ -49,6 +49,35 @@ export default function Landing() {
       text: "Having twins who just got their licenses was terrifying, but DriveAllow has made the whole experience manageable. The family dashboard keeps everyone accountable and motivated."
     }
   ];
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let animationId: number;
+    const scrollSpeed = 0.5; // pixels per frame
+
+    const animate = () => {
+      if (scrollContainer) {
+        scrollContainer.scrollLeft += scrollSpeed;
+        
+        // Reset scroll when we've scrolled past all original items
+        const maxScroll = scrollContainer.scrollWidth / 2;
+        if (scrollContainer.scrollLeft >= maxScroll) {
+          scrollContainer.scrollLeft = 0;
+        }
+      }
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, []);
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -582,10 +611,15 @@ export default function Landing() {
                 {/* Testimonials Container */}
                 <div
                   ref={scrollRef}
-                  className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-12"
-                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  className="flex gap-6 overflow-x-auto scrollbar-hide px-12"
+                  style={{ 
+                    scrollbarWidth: 'none', 
+                    msOverflowStyle: 'none',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
                 >
-                  {testimonials.map((testimonial, index) => (
+                  {/* Render testimonials twice for infinite scroll effect */}
+                  {[...testimonials, ...testimonials].map((testimonial, index) => (
                     <div
                       key={index}
                       className="flex-none w-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border shadow-md hover:shadow-lg transition-shadow"
