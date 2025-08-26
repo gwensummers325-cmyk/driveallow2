@@ -261,7 +261,11 @@ export function registerRoutes(app: Express): Server {
         stripePriceId: newPriceId,
       });
       
-      res.json(updatedSubscription);
+      // Get fresh subscription data to return
+      const freshSubscription = await storage.getSubscription(parentId);
+      const teenCount = await storage.getTeenCountForParent(parentId);
+      
+      res.json({ ...freshSubscription, teenCount });
     } catch (error) {
       console.error("Error switching billing period:", error);
       res.status(500).json({ message: "Failed to switch billing period" });

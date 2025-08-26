@@ -139,6 +139,7 @@ export function SubscriptionPanel() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      queryClient.refetchQueries({ queryKey: ["/api/subscription"] });
       toast({
         title: "Success",
         description: "Billing period updated successfully!",
