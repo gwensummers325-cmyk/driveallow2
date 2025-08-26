@@ -266,9 +266,12 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Dashboard Preview Section */}
-          <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl mb-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        </main>
+      </div>
+
+      {/* Dashboard Preview Section */}
+      <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">
                   See DriveAllow in Action
@@ -309,11 +312,11 @@ export default function Landing() {
               </div>
 
               {/* Dashboard Content */}
-              <div className="relative">
+              <div className="relative w-full flex justify-center px-4">
                 {/* Parent Dashboard */}
-                <div className={`transition-all duration-500 ${activeDashboard === 'parent' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
-                  <div className="bg-white rounded-2xl shadow-2xl p-8 border">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${activeDashboard === 'parent' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
+                  <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Left Column - Overview */}
                       <div className="space-y-6">
                         <div className="bg-gradient-to-r from-primary to-blue-600 text-white p-6 rounded-xl">
@@ -424,9 +427,9 @@ export default function Landing() {
                 </div>
 
                 {/* Teen Dashboard */}
-                <div className={`transition-all duration-500 ${activeDashboard === 'teen' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
-                  <div className="bg-white rounded-2xl shadow-2xl p-8 border">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className={`w-full max-w-6xl mx-auto transition-all duration-500 ${activeDashboard === 'teen' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 absolute inset-0 pointer-events-none'}`}>
+                  <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border mx-auto">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                       {/* Left Column - Personal Stats */}
                       <div className="space-y-6">
                         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-xl">
@@ -705,198 +708,190 @@ export default function Landing() {
             </Button>
           </div>
 
-        </main>
-      </div>
-
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50">
-
-        {/* Features Grid */}
-        <div className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <DollarSign className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle className="text-lg">Smart Allowances</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Automatically manage allowances with configurable penalties and bonuses based on driving behavior.
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Shield className="h-6 w-6 text-success" />
-                </div>
-                <CardTitle className="text-lg">Safety Tracking</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Monitor driving incidents including speeding, harsh braking, and aggressive acceleration.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Smartphone className="h-6 w-6 text-purple-600" />
-                </div>
-                <CardTitle className="text-lg">Phone Use Monitoring</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Track phone usage while driving to prevent distractions and promote safer driving habits.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-6 w-6 text-error" />
-                </div>
-                <CardTitle className="text-lg">Family Control</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Separate dashboards for parents and teens with role-based access and controls.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-          </div>
-          
-          {/* Second row - centered */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-6 w-6 text-blue-600" />
-                </div>
-                <CardTitle className="text-lg">Unlimited Teen Drivers</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Monitor as many teen drivers as you need with no additional fees or restrictions.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Star className="h-6 w-6 text-green-600" />
-                </div>
-                <CardTitle className="text-lg">Automatic Safety Scoring</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Real-time safety scores help teens understand their driving performance and improve habits.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="text-center">
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Mail className="h-6 w-6 text-orange-600" />
-                </div>
-                <CardTitle className="text-lg">Email Notifications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-center">
-                  Stay informed with instant email alerts about driving incidents and safety milestones.
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-
-        {/* Call to Action Section */}
-        <div className="bg-gradient-to-r from-primary to-blue-600 text-white py-16 rounded-3xl mt-16">
-          <div className="max-w-4xl mx-auto text-center px-6">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Ready to Transform Your Teen's Driving?
-            </h2>
-            <p className="text-xl md:text-2xl text-blue-100 mb-6 max-w-3xl mx-auto">
-              Join thousands of families who've improved their teen's driving safety with DriveAllow's smart allowance system.
-            </p>
-            
-            {/* Pricing Display */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
-              <div className="text-center">
-                <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4">
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold text-white mb-1">$99<span className="text-lg text-blue-200">/month</span></div>
-                    <div className="text-sm text-blue-200">Monthly billing</div>
+          {/* Features Grid */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50 rounded-3xl mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <DollarSign className="h-6 w-6 text-primary" />
                   </div>
-                  <div className="text-blue-200 text-lg font-medium">or</div>
-                  <div className="text-center">
-                    <div className="text-3xl md:text-4xl font-bold text-white mb-1">$999<span className="text-lg text-blue-200">/year</span></div>
-                    <div className="text-sm text-green-200 font-medium">(Save $189)</div>
+                  <CardTitle className="text-lg">Smart Allowances</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Automatically manage allowances with configurable penalties and bonuses based on driving behavior.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Shield className="h-6 w-6 text-success" />
                   </div>
-                </div>
-                <div className="text-lg text-blue-100 mb-3">DriveAllow Pro - Unlimited Teen Drivers</div>
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    7-day free trial included
+                  <CardTitle className="text-lg">Safety Tracking</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Monitor driving incidents including speeding, harsh braking, and aggressive acceleration.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Smartphone className="h-6 w-6 text-purple-600" />
                   </div>
-                  <div className="text-blue-200 text-sm">•</div>
-                  <div className="text-blue-200 text-sm font-medium">Cancel anytime</div>
-                </div>
-              </div>
+                  <CardTitle className="text-lg">Phone Use Monitoring</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Track phone usage while driving to prevent distractions and promote safer driving habits.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-6 w-6 text-error" />
+                  </div>
+                  <CardTitle className="text-lg">Family Control</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Separate dashboards for parents and teens with role-based access and controls.
+                  </CardDescription>
+                </CardContent>
+              </Card>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <Button 
-                size="lg"
-                variant="secondary"
-                onClick={() => setLocation('/auth/parent')}
-                className="bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
-                data-testid="cta-parent-signup"
-              >
-                <Users className="h-5 w-5 mr-2" />
-                Parent or Guardian
-              </Button>
+            {/* Second row - centered */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <CardTitle className="text-lg">Unlimited Teen Drivers</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Monitor as many teen drivers as you need with no additional fees or restrictions.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Star className="h-6 w-6 text-green-600" />
+                  </div>
+                  <CardTitle className="text-lg">Automatic Safety Scoring</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Real-time safety scores help teens understand their driving performance and improve habits.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Mail className="h-6 w-6 text-orange-600" />
+                  </div>
+                  <CardTitle className="text-lg">Email Notifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Stay informed with instant email alerts about driving incidents and safety milestones.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Call to Action Section */}
+          <div className="bg-gradient-to-r from-primary to-blue-600 text-white py-16 rounded-3xl">
+            <div className="max-w-4xl mx-auto text-center px-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Ready to Transform Your Teen's Driving?
+              </h2>
+              <p className="text-xl md:text-2xl text-blue-100 mb-6 max-w-3xl mx-auto">
+                Join thousands of families who've improved their teen's driving safety with DriveAllow's smart allowance system.
+              </p>
               
-              <Button 
-                size="lg"
-                onClick={() => setLocation('/auth/teen')}
-                className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
-                data-testid="cta-teen-signin"
-              >
-                <Car className="h-5 w-5 mr-2" />
-                Teen
-              </Button>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-blue-100">
-              <div className="flex items-center">
-                <Shield className="h-5 w-5 mr-2" />
-                <span>100% Safe & Secure</span>
+              {/* Pricing Display */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
+                <div className="text-center">
+                  <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4">
+                    <div className="text-center">
+                      <div className="text-3xl md:text-4xl font-bold text-white mb-1">$99<span className="text-lg text-blue-200">/month</span></div>
+                      <div className="text-sm text-blue-200">Monthly billing</div>
+                    </div>
+                    <div className="text-blue-200 text-lg font-medium">or</div>
+                    <div className="text-center">
+                      <div className="text-3xl md:text-4xl font-bold text-white mb-1">$999<span className="text-lg text-blue-200">/year</span></div>
+                      <div className="text-sm text-green-200 font-medium">(Save $189)</div>
+                    </div>
+                  </div>
+                  <div className="text-lg text-blue-100 mb-3">DriveAllow Pro - Unlimited Teen Drivers</div>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      7-day free trial included
+                    </div>
+                    <div className="text-blue-200 text-sm">•</div>
+                    <div className="text-blue-200 text-sm font-medium">Cancel anytime</div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center">
-                <Star className="h-5 w-5 mr-2 text-yellow-300" />
-                <span>4.9/5 Family Rating</span>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <Button 
+                  size="lg"
+                  variant="secondary"
+                  onClick={() => setLocation('/auth/parent')}
+                  className="bg-white text-primary hover:bg-gray-100 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                  data-testid="cta-parent-signup"
+                >
+                  <Users className="h-5 w-5 mr-2" />
+                  Parent or Guardian
+                </Button>
+                
+                <Button 
+                  size="lg"
+                  onClick={() => setLocation('/auth/teen')}
+                  className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all hover:shadow-xl hover:scale-105"
+                  data-testid="cta-teen-signin"
+                >
+                  <Car className="h-5 w-5 mr-2" />
+                  Teen
+                </Button>
               </div>
-              <div className="flex items-center">
-                <Heart className="h-5 w-5 mr-2 text-red-300" />
-                <span>Trusted by 10,000+ Families</span>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-blue-100">
+                <div className="flex items-center">
+                  <Shield className="h-5 w-5 mr-2" />
+                  <span>100% Safe & Secure</span>
+                </div>
+                <div className="flex items-center">
+                  <Star className="h-5 w-5 mr-2 text-yellow-300" />
+                  <span>4.9/5 Family Rating</span>
+                </div>
+                <div className="flex items-center">
+                  <Heart className="h-5 w-5 mr-2 text-red-300" />
+                  <span>Trusted by 10,000+ Families</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-      </div>
+        </main>
       </div>
     </Layout>
   );
