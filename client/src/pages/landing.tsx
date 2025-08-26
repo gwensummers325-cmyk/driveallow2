@@ -291,7 +291,7 @@ export default function Landing() {
                     data-testid="toggle-parent-dashboard"
                   >
                     <Users className="h-5 w-5 mr-2 inline" />
-                    Parent Dashboard
+                    Parent or Guardian
                   </button>
                   <button
                     onClick={() => setActiveDashboard('teen')}
@@ -303,7 +303,7 @@ export default function Landing() {
                     data-testid="toggle-teen-dashboard"
                   >
                     <Car className="h-5 w-5 mr-2 inline" />
-                    Teen Dashboard
+                    Teen
                   </button>
                 </div>
               </div>
