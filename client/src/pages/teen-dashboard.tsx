@@ -98,7 +98,7 @@ export default function TeenDashboard() {
 
   const currentBalance = parseFloat(balance.currentBalance);
   const safetyScore = Math.max(0, Math.min(100, 100 - (weeklyViolations * 10))); // Simple calculation
-  const weeklyMiles = 127; // Mock data for now
+  const weeklyMiles = 0; // Start with 0 miles for new accounts
   const weeklyGoal = 150;
   const milesProgress = (weeklyMiles / weeklyGoal) * 100;
 
