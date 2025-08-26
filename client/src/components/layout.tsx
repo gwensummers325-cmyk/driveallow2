@@ -72,10 +72,9 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
                 <div className="flex flex-wrap gap-2 sm:gap-3">
                   {location !== '/auth/parent' && (
                     <Button 
-                      variant="outline" 
                       size="sm"
                       onClick={() => setLocation('/auth/parent')}
-                      className="text-xs px-2 py-1.5 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap"
+                      className="text-xs px-2 py-1.5 sm:px-3 sm:py-2 md:text-sm whitespace-nowrap bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary text-white font-semibold shadow-md"
                     >
                       Parent or Guardian
                     </Button>
