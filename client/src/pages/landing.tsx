@@ -329,9 +329,21 @@ export default function Landing() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Ready to Transform Your Teen's Driving?
             </h2>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl md:text-2xl text-blue-100 mb-6 max-w-3xl mx-auto">
               Join thousands of families who've improved their teen's driving safety with DriveAllow's smart allowance system.
             </p>
+            
+            {/* Pricing Display */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
+              <div className="text-center">
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2">$99<span className="text-xl text-blue-200">/month</span></div>
+                <div className="text-lg text-blue-100 mb-3">DriveAllow Pro - Unlimited Teen Drivers</div>
+                <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  7-day free trial included
+                </div>
+              </div>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
               <Button 
