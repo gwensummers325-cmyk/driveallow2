@@ -177,7 +177,10 @@ export function SubscriptionPanel() {
                 </h3>
                 <p className="text-gray-600 flex items-center mt-1">
                   <Users className="h-4 w-4 mr-1" />
-                  {subscription?.teenCount || 0} driver{(subscription?.teenCount || 0) !== 1 ? 's' : ''}
+                  {subscription?.teenCount > 0 
+                    ? `${subscription.teenCount} driver${subscription.teenCount !== 1 ? 's' : ''}`
+                    : 'Unlimited drivers (no teens added yet)'
+                  }
                 </p>
               </div>
               <div className="text-right">
