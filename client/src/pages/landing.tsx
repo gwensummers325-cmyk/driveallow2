@@ -172,7 +172,7 @@ export default function Landing() {
                     onClick={() => setLocation('/auth/parent')}
                     className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary shadow-lg"
                   >
-                    Parent Dashboard
+                    Parent or Guardian
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                   <Button 
@@ -181,7 +181,7 @@ export default function Landing() {
                     onClick={() => setLocation('/auth/teen')}
                     className="text-lg px-8 py-4 border-2 hover:bg-green-50"
                   >
-                    Teen Dashboard
+                    Teen
                     <Car className="ml-2 h-5 w-5" />
                   </Button>
                 </div>
@@ -291,7 +291,7 @@ export default function Landing() {
                     data-testid="toggle-parent-dashboard"
                   >
                     <Users className="h-5 w-5 mr-2 inline" />
-                    Parent or Guardian
+                    Parent Dashboard
                   </button>
                   <button
                     onClick={() => setActiveDashboard('teen')}
@@ -303,7 +303,7 @@ export default function Landing() {
                     data-testid="toggle-teen-dashboard"
                   >
                     <Car className="h-5 w-5 mr-2 inline" />
-                    Teen
+                    Teen Dashboard
                   </button>
                 </div>
               </div>
