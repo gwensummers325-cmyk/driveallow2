@@ -81,6 +81,9 @@ export default function ParentDashboard() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
       queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      queryClient.refetchQueries({ queryKey: ["/api/subscription"] });
+      // Reset selectedTeenId if the deleted teen was selected
+      setSelectedTeenId("");
       toast({
         title: "Success",
         description: "Teen account removed successfully.",
@@ -617,7 +620,7 @@ export default function ParentDashboard() {
         {teens.length > 0 && (
           <div className="mt-8">
             <SettingsPanel 
-              teenId={selectedTeenId || teens[0]?.id} 
+              teenId={teens.find(t => t.id === selectedTeenId) ? selectedTeenId : teens[0]?.id} 
               teens={teens}
               onTeenChange={setSelectedTeenId}
             />
