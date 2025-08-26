@@ -344,7 +344,7 @@ export function registerRoutes(app: Express): Server {
       await storage.upsertAllowanceSettings({
         parentId,
         teenId: teen.id,
-        allowanceAmount: "25.00",
+        allowanceAmount: "0.00",
         frequency: "weekly",
         speedingMinorPenalty: "5.00",
         speedingMajorPenalty: "10.00",
@@ -357,7 +357,7 @@ export function registerRoutes(app: Express): Server {
       // Create initial balance
       await storage.upsertAllowanceBalance({
         teenId: teen.id,
-        currentBalance: "25.00",
+        currentBalance: "0.00",
         lastAllowanceDate: new Date(),
         nextAllowanceDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
