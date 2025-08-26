@@ -137,11 +137,6 @@ export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymen
               <CardElement options={CARD_ELEMENT_OPTIONS} />
             </div>
             
-            <div className="text-xs text-gray-500 space-y-1">
-              <p>• Your card information is securely processed by Stripe</p>
-              <p>• No charges during your 7-day free trial</p>
-              <p>• Cancel anytime before the trial ends</p>
-            </div>
             
             <Button 
               type="submit" 
