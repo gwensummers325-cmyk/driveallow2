@@ -300,7 +300,7 @@ export function SubscriptionPanel() {
 
 
       {/* Billing Period Switching */}
-      {subscription?.status === 'active' && (
+      {(subscription?.status === 'active' || subscription?.status === 'trial') && subscription?.status !== 'cancelled' && (
         <Card>
           <CardHeader>
             <CardTitle>Billing Period</CardTitle>
