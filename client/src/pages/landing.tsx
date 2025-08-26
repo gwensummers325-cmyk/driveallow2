@@ -1,14 +1,66 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone, Mail, Activity, TrendingUp, AlertTriangle, Trophy, Clock, MapPin } from "lucide-react";
+import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone, Mail, Activity, TrendingUp, AlertTriangle, Trophy, Clock, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Layout } from "@/components/layout";
 import illustrationImage from "@assets/Gemini_Generated_Image_vpd2ukvpd2ukvpd2_1755869635476.png";
 
 export default function Landing() {
   const [, setLocation] = useLocation();
   const [activeDashboard, setActiveDashboard] = useState<'parent' | 'teen'>('parent');
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const testimonials = [
+    {
+      name: "Sarah Johnson",
+      role: "Parent of 2 teens",
+      rating: 5,
+      text: "DriveAllow has completely transformed how my teenagers approach driving. The allowance system motivates them to drive safely, and I finally have peace of mind knowing they're being responsible on the road."
+    },
+    {
+      name: "Mike Rodriguez",
+      role: "Father of Emma (16)",
+      rating: 5,
+      text: "The real-time notifications are a game-changer. I know immediately if there's an incident, and the automatic penalties have really helped my daughter understand the consequences of unsafe driving."
+    },
+    {
+      name: "Jennifer Chen",
+      role: "Mother of 3",
+      rating: 5,
+      text: "Managing allowances for three teen drivers was a nightmare before DriveAllow. Now everything is automated, fair, and transparent. My kids actually compete to be the safest driver!"
+    },
+    {
+      name: "David Thompson",
+      role: "Parent",
+      rating: 5,
+      text: "The dashboard gives me such great visibility into my son's driving habits. He's improved dramatically since we started using DriveAllow, and our car insurance has even gone down!"
+    },
+    {
+      name: "Lisa Martinez",
+      role: "Mother of Alex (17)",
+      rating: 5,
+      text: "What I love most is how DriveAllow encourages positive behavior rather than just punishing mistakes. The bonus system has made my son excited about safe driving achievements."
+    },
+    {
+      name: "Robert Kim",
+      role: "Father of twins",
+      rating: 5,
+      text: "Having twins who just got their licenses was terrifying, but DriveAllow has made the whole experience manageable. The family dashboard keeps everyone accountable and motivated."
+    }
+  ];
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
   
   return (
     <Layout showBackButton={false}>
@@ -492,6 +544,78 @@ export default function Landing() {
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-2">Family Transparency</h3>
                   <p className="text-gray-600 text-sm">Open communication through shared data and progress tracking</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonials Section */}
+          <div className="py-16 bg-white rounded-3xl mb-12 shadow-lg border">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                  What Families Are Saying
+                </h2>
+                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                  Thousands of families trust DriveAllow to keep their teen drivers safe and accountable.
+                </p>
+              </div>
+
+              {/* Testimonials Slider */}
+              <div className="relative">
+                {/* Navigation Buttons */}
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg border hover:shadow-xl transition-shadow"
+                  data-testid="testimonials-scroll-left"
+                >
+                  <ChevronLeft className="h-6 w-6 text-gray-600" />
+                </button>
+                <button
+                  onClick={scrollRight}
+                  className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg border hover:shadow-xl transition-shadow"
+                  data-testid="testimonials-scroll-right"
+                >
+                  <ChevronRight className="h-6 w-6 text-gray-600" />
+                </button>
+
+                {/* Testimonials Container */}
+                <div
+                  ref={scrollRef}
+                  className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-12"
+                  style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                >
+                  {testimonials.map((testimonial, index) => (
+                    <div
+                      key={index}
+                      className="flex-none w-80 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border shadow-md hover:shadow-lg transition-shadow"
+                    >
+                      {/* Star Rating */}
+                      <div className="flex items-center mb-4">
+                        {[...Array(testimonial.rating)].map((_, i) => (
+                          <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                        ))}
+                      </div>
+
+                      {/* Testimonial Text */}
+                      <p className="text-gray-700 mb-6 leading-relaxed">
+                        "{testimonial.text}"
+                      </p>
+
+                      {/* Author Info */}
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gradient-to-r from-primary to-blue-600 rounded-full flex items-center justify-center mr-4">
+                          <span className="text-white font-bold text-lg">
+                            {testimonial.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                          <p className="text-sm text-gray-600">{testimonial.role}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
