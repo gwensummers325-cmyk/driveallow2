@@ -80,6 +80,7 @@ export default function ParentDashboard() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
       toast({
         title: "Success",
         description: "Teen account removed successfully.",
