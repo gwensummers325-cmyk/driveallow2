@@ -851,7 +851,7 @@ export default function Landing() {
                 data-testid="cta-parent-signup"
               >
                 <Users className="h-5 w-5 mr-2" />
-                Start as Parent
+                Parent or Guardian
               </Button>
               
               <Button 
@@ -861,7 +861,7 @@ export default function Landing() {
                 data-testid="cta-teen-signin"
               >
                 <Car className="h-5 w-5 mr-2" />
-                Sign In as Teen
+                Teen
               </Button>
             </div>
             
