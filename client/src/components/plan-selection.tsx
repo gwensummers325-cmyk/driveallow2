@@ -146,17 +146,15 @@ export function PlanSelection({ onContinue }: PlanSelectionProps) {
       </Tabs>
 
       <div className="text-center">
-        <Button 
-          onClick={() => onContinue(selectedBilling)}
-          size="lg"
-          className={`px-8 ${selectedBilling === 'yearly' 
-            ? 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800' 
-            : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800'
-          }`}
-          data-testid="button-continue-to-payment"
-        >
-          Continue with {selectedBilling === 'monthly' ? 'Monthly' : 'Yearly'} Plan
-        </Button>
+        <div className={`inline-flex items-center px-6 py-3 rounded-lg border-2 ${
+          selectedBilling === 'yearly' 
+            ? 'border-green-200 bg-green-50 text-green-700' 
+            : 'border-blue-200 bg-blue-50 text-blue-700'
+        }`}>
+          <span className="font-medium">
+            Selected: {selectedBilling === 'monthly' ? 'Monthly' : 'Yearly'} Plan
+          </span>
+        </div>
       </div>
 
       <div className="text-center text-xs text-gray-500 space-y-1">
