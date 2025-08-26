@@ -107,8 +107,8 @@ export default function ParentAuth() {
         {/* Left side - Hero content */}
         <div className="text-center lg:text-left space-y-6">
           <div className="space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">
-              Parent Dashboard
+            <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">
+              Parent or Guardian
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
               Keep your teen safe on the road while teaching responsible driving habits through smart allowance management.
@@ -146,7 +146,7 @@ export default function ParentAuth() {
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <CardTitle className="text-2xl font-bold">Parent Access</CardTitle>
+              <CardTitle className="text-2xl font-bold">Parent or Guardian Access</CardTitle>
               <CardDescription>
                 Sign in or create your parent account<br/>
                 <span className="text-xs text-gray-500 mt-2 inline-block">Test login: <strong>testparent</strong> / <strong>parent123</strong></span>
