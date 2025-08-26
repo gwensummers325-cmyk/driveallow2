@@ -209,6 +209,97 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Switch billing period
+  app.post('/api/subscription/switch-billing', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { billingPeriod } = req.body;
+      
+      if (!['monthly', 'yearly'].includes(billingPeriod)) {
+        return res.status(400).json({ message: "Invalid billing period" });
+      }
+
+      const parent = await storage.getUser(parentId);
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can switch billing period" });
+      }
+
+      const subscription = await storage.getSubscription(parentId);
+      if (!subscription) {
+        return res.status(404).json({ message: "No subscription found" });
+      }
+
+      if (subscription.status === 'cancelled') {
+        return res.status(400).json({ message: "Cannot switch billing for cancelled subscription" });
+      }
+
+      // Calculate new pricing
+      const newPrice = billingPeriod === 'yearly' ? 999 : 99;
+      const newPriceId = billingPeriod === 'yearly' 
+        ? process.env.STRIPE_PRICE_ID_YEARLY 
+        : process.env.STRIPE_PRICE_ID_MONTHLY;
+
+      // Update Stripe subscription if it exists
+      if (subscription.stripeSubscriptionId && subscription.status !== 'trial') {
+        try {
+          const stripeResult = await StripeService.updateSubscriptionPricing(subscription.stripeSubscriptionId, newPriceId!);
+          if (!stripeResult.success) {
+            console.error("Error updating Stripe subscription:", stripeResult.error);
+            return res.status(500).json({ message: "Failed to update payment information" });
+          }
+        } catch (stripeError) {
+          console.error("Error updating Stripe subscription:", stripeError);
+          return res.status(500).json({ message: "Failed to update payment information" });
+        }
+      }
+
+      // Update local subscription
+      const updatedSubscription = await storage.updateSubscription(parentId, {
+        billingPeriod,
+        totalPrice: newPrice.toString(),
+        basePrice: newPrice.toString(),
+        stripePriceId: newPriceId,
+      });
+      
+      res.json(updatedSubscription);
+    } catch (error) {
+      console.error("Error switching billing period:", error);
+      res.status(500).json({ message: "Failed to switch billing period" });
+    }
+  });
+
+  // Cancel trial (immediate cancellation)
+  app.post('/api/subscription/cancel-trial', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can cancel trials" });
+      }
+
+      const subscription = await storage.getSubscription(parentId);
+      if (!subscription) {
+        return res.status(404).json({ message: "No subscription found" });
+      }
+
+      if (subscription.status !== 'trial') {
+        return res.status(400).json({ message: "Can only cancel active trials" });
+      }
+
+      const updatedSubscription = await storage.updateSubscription(parentId, {
+        status: 'cancelled',
+        cancelAtPeriodEnd: false,
+        canceledAt: new Date(),
+      });
+      
+      res.json(updatedSubscription);
+    } catch (error) {
+      console.error("Error cancelling trial:", error);
+      res.status(500).json({ message: "Failed to cancel trial" });
+    }
+  });
+
   // Create teen account (only for authenticated parents)
   app.post('/api/teens', isAuthenticated, async (req: any, res) => {
     try {

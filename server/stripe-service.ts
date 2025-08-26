@@ -204,4 +204,35 @@ export class StripeService {
       };
     }
   }
+
+  /**
+   * Update subscription pricing (for billing period changes)
+   */
+  static async updateSubscriptionPricing(
+    subscriptionId: string,
+    newPriceId: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Get current subscription
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      const currentItem = subscription.items.data[0];
+      
+      // Update subscription with new price
+      await stripe.subscriptions.update(subscriptionId, {
+        items: [{
+          id: currentItem.id,
+          price: newPriceId,
+        }],
+        proration_behavior: 'always_invoice', // Pro-rate the change
+      });
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Stripe updateSubscriptionPricing error:', error);
+      return {
+        success: false,
+        error: error.message || 'Failed to update subscription pricing'
+      };
+    }
+  }
 }

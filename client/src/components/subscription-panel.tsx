@@ -102,6 +102,68 @@ export function SubscriptionPanel() {
     },
   });
 
+  const cancelTrialMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/subscription/cancel-trial");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      toast({
+        title: "Success",
+        description: "Trial cancelled successfully.",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/parent";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to cancel trial. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const switchBillingMutation = useMutation({
+    mutationFn: async (billingPeriod: 'monthly' | 'yearly') => {
+      await apiRequest("POST", "/api/subscription/switch-billing", { billingPeriod });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      toast({
+        title: "Success",
+        description: "Billing period updated successfully!",
+      });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/auth/parent";
+        }, 500);
+        return;
+      }
+      toast({
+        title: "Error",
+        description: "Failed to switch billing period. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading) {
     return (
       <Card>
@@ -184,7 +246,14 @@ export function SubscriptionPanel() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">${subscription?.totalPrice}/month</div>
+                <div className="text-2xl font-bold">
+                  ${subscription?.totalPrice}/{subscription?.billingPeriod === 'yearly' ? 'year' : 'month'}
+                </div>
+                {subscription?.billingPeriod === 'yearly' && (
+                  <div className="text-sm text-green-600 font-medium">
+                    Save $189/year
+                  </div>
+                )}
               </div>
             </div>
 
@@ -229,6 +298,77 @@ export function SubscriptionPanel() {
         </CardContent>
       </Card>
 
+
+      {/* Billing Period Switching */}
+      {subscription?.status === 'active' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Billing Period</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                Switch between monthly and yearly billing. Yearly billing saves you $189!
+              </p>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <Button
+                  onClick={() => switchBillingMutation.mutate('monthly')}
+                  disabled={switchBillingMutation.isPending || subscription?.billingPeriod === 'monthly'}
+                  variant={subscription?.billingPeriod === 'monthly' ? 'default' : 'outline'}
+                  className="h-auto p-4 flex flex-col"
+                  data-testid="switch-monthly"
+                >
+                  <div className="font-semibold">Monthly</div>
+                  <div className="text-sm">$99/month</div>
+                </Button>
+                
+                <Button
+                  onClick={() => switchBillingMutation.mutate('yearly')}
+                  disabled={switchBillingMutation.isPending || subscription?.billingPeriod === 'yearly'}
+                  variant={subscription?.billingPeriod === 'yearly' ? 'default' : 'outline'}
+                  className="h-auto p-4 flex flex-col relative"
+                  data-testid="switch-yearly"
+                >
+                  <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                    Save $189
+                  </div>
+                  <div className="font-semibold">Yearly</div>
+                  <div className="text-sm">$999/year</div>
+                </Button>
+              </div>
+              
+              {switchBillingMutation.isPending && (
+                <div className="text-center text-sm text-gray-500">
+                  Updating billing period...
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Cancel Trial */}
+      {isTrialActive && !isTrialExpired && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-orange-600">Cancel Trial</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">
+              You can cancel your free trial at any time. This will immediately end your access to DriveAllow.
+            </p>
+            <Button
+              onClick={() => cancelTrialMutation.mutate()}
+              disabled={cancelTrialMutation.isPending}
+              variant="destructive"
+              data-testid="cancel-trial"
+            >
+              {cancelTrialMutation.isPending ? 'Cancelling...' : 'Cancel Trial'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Cancel Subscription */}
       {subscription?.status !== 'cancelled' && !isTrialActive && (

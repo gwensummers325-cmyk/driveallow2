@@ -248,6 +248,8 @@ export const subscriptions = pgTable("subscriptions", {
   canceledAt: timestamp("canceled_at"),
   // Phone usage alerts (Safety Plus only)
   phoneUsageAlertsEnabled: boolean("phone_usage_alerts_enabled").default(false),
+  // Billing period
+  billingPeriod: varchar("billing_period", { enum: ["monthly", "yearly"] }).default("monthly"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
