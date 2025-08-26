@@ -235,8 +235,8 @@ export function SubscriptionPanel() {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold capitalize">
-                  {subscription?.tier?.replace('_', ' ')} Plan
+                <h3 className="font-semibold">
+                  {subscription?.tier?.replace('driveallow_pro', 'DriveAllow Pro').replace('_', ' ')} Plan
                 </h3>
                 <p className="text-gray-600 flex items-center text-sm">
                   <Users className="h-3 w-3 mr-1" />
