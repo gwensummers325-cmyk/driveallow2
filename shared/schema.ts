@@ -103,7 +103,7 @@ export const allowanceSettings = pgTable("allowance_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   parentId: varchar("parent_id").notNull().references(() => users.id),
   teenId: varchar("teen_id").notNull().references(() => users.id),
-  allowanceAmount: decimal("allowance_amount", { precision: 10, scale: 2 }).notNull().default('50.00'),
+  allowanceAmount: decimal("allowance_amount", { precision: 10, scale: 2 }).notNull().default('0.00'),
   frequency: varchar("frequency").notNull().default('weekly'), // weekly, bi-weekly, monthly
   speedingMinorPenalty: decimal("speeding_minor_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
   speedingMajorPenalty: decimal("speeding_major_penalty", { precision: 10, scale: 2 }).notNull().default('10.00'),

@@ -26,7 +26,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [settings, setSettings] = useState({
-    allowanceAmount: '50.00',
+    allowanceAmount: '0.00',
     frequency: 'weekly',
     speedingMinorPenalty: '5.00',
     speedingMajorPenalty: '10.00',
