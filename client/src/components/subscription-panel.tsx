@@ -231,15 +231,15 @@ export function SubscriptionPanel() {
             {getStatusBadge()}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="pb-4">
+          <div className="space-y-3">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-semibold text-lg capitalize">
+                <h3 className="font-semibold capitalize">
                   {subscription?.tier?.replace('_', ' ')} Plan
                 </h3>
-                <p className="text-gray-600 flex items-center mt-1">
-                  <Users className="h-4 w-4 mr-1" />
+                <p className="text-gray-600 flex items-center text-sm">
+                  <Users className="h-3 w-3 mr-1" />
                   {subscription?.teenCount > 0 
                     ? `${subscription.teenCount} driver${subscription.teenCount !== 1 ? 's' : ''}`
                     : 'Unlimited drivers (no teens added yet)'
@@ -247,11 +247,11 @@ export function SubscriptionPanel() {
                 </p>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold">
+                <div className="text-xl font-bold">
                   ${subscription?.totalPrice}/{subscription?.billingPeriod === 'yearly' ? 'year' : 'month'}
                 </div>
                 {subscription?.billingPeriod === 'yearly' && (
-                  <div className="text-sm text-green-600 font-medium">
+                  <div className="text-xs text-green-600 font-medium">
                     Save $189/year
                   </div>
                 )}
@@ -259,15 +259,15 @@ export function SubscriptionPanel() {
             </div>
 
             {isTrialActive && !isTrialExpired && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <div className="flex items-center">
-                  <Clock className="h-5 w-5 text-blue-600 mr-2" />
+                  <Clock className="h-4 w-4 text-blue-600 mr-2" />
                   <div>
-                    <h4 className="font-semibold text-blue-900">Free Trial Active</h4>
-                    <p className="text-blue-700 text-sm">
+                    <h4 className="font-medium text-blue-900 text-sm">Free Trial Active</h4>
+                    <p className="text-blue-700 text-xs">
                       {trialDaysLeft > 0 
-                        ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} remaining. Your trial will auto-upgrade to paid unless cancelled.`
-                        : 'Your trial expires today. It will auto-upgrade to paid unless cancelled.'
+                        ? `${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} remaining. Auto-upgrade unless cancelled.`
+                        : 'Expires today. Auto-upgrade unless cancelled.'
                       }
                     </p>
                   </div>
@@ -276,13 +276,13 @@ export function SubscriptionPanel() {
             )}
 
             {isTrialExpired && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <div className="flex items-center">
-                  <AlertTriangle className="h-5 w-5 text-red-600 mr-2" />
+                  <AlertTriangle className="h-4 w-4 text-red-600 mr-2" />
                   <div>
-                    <h4 className="font-semibold text-red-900">Trial Expired</h4>
-                    <p className="text-red-700 text-sm">
-                      Your free trial has ended. Please select a paid plan to continue using DriveAllow.
+                    <h4 className="font-medium text-red-900 text-sm">Trial Expired</h4>
+                    <p className="text-red-700 text-xs">
+                      Free trial ended. Select a paid plan to continue.
                     </p>
                   </div>
                 </div>
@@ -290,9 +290,9 @@ export function SubscriptionPanel() {
             )}
 
             {subscription?.phoneUsageAlertsEnabled && (
-              <div className="flex items-center text-green-700 bg-green-50 rounded-lg p-3">
-                <Smartphone className="h-4 w-4 mr-2" />
-                <span className="text-sm">Phone usage alerts during driving enabled</span>
+              <div className="flex items-center text-green-700 bg-green-50 rounded-lg p-2">
+                <Smartphone className="h-3 w-3 mr-2" />
+                <span className="text-xs">Phone usage alerts enabled</span>
               </div>
             )}
           </div>
@@ -306,41 +306,41 @@ export function SubscriptionPanel() {
           <CardHeader>
             <CardTitle>Billing Period</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-gray-600">
-                Switch between monthly and yearly billing. Yearly billing saves you $189!
+          <CardContent className="pb-4">
+            <div className="space-y-3">
+              <p className="text-gray-600 text-sm">
+                Switch billing period. Yearly saves $189!
               </p>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <Button
                   onClick={() => switchBillingMutation.mutate('monthly')}
                   disabled={switchBillingMutation.isPending || subscription?.billingPeriod === 'monthly'}
                   variant={subscription?.billingPeriod === 'monthly' ? 'default' : 'outline'}
-                  className="h-auto p-4 flex flex-col"
+                  className="h-auto p-3 flex flex-col"
                   data-testid="switch-monthly"
                 >
-                  <div className="font-semibold">Monthly</div>
-                  <div className="text-sm">$99/month</div>
+                  <div className="font-medium text-sm">Monthly</div>
+                  <div className="text-xs">$99/month</div>
                 </Button>
                 
                 <Button
                   onClick={() => switchBillingMutation.mutate('yearly')}
                   disabled={switchBillingMutation.isPending || subscription?.billingPeriod === 'yearly'}
                   variant={subscription?.billingPeriod === 'yearly' ? 'default' : 'outline'}
-                  className="h-auto p-4 flex flex-col relative"
+                  className="h-auto p-3 flex flex-col relative"
                   data-testid="switch-yearly"
                 >
-                  <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  <div className="absolute -top-1 -right-1 bg-green-500 text-white text-xs px-1 py-0.5 rounded-full">
                     Save $189
                   </div>
-                  <div className="font-semibold">Yearly</div>
-                  <div className="text-sm">$999/year</div>
+                  <div className="font-medium text-sm">Yearly</div>
+                  <div className="text-xs">$999/year</div>
                 </Button>
               </div>
               
               {switchBillingMutation.isPending && (
-                <div className="text-center text-sm text-gray-500">
+                <div className="text-center text-xs text-gray-500">
                   Updating billing period...
                 </div>
               )}
@@ -355,14 +355,15 @@ export function SubscriptionPanel() {
           <CardHeader>
             <CardTitle className="text-orange-600">Cancel Trial</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 mb-4">
-              You can cancel your free trial at any time. This will immediately end your access to DriveAllow.
+          <CardContent className="pb-4">
+            <p className="text-gray-600 mb-3 text-sm">
+              Cancel trial anytime. Immediately ends access.
             </p>
             <Button
               onClick={() => cancelTrialMutation.mutate()}
               disabled={cancelTrialMutation.isPending}
               variant="destructive"
+              size="sm"
               data-testid="cancel-trial"
             >
               {cancelTrialMutation.isPending ? 'Cancelling...' : 'Cancel Trial'}
