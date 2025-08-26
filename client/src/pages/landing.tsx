@@ -217,8 +217,9 @@ export default function Landing() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-gray-50">
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <Card>
+        <div className="mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <Card>
             <CardHeader className="text-center">
               <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <DollarSign className="h-6 w-6 text-primary" />
@@ -232,89 +233,94 @@ export default function Landing() {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-6 w-6 text-success" />
-              </div>
-              <CardTitle className="text-lg">Safety Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Monitor driving incidents including speeding, harsh braking, and aggressive acceleration.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Shield className="h-6 w-6 text-success" />
+                </div>
+                <CardTitle className="text-lg">Safety Tracking</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Monitor driving incidents including speeding, harsh braking, and aggressive acceleration.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Smartphone className="h-6 w-6 text-purple-600" />
-              </div>
-              <CardTitle className="text-lg">Phone Use Monitoring</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Track phone usage while driving to prevent distractions and promote safer driving habits.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Smartphone className="h-6 w-6 text-purple-600" />
+                </div>
+                <CardTitle className="text-lg">Phone Use Monitoring</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Track phone usage while driving to prevent distractions and promote safer driving habits.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Users className="h-6 w-6 text-error" />
-              </div>
-              <CardTitle className="text-lg">Family Control</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Separate dashboards for parents and teens with role-based access and controls.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-6 w-6 text-error" />
+                </div>
+                <CardTitle className="text-lg">Family Control</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Separate dashboards for parents and teens with role-based access and controls.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Users className="h-6 w-6 text-blue-600" />
-              </div>
-              <CardTitle className="text-lg">Unlimited Teen Drivers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Monitor as many teen drivers as you need with no additional fees or restrictions.
-              </CardDescription>
-            </CardContent>
-          </Card>
+          </div>
+          
+          {/* Second row - centered */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Users className="h-6 w-6 text-blue-600" />
+                </div>
+                <CardTitle className="text-lg">Unlimited Teen Drivers</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Monitor as many teen drivers as you need with no additional fees or restrictions.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Star className="h-6 w-6 text-green-600" />
-              </div>
-              <CardTitle className="text-lg">Automatic Safety Scoring</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Real-time safety scores help teens understand their driving performance and improve habits.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Star className="h-6 w-6 text-green-600" />
+                </div>
+                <CardTitle className="text-lg">Automatic Safety Scoring</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Real-time safety scores help teens understand their driving performance and improve habits.
+                </CardDescription>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                <Mail className="h-6 w-6 text-orange-600" />
-              </div>
-              <CardTitle className="text-lg">Email Notifications</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription className="text-center">
-                Stay informed with instant email alerts about driving incidents and safety milestones.
-              </CardDescription>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardHeader className="text-center">
+                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Mail className="h-6 w-6 text-orange-600" />
+                </div>
+                <CardTitle className="text-lg">Email Notifications</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-center">
+                  Stay informed with instant email alerts about driving incidents and safety milestones.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Call to Action Section */}
