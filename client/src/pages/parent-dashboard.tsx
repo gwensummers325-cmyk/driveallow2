@@ -663,8 +663,6 @@ export default function ParentDashboard() {
                 <li>Transaction history</li>
                 <li>Account settings</li>
               </ul>
-              <br />
-              Your subscription will be automatically adjusted to reflect the reduced number of drivers.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
