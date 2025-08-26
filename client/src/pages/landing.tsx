@@ -833,7 +833,17 @@ export default function Landing() {
             {/* Pricing Display */}
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8 max-w-2xl mx-auto">
               <div className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-white mb-2">$99<span className="text-xl text-blue-200">/month</span></div>
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-4">
+                  <div className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold text-white mb-1">$99<span className="text-lg text-blue-200">/month</span></div>
+                    <div className="text-sm text-blue-200">Monthly billing</div>
+                  </div>
+                  <div className="text-blue-200 text-lg font-medium">or</div>
+                  <div className="text-center">
+                    <div className="text-3xl md:text-4xl font-bold text-white mb-1">$999<span className="text-lg text-blue-200">/year</span></div>
+                    <div className="text-sm text-green-200 font-medium">(Save $189)</div>
+                  </div>
+                </div>
                 <div className="text-lg text-blue-100 mb-3">DriveAllow Pro - Unlimited Teen Drivers</div>
                 <div className="inline-flex items-center bg-green-500/20 text-green-200 px-4 py-2 rounded-full text-sm font-medium">
                   <CheckCircle className="h-4 w-4 mr-2" />
