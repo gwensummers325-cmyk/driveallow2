@@ -682,6 +682,29 @@ export default function Landing() {
             </div>
           </div>
 
+          {/* Call to Action Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
+            <Button 
+              size="lg" 
+              onClick={() => setLocation('/auth/parent')}
+              className="text-lg px-8 py-4 bg-gradient-to-r from-primary to-blue-600 hover:from-blue-600 hover:to-primary shadow-lg"
+              data-testid="cta-parent-button"
+            >
+              Parent or Guardian
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => setLocation('/auth/teen')}
+              className="text-lg px-8 py-4 border-2 hover:bg-green-50"
+              data-testid="cta-teen-button"
+            >
+              Teen
+              <Car className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+
         </main>
       </div>
 
