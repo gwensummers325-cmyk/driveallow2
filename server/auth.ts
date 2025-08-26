@@ -153,6 +153,24 @@ export function setupAuth(app: Express) {
         // stripePaymentMethodId: paymentMethodId, // Would be stored
       });
 
+      // Send admin notifications
+      try {
+        await emailService.sendParentSignupNotification(
+          `${firstName} ${lastName}`,
+          email,
+          selectedPlan,
+          trialEndDate
+        );
+        await emailService.sendParentPaymentNotification(
+          `${firstName} ${lastName}`,
+          email,
+          selectedPlan,
+          paymentMethodId
+        );
+      } catch (error) {
+        console.error('Failed to send admin notifications:', error);
+      }
+
       req.login(user, (err) => {
         if (err) return next(err);
         res.status(201).json({

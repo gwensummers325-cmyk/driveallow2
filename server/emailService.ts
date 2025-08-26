@@ -371,6 +371,88 @@ Thanks for trying DriveAllow!
 
     await this.sendEmail({ to: parentEmail, subject, text, html });
   }
+
+  async sendParentSignupNotification(
+    parentName: string,
+    parentEmail: string,
+    selectedPlan: string,
+    trialEndDate: Date
+  ): Promise<void> {
+    const subject = `New Parent Signup: ${parentName}`;
+    const text = `
+New parent signup for DriveAllow:
+
+Parent Details:
+- Name: ${parentName}
+- Email: ${parentEmail}
+- Selected Plan: ${selectedPlan}
+- Trial End Date: ${trialEndDate.toLocaleDateString()}
+- Signup Time: ${new Date().toLocaleString()}
+
+Account created successfully.
+    `;
+
+    const html = `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1976D2;">New Parent Signup</h2>
+        <p>A new parent has signed up for DriveAllow.</p>
+        
+        <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin: 0 0 10px 0; color: #388E3C;">Parent Details</h3>
+          <p><strong>Name:</strong> ${parentName}</p>
+          <p><strong>Email:</strong> ${parentEmail}</p>
+          <p><strong>Selected Plan:</strong> ${selectedPlan}</p>
+          <p><strong>Trial End Date:</strong> ${trialEndDate.toLocaleDateString()}</p>
+          <p><strong>Signup Time:</strong> ${new Date().toLocaleString()}</p>
+        </div>
+        
+        <p>Account created successfully.</p>
+      </div>
+    `;
+
+    await this.sendEmail({ to: 'safe@driveallow.com', subject, text, html });
+  }
+
+  async sendParentPaymentNotification(
+    parentName: string,
+    parentEmail: string,
+    selectedPlan: string,
+    paymentMethodId: string
+  ): Promise<void> {
+    const subject = `Payment Setup: ${parentName}`;
+    const text = `
+Payment method setup for DriveAllow:
+
+Parent Details:
+- Name: ${parentName}
+- Email: ${parentEmail}
+- Selected Plan: ${selectedPlan}
+- Payment Method ID: ${paymentMethodId}
+- Setup Time: ${new Date().toLocaleString()}
+
+Payment method configured successfully for trial conversion.
+    `;
+
+    const html = `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #1976D2;">Payment Setup</h2>
+        <p>Payment method has been configured for DriveAllow.</p>
+        
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
+          <h3 style="margin: 0 0 10px 0; color: #1976D2;">Payment Details</h3>
+          <p><strong>Name:</strong> ${parentName}</p>
+          <p><strong>Email:</strong> ${parentEmail}</p>
+          <p><strong>Selected Plan:</strong> ${selectedPlan}</p>
+          <p><strong>Payment Method ID:</strong> ${paymentMethodId}</p>
+          <p><strong>Setup Time:</strong> ${new Date().toLocaleString()}</p>
+        </div>
+        
+        <p>Payment method configured successfully for trial conversion.</p>
+      </div>
+    `;
+
+    await this.sendEmail({ to: 'safe@driveallow.com', subject, text, html });
+  }
 }
 
 export const emailService = new EmailService();
