@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone } from "lucide-react";
+import { Shield, DollarSign, Bell, Users, Car, Heart, Eye, CheckCircle, ArrowRight, Star, Smartphone, Mail } from "lucide-react";
 import { useLocation } from "wouter";
 import { Layout } from "@/components/layout";
 import illustrationImage from "@assets/Gemini_Generated_Image_vpd2ukvpd2ukvpd2_1755869635476.png";
@@ -270,6 +270,48 @@ export default function Landing() {
             <CardContent>
               <CardDescription className="text-center">
                 Separate dashboards for parents and teens with role-based access and controls.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Users className="h-6 w-6 text-blue-600" />
+              </div>
+              <CardTitle className="text-lg">Unlimited Teen Drivers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Monitor as many teen drivers as you need with no additional fees or restrictions.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Star className="h-6 w-6 text-green-600" />
+              </div>
+              <CardTitle className="text-lg">Automatic Safety Scoring</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Real-time safety scores help teens understand their driving performance and improve habits.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Mail className="h-6 w-6 text-orange-600" />
+              </div>
+              <CardTitle className="text-lg">Email Notifications</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Stay informed with instant email alerts about driving incidents and safety milestones.
               </CardDescription>
             </CardContent>
           </Card>
