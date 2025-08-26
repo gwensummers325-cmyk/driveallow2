@@ -132,7 +132,7 @@ export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymen
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             <div className="p-4 border border-gray-200 rounded-lg">
               <CardElement options={CARD_ELEMENT_OPTIONS} />
             </div>

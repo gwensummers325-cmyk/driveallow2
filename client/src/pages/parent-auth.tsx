@@ -286,7 +286,17 @@ export default function ParentAuth() {
                   <div className="space-y-6">
                     <PlanSelection onContinue={(billingType) => setSelectedBilling(billingType)} />
                     
-                    <Elements stripe={stripePromise}>
+                    <Elements 
+                      stripe={stripePromise}
+                      options={{
+                        mode: 'setup',
+                        currency: 'usd',
+                        payment_method_types: ['card'],
+                        appearance: {
+                          theme: 'stripe',
+                        },
+                      }}
+                    >
                       <PaymentSetup
                         selectedPlan={selectedBilling === 'yearly' ? "driveallow_pro_yearly" : "driveallow_pro"}
                         billingPeriod={selectedBilling}
