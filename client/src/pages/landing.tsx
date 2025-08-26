@@ -270,7 +270,7 @@ export default function Landing() {
           <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl mb-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">
                   See DriveAllow in Action
                 </h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -582,7 +582,7 @@ export default function Landing() {
           <div className="py-16 bg-white rounded-3xl mb-12 shadow-lg border">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">
                   What Families Are Saying
                 </h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
