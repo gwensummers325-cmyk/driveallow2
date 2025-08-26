@@ -47,6 +47,8 @@ export function CreateTeenModal({ isOpen, onClose }: CreateTeenModalProps) {
       }
       
       queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription"] });
+      queryClient.refetchQueries({ queryKey: ["/api/subscription"] });
       onClose();
       setFormData({
         firstName: "",
