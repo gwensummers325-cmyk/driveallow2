@@ -194,12 +194,12 @@ export function registerRoutes(app: Express): Server {
             'Driving incident tracking', 
             'Email notifications',
             'Parent and teen dashboards',
-            'Up to 2 drivers included'
+
           ],
           safety_plus: [
             'All Safety First features',
             'Phone usage during driving alerts',
-            'Up to 2 drivers included'
+
           ]
         }[tier as 'safety_first' | 'safety_plus']
       });

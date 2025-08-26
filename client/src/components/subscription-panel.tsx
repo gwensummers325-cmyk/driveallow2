@@ -254,7 +254,7 @@ export function SubscriptionPanel() {
               <div className="text-center">
                 <div className="text-3xl font-bold">${safetyFirstPricing?.totalPrice}/month</div>
                 <div className="text-sm text-gray-600">
-                  {subscription?.teenCount > 2 ? `${subscription?.teenCount} drivers (2 included + ${subscription?.teenCount - 2} additional)` : 'Up to 2 drivers included'}
+                  Current plan
                 </div>
               </div>
               
@@ -300,7 +300,7 @@ export function SubscriptionPanel() {
               <div className="text-center">
                 <div className="text-3xl font-bold">${safetyPlusPricing?.totalPrice}/month</div>
                 <div className="text-sm text-gray-600">
-                  {subscription?.teenCount > 2 ? `${subscription?.teenCount} drivers (2 included + ${subscription?.teenCount - 2} additional)` : 'Up to 2 drivers included'}
+                  Current plan
                 </div>
               </div>
               

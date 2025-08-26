@@ -47,7 +47,7 @@ export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymen
         'Incident reporting', 
         'Safety scoring',
         'Email notifications',
-        'Up to 2 drivers included'
+
       ]
     },
     safety_plus: {
@@ -57,7 +57,7 @@ export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymen
       features: [
         'All Safety First features',
         'Phone usage monitoring',
-        'Up to 2 drivers included'
+
       ]
     },
     driveallow_pro: {
