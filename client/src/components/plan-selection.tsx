@@ -155,7 +155,7 @@ export function PlanSelection({ onContinue }: PlanSelectionProps) {
           }`}
           data-testid="button-continue-to-payment"
         >
-          Start Free Trial - {selectedBilling === 'monthly' ? '$99/month' : '$999/year'}
+          Continue with {selectedBilling === 'monthly' ? 'Monthly' : 'Yearly'} Plan
         </Button>
       </div>
 
