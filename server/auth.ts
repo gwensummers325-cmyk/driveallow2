@@ -6,6 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import { emailService } from "./emailService";
+import { StripeService } from "./stripe-service";
 import { User as DatabaseUser } from "@shared/schema";
 import connectPg from "connect-pg-simple";
 
@@ -126,11 +127,42 @@ export function setupAuth(app: Express) {
         role: 'parent',
       });
 
-      // TODO: Store payment method with Stripe
-      // For now, we'll simulate this step
-      console.log(`Payment method ${paymentMethodId} stored for user ${user.id}`);
+      // Create Stripe customer with payment method
+      const customerResult = await StripeService.createCustomer(
+        email,
+        `${firstName} ${lastName}`,
+        paymentMethodId
+      );
 
-      // Create trial subscription
+      if (!customerResult.success) {
+        return res.status(400).json({ 
+          message: `Payment setup failed: ${customerResult.error}` 
+        });
+      }
+
+      // Determine the correct Stripe price ID based on plan
+      let stripePriceId: string;
+      if (selectedPlan === 'driveallow_pro') {
+        stripePriceId = process.env.STRIPE_PRICE_ID_MONTHLY!;
+      } else {
+        // For legacy plans, use the monthly price ID as default
+        stripePriceId = process.env.STRIPE_PRICE_ID_MONTHLY!;
+      }
+
+      // Create Stripe subscription with trial
+      const subscriptionResult = await StripeService.createSubscription(
+        customerResult.customerId!,
+        stripePriceId,
+        7 // 7-day trial
+      );
+
+      if (!subscriptionResult.success) {
+        return res.status(400).json({ 
+          message: `Subscription setup failed: ${subscriptionResult.error}` 
+        });
+      }
+
+      // Create trial subscription in database
       const trialEndDate = new Date();
       trialEndDate.setDate(trialEndDate.getDate() + 7); // 7-day trial
 
@@ -148,9 +180,14 @@ export function setupAuth(app: Express) {
         currentPeriodStart: new Date(),
         currentPeriodEnd: trialEndDate,
         phoneUsageAlertsEnabled: selectedPlan === 'safety_plus',
-        // stripeCustomerId: 'cus_xyz', // Would be set by Stripe
-        // stripeSubscriptionId: 'sub_xyz', // Would be set by Stripe
-        // stripePaymentMethodId: paymentMethodId, // Would be stored
+        stripeCustomerId: customerResult.customerId,
+        stripeSubscriptionId: subscriptionResult.subscriptionId,
+        stripePaymentMethodId: paymentMethodId,
+      });
+
+      // Update user with Stripe customer ID
+      await storage.updateUserStripeInfo(user.id, {
+        stripeCustomerId: customerResult.customerId,
       });
 
       // Send admin notifications

@@ -73,4 +73,135 @@ export class StripeService {
       return null;
     }
   }
+
+  /**
+   * Create a Stripe customer with payment method
+   */
+  static async createCustomer(
+    email: string,
+    name: string,
+    paymentMethodId: string
+  ): Promise<{ success: boolean; customerId?: string; error?: string }> {
+    try {
+      // Create customer
+      const customer = await stripe.customers.create({
+        email,
+        name,
+        payment_method: paymentMethodId,
+        invoice_settings: {
+          default_payment_method: paymentMethodId,
+        },
+      });
+
+      // Attach payment method to customer
+      await stripe.paymentMethods.attach(paymentMethodId, {
+        customer: customer.id,
+      });
+
+      return {
+        success: true,
+        customerId: customer.id,
+      };
+    } catch (error: any) {
+      console.error('Stripe customer creation error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Create a Stripe subscription with trial period
+   */
+  static async createSubscription(
+    customerId: string,
+    priceId: string,
+    trialPeriodDays: number = 7
+  ): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
+    try {
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{ price: priceId }],
+        trial_period_days: trialPeriodDays,
+        payment_behavior: 'default_incomplete',
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      return {
+        success: true,
+        subscriptionId: subscription.id,
+      };
+    } catch (error: any) {
+      console.error('Stripe subscription creation error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Cancel a Stripe subscription at period end
+   */
+  static async cancelSubscription(
+    subscriptionId: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Stripe subscription cancellation error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Reactivate a cancelled subscription
+   */
+  static async reactivateSubscription(
+    subscriptionId: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: false,
+      });
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Stripe subscription reactivation error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Get subscription details from Stripe
+   */
+  static async getSubscription(
+    subscriptionId: string
+  ): Promise<{ success: boolean; subscription?: Stripe.Subscription; error?: string }> {
+    try {
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+      return {
+        success: true,
+        subscription,
+      };
+    } catch (error: any) {
+      console.error('Stripe subscription retrieval error:', error);
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  }
 }

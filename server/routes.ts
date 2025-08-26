@@ -149,6 +149,17 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ message: "No subscription found" });
       }
       
+      // Cancel subscription in Stripe if we have a Stripe subscription ID
+      if (subscription.stripeSubscriptionId) {
+        const stripeResult = await StripeService.cancelSubscription(subscription.stripeSubscriptionId);
+        if (!stripeResult.success) {
+          console.error('Failed to cancel Stripe subscription:', stripeResult.error);
+          return res.status(500).json({ 
+            message: `Failed to cancel subscription: ${stripeResult.error}` 
+          });
+        }
+      }
+
       const updatedSubscription = await storage.updateSubscription(parentId, {
         status: 'cancelled',
         cancelAtPeriodEnd: true,

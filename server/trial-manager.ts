@@ -72,8 +72,8 @@ export class TrialManager {
    * Upgrade a trial subscription to paid
    */
   private static async upgradeTrialToPaid(parentId: string, subscription: any) {
-    // TODO: Integrate with Stripe for actual payment processing
-    // For now, we'll simulate the upgrade process
+    // Stripe automatically handles trial conversion - we just need to sync our database
+    // The subscription will automatically become active and start billing
     
     const currentDate = new Date();
     const nextBillingDate = new Date();
@@ -83,7 +83,6 @@ export class TrialManager {
       status: 'active',
       currentPeriodStart: currentDate,
       currentPeriodEnd: nextBillingDate,
-      // stripeSubscriptionId: 'stripe_sub_id_here', // Would be set by Stripe
     });
     
     // Send upgrade notification email
@@ -154,7 +153,7 @@ export class TrialManager {
             `${parent.firstName} ${parent.lastName}`,
             daysLeft,
             subscription.tier.replace('_', ' '),
-            subscription.totalPrice
+            parseFloat(subscription.totalPrice)
           );
           sentReminders++;
           console.log(`📧 Trial reminder sent to ${parent.email}`);
