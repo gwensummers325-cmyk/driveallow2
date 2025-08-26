@@ -104,7 +104,7 @@ export function setupAuth(app: Express) {
       }
 
       // Validate plan
-      if (!['safety_first', 'safety_plus', 'driveallow_pro'].includes(selectedPlan)) {
+      if (!['safety_first', 'safety_plus', 'driveallow_pro', 'driveallow_pro_yearly'].includes(selectedPlan)) {
         return res.status(400).json({ message: "Invalid plan selection" });
       }
       
@@ -144,6 +144,8 @@ export function setupAuth(app: Express) {
       let stripePriceId: string;
       if (selectedPlan === 'driveallow_pro') {
         stripePriceId = process.env.STRIPE_PRICE_ID_MONTHLY!;
+      } else if (selectedPlan === 'driveallow_pro_yearly') {
+        stripePriceId = process.env.STRIPE_PRICE_ID_YEARLY!;
       } else {
         // For legacy plans, use the monthly price ID as default
         stripePriceId = process.env.STRIPE_PRICE_ID_MONTHLY!;
@@ -180,9 +182,8 @@ export function setupAuth(app: Express) {
         currentPeriodStart: new Date(),
         currentPeriodEnd: trialEndDate,
         phoneUsageAlertsEnabled: selectedPlan === 'safety_plus',
-        stripeCustomerId: customerResult.customerId,
         stripeSubscriptionId: subscriptionResult.subscriptionId,
-        stripePaymentMethodId: paymentMethodId,
+        stripePriceId: stripePriceId,
       });
 
       // Update user with Stripe customer ID

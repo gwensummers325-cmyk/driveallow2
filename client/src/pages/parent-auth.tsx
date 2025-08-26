@@ -40,6 +40,7 @@ export default function ParentAuth() {
 
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>('account');
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
+  const [selectedBilling, setSelectedBilling] = useState<'monthly' | 'yearly'>('monthly');
 
   useEffect(() => {
     if (user) {
@@ -74,7 +75,7 @@ export default function ParentAuth() {
       const response = await apiRequest("POST", "/api/register-with-payment", {
         ...registerForm,
         role: "parent",
-        selectedPlan: "driveallow_pro",
+        selectedPlan: selectedBilling === 'yearly' ? "driveallow_pro_yearly" : "driveallow_pro",
         paymentMethodId,
       });
       return response.json();
@@ -283,11 +284,12 @@ export default function ParentAuth() {
                   </div>
                   
                   <div className="space-y-6">
-                    <PlanSelection onContinue={() => {}} />
+                    <PlanSelection onContinue={(billingType) => setSelectedBilling(billingType)} />
                     
                     <Elements stripe={stripePromise}>
                       <PaymentSetup
-                        selectedPlan="driveallow_pro"
+                        selectedPlan={selectedBilling === 'yearly' ? "driveallow_pro_yearly" : "driveallow_pro"}
+                        billingPeriod={selectedBilling}
                         onPaymentSetup={handlePaymentSetup}
                         isLoading={registerWithPaymentMutation.isPending}
                       />

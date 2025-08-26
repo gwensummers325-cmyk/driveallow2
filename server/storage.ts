@@ -55,7 +55,7 @@ export interface IStorage {
   createSubscription(subscription: InsertSubscription): Promise<Subscription>;
   updateSubscription(parentId: string, updates: Partial<InsertSubscription>): Promise<Subscription>;
   getTeenCountForParent(parentId: string): Promise<number>;
-  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
   calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', currentPeriodStart: Date, currentPeriodEnd: Date): string;
 }
 
@@ -321,8 +321,16 @@ export class DatabaseStorage implements IStorage {
     return result[0]?.count || 0;
   }
 
-  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string } {
-    // Single pricing for DriveAllow Pro - $99/month for unlimited teen drivers
+  calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string } {
+    if (tier === 'driveallow_pro_yearly') {
+      // Yearly pricing for DriveAllow Pro - $999/year for unlimited teen drivers
+      const basePrice = "999.00";
+      const additionalPrice = "0.00"; // No additional cost for more teens
+      const totalPrice = "999.00";
+      return { basePrice, additionalPrice, totalPrice };
+    }
+    
+    // Monthly pricing for DriveAllow Pro - $99/month for unlimited teen drivers
     const basePrice = "99.00";
     const additionalPrice = "0.00"; // No additional cost for more teens
     const totalPrice = "99.00";
@@ -330,7 +338,7 @@ export class DatabaseStorage implements IStorage {
     return { basePrice, additionalPrice, totalPrice };
   }
 
-  calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', currentPeriodStart: Date, currentPeriodEnd: Date): string {
+  calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly', currentPeriodStart: Date, currentPeriodEnd: Date): string {
     // No prorated charges for DriveAllow Pro since unlimited teens are included
     return "0.00";
   }

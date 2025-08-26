@@ -22,12 +22,13 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 interface PaymentSetupProps {
-  selectedPlan: 'safety_first' | 'safety_plus' | 'driveallow_pro';
+  selectedPlan: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly';
+  billingPeriod?: 'monthly' | 'yearly';
   onPaymentSetup: (paymentMethodId: string) => void;
   isLoading: boolean;
 }
 
-export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: PaymentSetupProps) {
+export function PaymentSetup({ selectedPlan, billingPeriod = 'monthly', onPaymentSetup, isLoading }: PaymentSetupProps) {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
@@ -37,6 +38,7 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
     safety_first: {
       name: 'Safety First',
       price: 19.99,
+      period: 'month',
       features: [
         'Driving behavior monitoring',
         'Allowance management',
@@ -49,6 +51,7 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
     safety_plus: {
       name: 'Safety Plus',
       price: 29.99,
+      period: 'month',
       features: [
         'All Safety First features',
         'Phone usage monitoring',
@@ -58,6 +61,19 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
     driveallow_pro: {
       name: 'DriveAllow Pro',
       price: 99,
+      period: 'month',
+      features: [
+        'Unlimited teen drivers',
+        'Real-time driving behavior monitoring',
+        'Smart allowance management',
+        'Phone usage during driving alerts',
+        'All safety features included'
+      ]
+    },
+    driveallow_pro_yearly: {
+      name: 'DriveAllow Pro',
+      price: 999,
+      period: 'year',
       features: [
         'Unlimited teen drivers',
         'Real-time driving behavior monitoring',
@@ -111,7 +127,7 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
           <CardTitle className="flex items-center gap-2">
             {selectedPlan === 'safety_plus' ? <SmartphoneNfc className="h-5 w-5" /> : <Shield className="h-5 w-5" />}
             {plan.name}
-            <Badge variant="secondary">${plan.price}/month</Badge>
+            <Badge variant="secondary">${plan.price}/{plan.period || 'month'}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -126,6 +142,11 @@ export function PaymentSetup({ selectedPlan, onPaymentSetup, isLoading }: Paymen
           <div className="mt-4 p-3 bg-blue-50 rounded-lg">
             <p className="text-sm text-blue-800">
               <strong>7-day free trial</strong> - Your subscription starts after the trial period
+              {billingPeriod === 'yearly' && (
+                <span className="block mt-1 font-medium text-green-700">
+                  Save $189 with yearly billing
+                </span>
+              )}
             </p>
           </div>
         </CardContent>
