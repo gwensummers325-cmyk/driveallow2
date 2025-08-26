@@ -148,7 +148,7 @@ export default function ParentAuth() {
               </div>
               <CardTitle className="text-2xl font-bold">Parent or Guardian Access</CardTitle>
               <CardDescription>
-                Sign in or create your parent account<br/>
+                Sign in or create your parent or guardian account<br/>
                 <span className="text-xs text-gray-500 mt-2 inline-block">Test login: <strong>testparent</strong> / <strong>parent123</strong></span>
               </CardDescription>
             </CardHeader>
