@@ -282,8 +282,8 @@ export default function Landing() {
               </div>
 
               {/* Dashboard Toggle */}
-              <div className="flex justify-center mb-12 px-4">
-                <div className="bg-white p-2 rounded-xl shadow-lg border w-full max-w-md flex justify-center">
+              <div className="flex justify-center mb-12">
+                <div className="bg-white p-2 rounded-xl shadow-lg border">
                   <button
                     onClick={() => setActiveDashboard('parent')}
                     className={`px-8 py-3 rounded-lg font-semibold transition-all ${
@@ -890,7 +890,6 @@ export default function Landing() {
             </div>
           </div>
         </div>
-        </main>
       </div>
     </Layout>
   );
