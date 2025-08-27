@@ -266,6 +266,331 @@ export default function Landing() {
             </div>
           </div>
 
+          {/* Feature Sections */}
+          <div className="space-y-16 mb-16">
+            {/* Smart Allowances */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 border border-green-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mr-4">
+                      <DollarSign className="h-6 w-6 text-white animate-bounce" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Smart Allowances</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Automatically manage weekly allowances that adjust based on driving behavior. Safe driving earns the full allowance, while violations result in automatic deductions.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      Weekly allowance automation
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      Behavior-based adjustments
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      Transparent penalty system
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center animate-pulse">
+                      <DollarSign className="h-16 w-16 text-white animate-spin" style={{animationDuration: '3s'}} />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center animate-bounce">
+                      <span className="text-xs font-bold">+</span>
+                    </div>
+                    <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-red-400 rounded-full flex items-center justify-center animate-bounce" style={{animationDelay: '0.5s'}}>
+                      <span className="text-xs font-bold text-white">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Safety Tracking */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-8 border border-blue-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="lg:order-2">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
+                      <Shield className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Safety Tracking</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Real-time monitoring of driving behaviors including speed, harsh braking, and acceleration. Get instant alerts when safety thresholds are exceeded.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
+                      Real-time speed monitoring
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
+                      Harsh braking detection
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-blue-500 mr-2" />
+                      Location-based alerts
+                    </li>
+                  </ul>
+                </div>
+                <div className="lg:order-1 flex justify-center">
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-blue-500 rounded-full flex items-center justify-center">
+                      <Shield className="h-16 w-16 text-white" />
+                    </div>
+                    <div className="absolute inset-0 border-4 border-blue-300 rounded-full animate-ping"></div>
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <Activity className="h-6 w-6 text-blue-600 animate-bounce" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Phone Use Monitoring */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-8 border border-purple-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mr-4">
+                      <Smartphone className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Phone Use Monitoring</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Detect phone usage while driving and automatically apply penalties for distracted driving. Encourage hands-free habits for safer roads.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                      Automatic phone use detection
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                      Distracted driving penalties
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-purple-500 mr-2" />
+                      Hands-free rewards
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="w-20 h-32 bg-gray-800 rounded-lg flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-2 bg-purple-500 rounded animate-pulse"></div>
+                      <Smartphone className="h-8 w-8 text-white z-10" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center animate-bounce">
+                      <span className="text-xs font-bold text-white">✕</span>
+                    </div>
+                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+                      <AlertTriangle className="h-6 w-6 text-orange-500 animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Family Control */}
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 border border-orange-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="lg:order-2">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mr-4">
+                      <Users className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Family Control</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Complete family dashboard with individual settings for each teen driver. Parents maintain full control while giving teens transparency into their progress.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-orange-500 mr-2" />
+                      Individual teen profiles
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-orange-500 mr-2" />
+                      Customizable rules per child
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-orange-500 mr-2" />
+                      Transparent progress tracking
+                    </li>
+                  </ul>
+                </div>
+                <div className="lg:order-1 flex justify-center">
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-orange-500 rounded-full flex items-center justify-center">
+                      <Users className="h-16 w-16 text-white" />
+                    </div>
+                    <div className="absolute -top-3 -left-3 w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center animate-bounce">
+                      <span className="text-xs font-bold text-white">P</span>
+                    </div>
+                    <div className="absolute -top-3 -right-3 w-12 h-12 bg-green-400 rounded-full flex items-center justify-center animate-bounce" style={{animationDelay: '0.3s'}}>
+                      <span className="text-xs font-bold text-white">T1</span>
+                    </div>
+                    <div className="absolute -bottom-3 -right-3 w-12 h-12 bg-purple-400 rounded-full flex items-center justify-center animate-bounce" style={{animationDelay: '0.6s'}}>
+                      <span className="text-xs font-bold text-white">T2</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Unlimited Teen Drivers */}
+            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl p-8 border border-indigo-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mr-4">
+                      <Car className="h-6 w-6 text-white animate-bounce" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Unlimited Teen Drivers</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Add as many teen drivers as you need with no additional cost. Perfect for large families with multiple teens learning to drive.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-indigo-500 mr-2" />
+                      No per-teen charges
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-indigo-500 mr-2" />
+                      Individual tracking per child
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-indigo-500 mr-2" />
+                      Scalable for any family size
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="flex space-x-2">
+                      <div className="w-16 h-20 bg-indigo-500 rounded-lg flex items-center justify-center animate-bounce">
+                        <Car className="h-8 w-8 text-white" />
+                      </div>
+                      <div className="w-16 h-20 bg-indigo-400 rounded-lg flex items-center justify-center animate-bounce" style={{animationDelay: '0.2s'}}>
+                        <Car className="h-8 w-8 text-white" />
+                      </div>
+                      <div className="w-16 h-20 bg-indigo-300 rounded-lg flex items-center justify-center animate-bounce" style={{animationDelay: '0.4s'}}>
+                        <Car className="h-8 w-8 text-white" />
+                      </div>
+                    </div>
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <span className="text-2xl font-bold text-indigo-600 animate-pulse">∞</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Automatic Safety Scoring */}
+            <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-8 border border-green-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div className="lg:order-2">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center mr-4">
+                      <TrendingUp className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Automatic Safety Scoring</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    AI-powered safety scoring that automatically calculates driving performance based on speed, braking, phone use, and other safety metrics.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-teal-500 mr-2" />
+                      Real-time score updates
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-teal-500 mr-2" />
+                      Comprehensive safety metrics
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-teal-500 mr-2" />
+                      Progress tracking over time
+                    </li>
+                  </ul>
+                </div>
+                <div className="lg:order-1 flex justify-center">
+                  <div className="relative">
+                    <div className="w-32 h-32 bg-teal-500 rounded-full flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold text-white animate-pulse">94</div>
+                        <div className="text-xs text-teal-100">SCORE</div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 border-4 border-teal-300 rounded-full" style={{
+                      background: `conic-gradient(from 0deg, #14b8a6 ${94 * 3.6}deg, transparent ${94 * 3.6}deg)`,
+                    }}></div>
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <TrendingUp className="h-6 w-6 text-teal-600 animate-bounce" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Email Notifications */}
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl p-8 border border-yellow-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center mr-4">
+                      <Mail className="h-6 w-6 text-white animate-pulse" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">Email Notifications</h3>
+                  </div>
+                  <p className="text-gray-700 mb-4 text-lg">
+                    Instant email alerts for both parents and teens when incidents occur. Stay informed about driving behavior in real-time.
+                  </p>
+                  <ul className="space-y-2 text-gray-600">
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                      Instant incident alerts
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                      Weekly progress summaries
+                    </li>
+                    <li className="flex items-center">
+                      <CheckCircle className="h-5 w-5 text-yellow-500 mr-2" />
+                      Achievement notifications
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex justify-center">
+                  <div className="relative">
+                    <div className="w-32 h-24 bg-white rounded-lg shadow-lg border border-gray-200 p-4 flex items-center justify-center">
+                      <Mail className="h-12 w-12 text-yellow-500 animate-bounce" />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center animate-pulse">
+                      <span className="text-xs font-bold text-white">!</span>
+                    </div>
+                    <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-yellow-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Dashboard Preview Section */}
           <div className="py-20 bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl mb-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
