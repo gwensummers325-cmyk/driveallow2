@@ -1077,15 +1077,46 @@ export function registerRoutes(app: Express): Server {
         "20.00"
       );
 
+      // Test welcome email
+      await emailService.sendWelcomeEmail(
+        email,
+        "Test Parent"
+      );
+
       res.json({ 
         message: "Test notifications sent successfully",
         sentTo: email,
-        count: 5
+        count: 6
       });
 
     } catch (error) {
       console.error("Error sending test notifications:", error);
       res.status(500).json({ message: "Failed to send test notifications" });
+    }
+  });
+
+  // Test welcome email endpoint
+  app.post('/api/test-welcome-email', async (req, res) => {
+    try {
+      const { email, firstName } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email address is required" });
+      }
+
+      const name = firstName || "Test Parent";
+      
+      await emailService.sendWelcomeEmail(email, name);
+
+      res.json({ 
+        message: "Welcome email sent successfully",
+        sentTo: email,
+        firstName: name
+      });
+
+    } catch (error) {
+      console.error("Error sending welcome email:", error);
+      res.status(500).json({ message: "Failed to send welcome email" });
     }
   });
 
