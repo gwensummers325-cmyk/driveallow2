@@ -169,6 +169,18 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
             </div>
           </div>
           
+          {/* Important Disclaimers */}
+          <div className="mt-8 pt-6 border-t border-gray-700">
+            <div className="space-y-4 text-xs text-gray-500">
+              <p>
+                <strong className="text-gray-400">Important:</strong> Secret or nonconsensual use of DriveAllow to collect or track information of others is strictly prohibited.
+              </p>
+              <p>
+                Impact Detection and Notification may be unavailable in certain instances, such as when the cellular or other signals are unavailable or intermittent. If the cellphone experiences a loss of wireless service, then no data will be transmitted.
+              </p>
+            </div>
+          </div>
+          
           {/* Bottom Bar */}
           <div className="mt-8 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center">
             <p className="text-sm text-gray-400">
