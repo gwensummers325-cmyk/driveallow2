@@ -331,10 +331,10 @@ export default function ParentDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center text-orange-800">
                 <DollarSign className="h-5 w-5 mr-2" />
-                Money Owed to Teens
+                Pending Real-World Payments
               </CardTitle>
               <p className="text-sm text-orange-700">
-                These allowances and bonuses have been added to your teen's balance and need to be paid in real life.
+                Your teens have earned these allowances and bonuses for safe driving! Their digital balances have been updated, and now it's time to pay them in cash, bank transfer, or however you prefer to handle their real money.
               </p>
             </CardHeader>
             <CardContent>
