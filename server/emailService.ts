@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
 interface EmailOptions {
   to: string;
@@ -8,34 +8,32 @@ interface EmailOptions {
 }
 
 class EmailService {
-  private transporter: nodemailer.Transporter;
-
   constructor() {
-    // Configure email transporter
-    this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'smtp.ionos.com',
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: false, // Use STARTTLS
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
-      }
-    });
+    // Configure SendGrid
+    if (process.env.SENDGRID_API_KEY) {
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    } else {
+      console.warn('SENDGRID_API_KEY not found, emails will not be sent');
+    }
   }
 
   async sendEmail(options: EmailOptions): Promise<void> {
     try {
-      await this.transporter.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      if (!process.env.SENDGRID_API_KEY) {
+        console.log('Email would be sent:', options.subject, 'to:', options.to);
+        return;
+      }
+
+      const msg = {
         to: options.to,
+        from: process.env.SMTP_FROM || 'noreply@driveallow.com',
         subject: options.subject,
         text: options.text,
-        html: options.html,
-      });
+        html: options.html || options.text,
+      };
+
+      await sgMail.send(msg);
+      console.log('Email sent successfully:', options.subject, 'to:', options.to);
     } catch (error) {
       console.error('Failed to send email:', error);
       // Don't throw error to prevent blocking the main flow
