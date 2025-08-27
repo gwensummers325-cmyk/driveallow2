@@ -334,7 +334,7 @@ export default function ParentDashboard() {
                 Pending Real-World Payments
               </CardTitle>
               <p className="text-sm text-orange-700">
-                Your teens have earned these allowances and bonuses for safe driving! Their digital balances have been updated, and now it's time to pay them in cash, bank transfer, or however you prefer to handle their real money.
+                Your teens have earned these allowances and bonuses for safe driving! Their digital balances have been updated, and now it's time to pay them in real money.
               </p>
             </CardHeader>
             <CardContent>
