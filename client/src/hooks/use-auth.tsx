@@ -63,6 +63,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
+      // Clear all cached data when switching users to prevent stale data
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/teen'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/parent'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription'] });
       toast({
         title: "Welcome back!",
         description: `Signed in as ${user.firstName} ${user.lastName}`,
@@ -84,6 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
+      // Clear all cached data when registering new user
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/teen'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/parent'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription'] });
       toast({
         title: "Account created!",
         description: `Welcome to DriveAllow, ${user.firstName}!`,
@@ -104,6 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: () => {
       queryClient.setQueryData(["/api/user"], null);
+      // Clear all cached data when logging out
+      queryClient.clear();
       toast({
         title: "Signed out",
         description: "You have been successfully signed out.",
