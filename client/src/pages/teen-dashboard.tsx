@@ -65,7 +65,7 @@ export default function TeenDashboard() {
     );
   }
 
-  const { teen, balance, transactions, incidents, weeklyViolations } = dashboardData as any;
+  const { teen, parent, balance, transactions, incidents, weeklyViolations } = dashboardData as any;
   
   // Ensure new accounts start with clean data
   const actualWeeklyViolations = weeklyViolations || 0;
@@ -115,8 +115,16 @@ export default function TeenDashboard() {
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-4">
               <h1 className="text-xl md:text-2xl font-bold text-primary">DriveAllow</h1>
+              {parent && (
+                <div className="hidden sm:block">
+                  <span className="text-sm text-gray-500">Connected to </span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {parent.firstName} {parent.lastName}
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex items-center space-x-2 md:space-x-4">
               <Badge variant="secondary" className="text-xs md:text-sm">Teen View</Badge>

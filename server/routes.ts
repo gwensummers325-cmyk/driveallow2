@@ -478,6 +478,9 @@ export function registerRoutes(app: Express): Server {
       const transactions = await storage.getTransactionsByTeenId(teenId, 20);
       const incidents = await storage.getIncidentsByTeenId(teenId, 10);
       
+      // Get parent information
+      const parent = await storage.getUser(teen.parentId);
+      
       // Calculate weekly violations
       const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - 7);
@@ -485,6 +488,7 @@ export function registerRoutes(app: Express): Server {
 
       const dashboardData = {
         teen,
+        parent,
         balance: balance || { currentBalance: '0.00' },
         transactions,
         incidents,
