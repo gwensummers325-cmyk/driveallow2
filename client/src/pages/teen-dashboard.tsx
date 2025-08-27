@@ -69,6 +69,9 @@ export default function TeenDashboard() {
   
   // Ensure new accounts start with clean data
   const actualWeeklyViolations = weeklyViolations || 0;
+  
+  // Check if this is a new account (no driving history)
+  const isNewAccount = transactions.length === 0 && incidents.length === 0;
 
   const formatCurrency = (amount: string) => `$${parseFloat(amount).toFixed(2)}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
@@ -273,8 +276,11 @@ export default function TeenDashboard() {
                   <div>
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-gray-600">No violations</span>
-                      <span className={`font-medium ${actualWeeklyViolations === 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {actualWeeklyViolations === 0 ? '✓ Complete' : `${actualWeeklyViolations} violations`}
+                      <span className={`font-medium ${actualWeeklyViolations === 0 ? (isNewAccount ? 'text-gray-500' : 'text-green-600') : 'text-red-600'}`}>
+                        {isNewAccount 
+                          ? 'Start driving to track' 
+                          : (actualWeeklyViolations === 0 ? '✓ Complete' : `${actualWeeklyViolations} violations`)
+                        }
                       </span>
                     </div>
                     <Progress 
