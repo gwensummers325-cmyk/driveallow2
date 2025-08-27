@@ -152,7 +152,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               <div className="space-y-3 text-sm text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
-                  <span>support@driveallow.com</span>
+                  <span>safe@driveallow.com</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Heart className="h-4 w-4 text-red-400" />
