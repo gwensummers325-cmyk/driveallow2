@@ -67,6 +67,7 @@ export default function TeenDashboard() {
 
   const { teen, parent, balance, transactions, incidents, weeklyViolations } = dashboardData as any;
   
+  
   // Ensure new accounts start with clean data
   const actualWeeklyViolations = weeklyViolations || 0;
   
