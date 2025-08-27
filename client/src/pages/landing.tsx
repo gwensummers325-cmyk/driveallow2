@@ -56,9 +56,10 @@ export default function Landing() {
 
     let animationId: number;
     const scrollSpeed = 0.5; // pixels per frame
+    let isPaused = false;
 
     const animate = () => {
-      if (scrollContainer) {
+      if (scrollContainer && !isPaused) {
         scrollContainer.scrollLeft += scrollSpeed;
         
         // Reset scroll when we've scrolled past all original items
@@ -70,12 +71,43 @@ export default function Landing() {
       animationId = requestAnimationFrame(animate);
     };
 
+    // Pause on touch/mouse interaction, resume after delay
+    const pauseAnimation = () => {
+      isPaused = true;
+    };
+
+    const resumeAnimation = () => {
+      setTimeout(() => {
+        isPaused = false;
+      }, 3000); // Resume after 3 seconds
+    };
+
+    // Add event listeners for mobile and desktop
+    scrollContainer.addEventListener('touchstart', pauseAnimation, { passive: true });
+    scrollContainer.addEventListener('touchend', resumeAnimation, { passive: true });
+    scrollContainer.addEventListener('mouseenter', pauseAnimation);
+    scrollContainer.addEventListener('mouseleave', resumeAnimation);
+
+    // Handle visibility change to restart on mobile
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        isPaused = false;
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     animationId = requestAnimationFrame(animate);
 
     return () => {
       if (animationId) {
         cancelAnimationFrame(animationId);
       }
+      scrollContainer.removeEventListener('touchstart', pauseAnimation);
+      scrollContainer.removeEventListener('touchend', resumeAnimation);
+      scrollContainer.removeEventListener('mouseenter', pauseAnimation);
+      scrollContainer.removeEventListener('mouseleave', resumeAnimation);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
