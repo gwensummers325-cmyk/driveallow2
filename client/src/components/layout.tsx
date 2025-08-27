@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Car, ArrowLeft, Mail, Phone, Shield, Heart } from "lucide-react";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import logoImage from "@assets/DriveAllow_1756305424410.png";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -48,7 +49,7 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               
               <div className="flex items-center cursor-pointer" onClick={() => setLocation("/")}>
                 <img 
-                  src="/assets/DriveAllow_1756305424410.png" 
+                  src={logoImage} 
                   alt="DriveAllow" 
                   className="h-10 w-auto"
                 />
