@@ -370,6 +370,88 @@ Thanks for trying DriveAllow!
     await this.sendEmail({ to: parentEmail, subject, text, html });
   }
 
+  async sendWelcomeEmail(
+    parentEmail: string,
+    parentName: string
+  ): Promise<void> {
+    const subject = `Welcome to DriveAllow, ${parentName}! 🚗`;
+    const text = `
+Hi ${parentName},
+
+Welcome to DriveAllow! We're so excited to help you teach your teen safe driving habits through our innovative allowance management system.
+
+🎯 What's Next?
+1. Set up your teen's profile and allowance settings
+2. Download our mobile app for real-time driving monitoring
+3. Start tracking driving behavior and managing rewards automatically
+
+🚀 Your Free Trial
+Your 7-day free trial has started! Explore all DriveAllow features with unlimited teen drivers during this period.
+
+💡 Quick Tips to Get Started:
+• Set clear allowance amounts and penalty rates that work for your family
+• Use the bonus feature to reward excellent driving behavior
+• Check the dashboard regularly to stay connected with your teen's progress
+
+🤝 We're Here to Help
+If you have any questions or need assistance setting up your account, our support team is ready to help. Just reply to this email!
+
+Thanks for choosing DriveAllow to make driving safer for your family.
+
+Safe driving,
+The DriveAllow Team
+    `;
+
+    const html = `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%); padding: 30px; border-radius: 12px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #1976D2; font-size: 28px; margin: 0; font-weight: 600;">Welcome to DriveAllow! 🚗</h1>
+          <p style="color: #666; font-size: 16px; margin: 10px 0 0 0;">Empowering safer teen driving through smart allowance management</p>
+        </div>
+        
+        <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 25px;">
+          <p style="font-size: 16px; color: #333; margin: 0 0 20px 0;">Hi <strong>${parentName}</strong>,</p>
+          <p style="font-size: 16px; color: #333; line-height: 1.5;">We're so excited to help you teach your teen safe driving habits through our innovative allowance management system! 🎉</p>
+        </div>
+
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #1976D2; margin: 0 0 15px 0; display: flex; align-items: center;"><span style="margin-right: 8px;">🎯</span>What's Next?</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #333;">
+            <li style="margin-bottom: 8px;">Set up your teen's profile and allowance settings</li>
+            <li style="margin-bottom: 8px;">Download our mobile app for real-time driving monitoring</li>
+            <li>Start tracking driving behavior and managing rewards automatically</li>
+          </ul>
+        </div>
+
+        <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #388E3C; margin: 0 0 15px 0; display: flex; align-items: center;"><span style="margin-right: 8px;">🚀</span>Your Free Trial</h3>
+          <p style="margin: 0; color: #333;">Your <strong>7-day free trial</strong> has started! Explore all DriveAllow features with unlimited teen drivers during this period.</p>
+        </div>
+
+        <div style="background: #fff3e0; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+          <h3 style="color: #F57C00; margin: 0 0 15px 0; display: flex; align-items: center;"><span style="margin-right: 8px;">💡</span>Quick Tips to Get Started</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #333;">
+            <li style="margin-bottom: 8px;">Set clear allowance amounts and penalty rates that work for your family</li>
+            <li style="margin-bottom: 8px;">Use the bonus feature to reward excellent driving behavior</li>
+            <li>Check the dashboard regularly to stay connected with your teen's progress</li>
+          </ul>
+        </div>
+
+        <div style="background: #f3e5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+          <h3 style="color: #7B1FA2; margin: 0 0 15px 0; display: flex; align-items: center;"><span style="margin-right: 8px;">🤝</span>We're Here to Help</h3>
+          <p style="margin: 0; color: #333;">If you have any questions or need assistance setting up your account, our support team is ready to help. Just reply to this email!</p>
+        </div>
+
+        <div style="text-align: center; border-top: 2px solid #e0e0e0; padding-top: 25px;">
+          <p style="font-size: 16px; color: #333; margin: 0 0 10px 0;">Thanks for choosing DriveAllow to make driving safer for your family.</p>
+          <p style="color: #1976D2; font-weight: 600; margin: 0;">Safe driving,<br>The DriveAllow Team</p>
+        </div>
+      </div>
+    `;
+
+    await this.sendEmail({ to: parentEmail, subject, text, html });
+  }
+
   async sendParentSignupNotification(
     parentName: string,
     parentEmail: string,

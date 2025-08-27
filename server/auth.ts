@@ -209,6 +209,13 @@ export function setupAuth(app: Express) {
         console.error('Failed to send admin notifications:', error);
       }
 
+      // Send welcome email to parent
+      try {
+        await emailService.sendWelcomeEmail(email, firstName);
+      } catch (error) {
+        console.error('Failed to send welcome email:', error);
+      }
+
       req.login(user, (err) => {
         if (err) return next(err);
         res.status(201).json({
@@ -255,6 +262,15 @@ export function setupAuth(app: Express) {
         role: role || 'teen',
         parentId: role === 'teen' ? parentId : undefined,
       });
+
+      // Send welcome email if user is a parent
+      if (user.role === 'parent') {
+        try {
+          await emailService.sendWelcomeEmail(email, firstName);
+        } catch (error) {
+          console.error('Failed to send welcome email:', error);
+        }
+      }
 
       req.login(user, (err) => {
         if (err) return next(err);
