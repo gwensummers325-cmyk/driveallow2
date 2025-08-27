@@ -296,39 +296,37 @@ export class ViolationDetector {
         return ViolationDetector.getFallbackSpeedLimit(lat, lng);
       }
 
-      // HERE Maps Routing API v8 - get route with speed limit data
-      const url = `https://router.hereapi.com/v8/routes?transportMode=car&origin=${lat},${lng}&destination=${lat + 0.001},${lng + 0.001}&return=polyline,summary,instructions&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      // HERE Maps Routing API v8 with speed limit spans
+      const destination = `${lat + 0.001},${lng + 0.001}`;
+      const url = `https://router.hereapi.com/v8/routes?origin=${lat},${lng}&destination=${destination}&return=polyline&transportMode=car&spans=speedLimit&apikey=${process.env.HERE_MAPS_API_KEY}`;
       
       const response = await fetch(url);
       
       if (!response.ok) {
-        console.warn(`HERE Maps API error: ${response.status}, using fallback`);
+        const errorText = await response.text();
+        console.warn(`HERE Maps API error: ${response.status} - ${errorText}, using fallback`);
         return ViolationDetector.getFallbackSpeedLimit(lat, lng);
       }
       
       const data = await response.json();
       
-      // Extract speed limit from the route data
-      if (data.routes && data.routes[0] && data.routes[0].sections && data.routes[0].sections[0]) {
-        const section = data.routes[0].sections[0];
+      // Extract speed limit from spans data
+      if (data.routes && data.routes[0] && data.routes[0].spans) {
+        const spans = data.routes[0].spans;
         
-        // Look for speed limit in instructions or summary
-        if (section.summary && section.summary.speedLimitKph) {
-          // Convert km/h to mph
-          return Math.round(section.summary.speedLimitKph * 0.621371);
-        }
-        
-        // Check instructions for speed limit information
-        if (section.instructions) {
-          for (const instruction of section.instructions) {
-            if (instruction.roadName && instruction.speedLimit) {
-              return Math.round(instruction.speedLimit * 0.621371);
-            }
+        // Get the first speed limit from spans
+        for (const span of spans) {
+          if (span.speedLimit !== undefined) {
+            // Speed limit is in m/s, convert to mph
+            const speedLimitMph = Math.round(span.speedLimit * 2.237);
+            console.log(`📍 HERE Maps speed limit: ${speedLimitMph} mph (${span.speedLimit} m/s) at ${lat}, ${lng}`);
+            return speedLimitMph;
           }
         }
       }
       
       // If no speed limit found in API response, use fallback
+      console.log(`📍 No speed limit data from HERE Maps for ${lat}, ${lng}, using fallback`);
       return ViolationDetector.getFallbackSpeedLimit(lat, lng);
       
     } catch (error) {
@@ -350,10 +348,51 @@ export class ViolationDetector {
     return 55; // Highways/major roads
   }
 
-  // Reverse geocode coordinates to address (placeholder)
+  // Reverse geocode coordinates to address using HERE Maps API
   private static async reverseGeocode(lat: number, lng: number): Promise<string> {
-    // In production, this would use a geocoding API
-    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    try {
+      if (!process.env.HERE_MAPS_API_KEY) {
+        return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      }
+
+      // HERE Geocoding API v7 for reverse geocoding
+      const url = `https://revgeocode.search.hereapi.com/v1/revgeocode?at=${lat},${lng}&lang=en-US&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.warn(`HERE Geocoding API error: ${response.status}, using coordinates`);
+        return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      }
+      
+      const data = await response.json();
+      
+      // Extract address from response
+      if (data.items && data.items[0] && data.items[0].address) {
+        const address = data.items[0].address;
+        const street = address.street || '';
+        const city = address.city || '';
+        const state = address.stateCode || '';
+        
+        // Build readable address
+        let location = '';
+        if (street) location += street;
+        if (city) location += (location ? ', ' : '') + city;
+        if (state) location += (location ? ', ' : '') + state;
+        
+        if (location) {
+          console.log(`📍 HERE Geocoding: ${location} for ${lat}, ${lng}`);
+          return location;
+        }
+      }
+      
+      // Fallback to coordinates
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+      
+    } catch (error) {
+      console.error('Error reverse geocoding with HERE Maps:', error);
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
   }
 
   // Store driving data for analysis and trip tracking
