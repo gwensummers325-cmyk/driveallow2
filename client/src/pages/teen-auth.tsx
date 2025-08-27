@@ -143,9 +143,6 @@ export default function TeenAuth() {
                 <p className="text-sm text-gray-600 mb-2">
                   Need an account? Ask your parent to create one for you.
                 </p>
-                <p className="text-xs text-gray-500">
-                  Test login: <strong>testteen</strong> / <strong>teen123</strong>
-                </p>
               </div>
               
               <div className="mt-6 text-center text-sm text-gray-600">
