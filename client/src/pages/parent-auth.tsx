@@ -12,7 +12,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { PlanSelection } from "@/components/plan-selection";
 import { PaymentSetup } from "@/components/payment-setup";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 
@@ -80,7 +80,13 @@ export default function ParentAuth() {
       });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (userData) => {
+      // Update auth state with the new user data
+      queryClient.setQueryData(["/api/user"], userData);
+      // Clear cached data for fresh start
+      queryClient.invalidateQueries({ queryKey: ['/api/dashboard/parent'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription'] });
+      
       toast({
         title: "Account Created!",
         description: "Your 7-day free trial has started. Welcome to DriveAllow!",
