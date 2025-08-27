@@ -382,8 +382,7 @@ Welcome to DriveAllow! We're so excited to help you teach your teen safe driving
 
 🎯 What's Next?
 1. Set up your teen's profile and allowance settings
-2. Download our mobile app for real-time driving monitoring
-3. Start tracking driving behavior and managing rewards automatically
+2. Start tracking driving behavior and managing rewards automatically
 
 🚀 Your Free Trial
 Your 7-day free trial has started! Explore all DriveAllow features with unlimited teen drivers during this period.
@@ -418,7 +417,6 @@ The DriveAllow Team
           <h3 style="color: #1976D2; margin: 0 0 15px 0; display: flex; align-items: center;"><span style="margin-right: 8px;">🎯</span>What's Next?</h3>
           <ul style="margin: 0; padding-left: 20px; color: #333;">
             <li style="margin-bottom: 8px;">Set up your teen's profile and allowance settings</li>
-            <li style="margin-bottom: 8px;">Download our mobile app for real-time driving monitoring</li>
             <li>Start tracking driving behavior and managing rewards automatically</li>
           </ul>
         </div>
