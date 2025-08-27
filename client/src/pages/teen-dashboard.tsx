@@ -66,6 +66,9 @@ export default function TeenDashboard() {
   }
 
   const { teen, balance, transactions, incidents, weeklyViolations } = dashboardData as any;
+  
+  // Ensure new accounts start with clean data
+  const actualWeeklyViolations = weeklyViolations || 0;
 
   const formatCurrency = (amount: string) => `$${parseFloat(amount).toFixed(2)}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
@@ -97,7 +100,7 @@ export default function TeenDashboard() {
   };
 
   const currentBalance = parseFloat(balance.currentBalance);
-  const safetyScore = Math.max(0, Math.min(100, 100 - (weeklyViolations * 10))); // Simple calculation
+  const safetyScore = Math.max(0, Math.min(100, 100 - (actualWeeklyViolations * 10))); // Simple calculation
   const weeklyMiles = 0; // Start with 0 miles for new accounts
   const weeklyGoal = 150;
   const milesProgress = (weeklyMiles / weeklyGoal) * 100;
@@ -199,7 +202,7 @@ export default function TeenDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Violations</p>
-                  <p className="text-3xl font-bold text-gray-900">{weeklyViolations}</p>
+                  <p className="text-3xl font-bold text-gray-900">{actualWeeklyViolations}</p>
                 </div>
                 <div className="w-12 h-12 bg-error/10 rounded-lg flex items-center justify-center">
                   <AlertTriangle className="text-error text-xl" />
@@ -270,12 +273,12 @@ export default function TeenDashboard() {
                   <div>
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="text-gray-600">No violations</span>
-                      <span className={`font-medium ${weeklyViolations === 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {weeklyViolations === 0 ? '✓ Complete' : `${weeklyViolations} violations`}
+                      <span className={`font-medium ${actualWeeklyViolations === 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {actualWeeklyViolations === 0 ? '✓ Complete' : `${actualWeeklyViolations} violations`}
                       </span>
                     </div>
                     <Progress 
-                      value={weeklyViolations === 0 ? 100 : Math.max(0, 100 - (weeklyViolations * 20))} 
+                      value={actualWeeklyViolations === 0 ? 100 : Math.max(0, 100 - (actualWeeklyViolations * 20))} 
                       className="h-2" 
                     />
                   </div>
@@ -330,7 +333,7 @@ export default function TeenDashboard() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-medium text-gray-900">Safe Driving Streak</p>
-                        <p className="text-xs text-gray-600">Current streak: {weeklyViolations === 0 ? '7' : '0'} days</p>
+                        <p className="text-xs text-gray-600">Current streak: {actualWeeklyViolations === 0 ? '7' : '0'} days</p>
                       </div>
                       <span className="text-green-600 font-semibold">+$5/week</span>
                     </div>
