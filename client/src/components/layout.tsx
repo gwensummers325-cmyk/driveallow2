@@ -47,8 +47,11 @@ export function Layout({ children, showBackButton = true, backPath }: LayoutProp
               )}
               
               <div className="flex items-center cursor-pointer" onClick={() => setLocation("/")}>
-                <Car className="h-6 w-6 text-primary mr-2" />
-                <h1 className="text-2xl font-bold text-primary">DriveAllow</h1>
+                <img 
+                  src="/assets/DriveAllow_1756305424410.png" 
+                  alt="DriveAllow" 
+                  className="h-10 w-auto"
+                />
               </div>
             </div>
             
