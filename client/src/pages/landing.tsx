@@ -148,7 +148,7 @@ export default function Landing() {
             {/* Left side - Text Content */}
             <div className="text-center lg:text-left relative">
               <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight font-anton headline-animate relative z-10 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient">
-                Teens Drive Safe—They Get Rewarded.
+                Teens Drive Safe. Teens Get Rewarded.
               </h2>
               
               {/* Moving Car Animation */}
