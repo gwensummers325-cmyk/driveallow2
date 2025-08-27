@@ -44,7 +44,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-md font-semibold">Support</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li>support@driveallow.com</li>
+              <li>safe@driveallow.com</li>
               <li>1-800-DRIVE-SAFE</li>
               <li>Mon-Fri 9AM-6PM EST</li>
             </ul>
