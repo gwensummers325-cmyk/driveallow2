@@ -534,19 +534,6 @@ export default function ParentDashboard() {
                           <Gift className="h-3 w-3 mr-1" />
                           Add Bonus
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="text-xs md:text-sm border-blue-200 text-blue-700 hover:bg-blue-50 min-h-[36px]"
-                          onClick={() => {
-                            setSelectedTeenId(teen.id);
-                            setShowGeofencingModal(true);
-                          }}
-                          title="Set up safe zones and location boundaries"
-                        >
-                          <Shield className="h-3 w-3 mr-1" />
-                          Geofencing
-                        </Button>
                       </div>
                       <div className="grid grid-cols-1 gap-2 mt-2">
                         <Button

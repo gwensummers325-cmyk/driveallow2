@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Shield, Clock } from "lucide-react";
+import { MapPin, Shield, Clock, Plus, Settings, Users } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -399,10 +400,12 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
               </div>
             </div>
 
-            {/* Geofence Summary */}
-            <div className="col-span-full">
-              <GeofenceSummary teenId={teenId} />
-            </div>
+            {/* Geofence Management - only show for the first teen or when no specific teen */}
+            {(!teenId || teenId === teens?.[0]?.id) && (
+              <div className="col-span-full">
+                <GeofenceManagement teens={teens || []} />
+              </div>
+            )}
           </div>
         </form>
       </CardContent>
@@ -410,25 +413,98 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
   );
 }
 
-// Geofence Summary Component
-function GeofenceSummary({ teenId }: { teenId?: string }) {
-  const { data: geofences = [] } = useQuery({
-    queryKey: ["/api/teens", teenId, "geofences"],
-    enabled: !!teenId,
+// Geofence Management Component
+function GeofenceManagement({ teens }: { teens: any[] }) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  
+  // Get all geofences (not teen-specific)
+  const { data: allGeofences = [] } = useQuery({
+    queryKey: ["/api/geofences"],
   });
 
-  if (!teenId || geofences.length === 0) {
+  // State for assignment modal
+  const [selectedGeofence, setSelectedGeofence] = useState<any>(null);
+  const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Get teen assignments for a geofence
+  const getTeenAssignments = (geofenceId: string) => {
+    return useQuery({
+      queryKey: ["/api/geofences", geofenceId, "teens"],
+      enabled: !!geofenceId,
+    });
+  };
+
+  // Assignment mutations
+  const assignMutation = useMutation({
+    mutationFn: async ({ geofenceId, teenId }: { geofenceId: string; teenId: string }) => {
+      await apiRequest("POST", `/api/geofences/${geofenceId}/assign/${teenId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/geofences"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/teens"] });
+      toast({ title: "Success", description: "Geofence assigned successfully!" });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => { window.location.href = "/api/login"; }, 500);
+        return;
+      }
+      toast({ title: "Error", description: "Failed to assign geofence", variant: "destructive" });
+    },
+  });
+
+  const unassignMutation = useMutation({
+    mutationFn: async ({ geofenceId, teenId }: { geofenceId: string; teenId: string }) => {
+      await apiRequest("DELETE", `/api/geofences/${geofenceId}/assign/${teenId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/geofences"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/teens"] });
+      toast({ title: "Success", description: "Geofence unassigned successfully!" });
+    },
+    onError: (error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "You are logged out. Logging in again...",
+          variant: "destructive",
+        });
+        setTimeout(() => { window.location.href = "/api/login"; }, 500);
+        return;
+      }
+      toast({ title: "Error", description: "Failed to unassign geofence", variant: "destructive" });
+    },
+  });
+
+  if (allGeofences.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Active Geofences
+          <CardTitle className="text-lg flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Geofencing Management
+            </div>
+            <Button
+              size="sm"
+              onClick={() => setShowCreateModal(true)}
+              className="bg-primary hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Geofence
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-500 text-sm">
-            No geofences configured yet. Set up safe zones, restricted areas, and curfew zones using the "Manage Geofences" button in the teen dashboard.
+            No geofences configured yet. Create safe zones, restricted areas, and curfew zones to monitor your teens' locations.
           </p>
         </CardContent>
       </Card>
@@ -475,49 +551,264 @@ function GeofenceSummary({ teenId }: { teenId?: string }) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          <MapPin className="h-5 w-5" />
-          Active Geofences ({geofences.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {geofences.map((geofence: any) => (
-            <div key={geofence.id} className="flex items-center justify-between p-3 border rounded-lg">
-              <div className="flex items-center gap-3">
-                {getTypeIcon(geofence.type)}
-                <div>
-                  <div className="font-medium text-sm">{geofence.name}</div>
-                  <div className="text-xs text-gray-500">{geofence.address}</div>
-                  {geofence.radius && (
-                    <div className="text-xs text-gray-400">
-                      {(geofence.radius / 1609).toFixed(1)} mile radius
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <Badge className={`text-xs ${getTypeColor(geofence.type)}`}>
-                  {getTypeName(geofence.type)}
-                </Badge>
-                {!geofence.isActive && (
-                  <Badge variant="secondary" className="text-xs">
-                    Inactive
-                  </Badge>
-                )}
-              </div>
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Geofencing Management ({allGeofences.length})
             </div>
-          ))}
+            <Button
+              size="sm"
+              onClick={() => setShowCreateModal(true)}
+              className="bg-primary hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Create Geofence
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {allGeofences.map((geofence: any) => (
+              <GeofenceCard
+                key={geofence.id}
+                geofence={geofence}
+                teens={teens}
+                onManageAssignments={(gf) => {
+                  setSelectedGeofence(gf);
+                  setShowAssignmentModal(true);
+                }}
+                assignMutation={assignMutation}
+                unassignMutation={unassignMutation}
+              />
+            ))}
+          </div>
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-800">
+              <strong>How Geofencing Works:</strong> Create geofences and assign them to specific teens. 
+              Click "Manage Teens" on any geofence to control which teens it applies to.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* Create Geofence Modal */}
+      {showCreateModal && (
+        <GeofencingModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          teenId="" // Not needed for creation
+        />
+      )}
+      
+      {/* Teen Assignment Modal */}
+      {showAssignmentModal && selectedGeofence && (
+        <TeenAssignmentModal
+          geofence={selectedGeofence}
+          teens={teens}
+          isOpen={showAssignmentModal}
+          onClose={() => {
+            setShowAssignmentModal(false);
+            setSelectedGeofence(null);
+          }}
+          assignMutation={assignMutation}
+          unassignMutation={unassignMutation}
+        />
+      )}
+    </>
+  );
+}
+
+// Individual Geofence Card Component
+function GeofenceCard({ geofence, teens, onManageAssignments, assignMutation, unassignMutation }: {
+  geofence: any;
+  teens: any[];
+  onManageAssignments: (geofence: any) => void;
+  assignMutation: any;
+  unassignMutation: any;
+}) {
+  const { data: assignments = [] } = useQuery({
+    queryKey: ["/api/geofences", geofence.id, "teens"],
+  });
+
+  const assignedTeenIds = assignments.map((a: any) => a.teenId);
+  const assignedTeens = teens.filter(teen => assignedTeenIds.includes(teen.id));
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return <Shield className="h-4 w-4" />;
+      case 'restricted':
+        return <MapPin className="h-4 w-4" />;
+      case 'curfew':
+        return <Clock className="h-4 w-4" />;
+      default:
+        return <MapPin className="h-4 w-4" />;
+    }
+  };
+
+  const getTypeName = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return 'Safe Zone';
+      case 'restricted':
+        return 'Restricted Area';
+      case 'curfew':
+        return 'Curfew Zone';
+      default:
+        return type;
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return 'bg-green-100 text-green-800';
+      case 'restricted':
+        return 'bg-red-100 text-red-800';
+      case 'curfew':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+      <div className="flex items-center gap-3">
+        {getTypeIcon(geofence.type)}
+        <div>
+          <div className="font-medium text-sm">{geofence.name}</div>
+          <div className="text-xs text-gray-500">{geofence.address}</div>
+          {geofence.radius && (
+            <div className="text-xs text-gray-400">
+              {(geofence.radius / 1609).toFixed(1)} mile radius
+            </div>
+          )}
+          <div className="flex items-center gap-2 mt-1">
+            <Badge className={`text-xs ${getTypeColor(geofence.type)}`}>
+              {getTypeName(geofence.type)}
+            </Badge>
+            {!geofence.isActive && (
+              <Badge variant="secondary" className="text-xs">
+                Inactive
+              </Badge>
+            )}
+          </div>
         </div>
-        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-800">
-            <strong>How Geofencing Works:</strong> The penalty amounts above are applied automatically when your teen violates geofence rules. 
-            Safe zones provide bonuses for compliance, while restricted areas and curfew violations result in penalties.
-          </p>
+      </div>
+      
+      <div className="flex items-center gap-3">
+        <div className="text-right">
+          <div className="text-sm font-medium">
+            {assignedTeens.length} of {teens.length} teens
+          </div>
+          <div className="text-xs text-gray-500">
+            {assignedTeens.length > 0 
+              ? assignedTeens.map(teen => `${teen.firstName} ${teen.lastName}`).join(', ')
+              : 'No teens assigned'
+            }
+          </div>
         </div>
-      </CardContent>
-    </Card>
+        
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => onManageAssignments(geofence)}
+          className="text-xs"
+        >
+          <Users className="h-3 w-3 mr-1" />
+          Manage Teens
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Teen Assignment Modal Component
+function TeenAssignmentModal({ geofence, teens, isOpen, onClose, assignMutation, unassignMutation }: {
+  geofence: any;
+  teens: any[];
+  isOpen: boolean;
+  onClose: () => void;
+  assignMutation: any;
+  unassignMutation: any;
+}) {
+  const { data: assignments = [] } = useQuery({
+    queryKey: ["/api/geofences", geofence.id, "teens"],
+    enabled: isOpen,
+  });
+
+  const assignedTeenIds = assignments.map((a: any) => a.teenId);
+
+  const handleTeenToggle = (teenId: string, isAssigned: boolean) => {
+    if (isAssigned) {
+      unassignMutation.mutate({ geofenceId: geofence.id, teenId });
+    } else {
+      assignMutation.mutate({ geofenceId: geofence.id, teenId });
+    }
+  };
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return <Shield className="h-4 w-4" />;
+      case 'restricted':
+        return <MapPin className="h-4 w-4" />;
+      case 'curfew':
+        return <Clock className="h-4 w-4" />;
+      default:
+        return <MapPin className="h-4 w-4" />;
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            {getTypeIcon(geofence.type)}
+            Assign Teens to {geofence.name}
+          </DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="text-sm font-medium">{geofence.name}</div>
+            <div className="text-xs text-gray-600">{geofence.address}</div>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="text-sm font-medium">Select which teens this geofence applies to:</div>
+            {teens.map((teen) => {
+              const isAssigned = assignedTeenIds.includes(teen.id);
+              return (
+                <div key={teen.id} className="flex items-center space-x-3">
+                  <Checkbox
+                    checked={isAssigned}
+                    onCheckedChange={(checked) => handleTeenToggle(teen.id, !checked)}
+                    disabled={assignMutation.isPending || unassignMutation.isPending}
+                  />
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">
+                      {teen.firstName} {teen.lastName}
+                    </div>
+                    <div className="text-xs text-gray-500">@{teen.username}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="flex justify-end">
+            <Button onClick={onClose} variant="outline">
+              Done
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
