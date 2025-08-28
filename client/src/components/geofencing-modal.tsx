@@ -70,6 +70,7 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
     penaltyAmount: "",
     notifyOnEntry: true,
     notifyOnExit: true,
+    assignedTeens: [] as string[], // Track which teens this geofence applies to
   });
 
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
@@ -81,6 +82,14 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
     queryKey: ["/api/geofences"],
     enabled: isOpen,
   });
+
+  // Fetch teens for teen assignment
+  const { data: parentData } = useQuery({
+    queryKey: ["/api/dashboard/parent"],
+    enabled: isOpen,
+  });
+
+  const teens = (parentData as any)?.teens || [];
 
   // Fetch geofence events
   const { data: geofenceEvents = [] } = useQuery({
@@ -254,7 +263,7 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
   const resetForm = () => {
     setFormData({
       name: "",
-      type: "safe",
+      type: "safe_zone",
       latitude: "",
       longitude: "",
       radius: "500",
@@ -268,6 +277,7 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
       penaltyAmount: "",
       notifyOnEntry: true,
       notifyOnExit: true,
+      assignedTeens: [],
     });
     setAddressSuggestions([]);
     setShowAddressSuggestions(false);
@@ -276,8 +286,9 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const { assignedTeens, ...formDataWithoutTeens } = formData;
     const data = {
-      ...formData,
+      ...formDataWithoutTeens,
       latitude: parseFloat(formData.latitude),
       longitude: parseFloat(formData.longitude),
       radius: parseInt(formData.radius),
@@ -311,6 +322,7 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
       penaltyAmount: geofence.penaltyAmount?.toString() || "",
       notifyOnEntry: geofence.notifyOnEntry,
       notifyOnExit: geofence.notifyOnExit,
+      assignedTeens: [], // TODO: Load existing assignments
     });
     setShowCreateForm(true);
   };

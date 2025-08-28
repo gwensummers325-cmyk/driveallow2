@@ -1112,6 +1112,109 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Geofence teen assignment routes
+  app.post('/api/geofences/:geofenceId/assign/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { geofenceId, teenId } = req.params;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can assign geofences" });
+      }
+
+      // Verify teen belongs to this parent
+      const teen = await storage.getUser(teenId);
+      if (!teen || teen.parentId !== parentId) {
+        return res.status(404).json({ message: "Teen not found or not associated with this parent" });
+      }
+
+      const assignment = await storage.assignGeofenceToTeen(geofenceId, teenId);
+      res.status(201).json(assignment);
+    } catch (error) {
+      console.error("Error assigning geofence to teen:", error);
+      res.status(500).json({ message: "Failed to assign geofence to teen" });
+    }
+  });
+
+  app.delete('/api/geofences/:geofenceId/assign/:teenId', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { geofenceId, teenId } = req.params;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can unassign geofences" });
+      }
+
+      // Verify teen belongs to this parent
+      const teen = await storage.getUser(teenId);
+      if (!teen || teen.parentId !== parentId) {
+        return res.status(404).json({ message: "Teen not found or not associated with this parent" });
+      }
+
+      const success = await storage.unassignGeofenceFromTeen(geofenceId, teenId);
+      if (!success) {
+        return res.status(404).json({ message: "Assignment not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error unassigning geofence from teen:", error);
+      res.status(500).json({ message: "Failed to unassign geofence from teen" });
+    }
+  });
+
+  app.get('/api/geofences/:geofenceId/teens', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { geofenceId } = req.params;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can view geofence assignments" });
+      }
+
+      const assignments = await storage.getTeenAssignments(geofenceId);
+      res.json(assignments);
+    } catch (error) {
+      console.error("Error fetching geofence teen assignments:", error);
+      res.status(500).json({ message: "Failed to fetch geofence teen assignments" });
+    }
+  });
+
+  app.get('/api/teens/:teenId/geofences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.id;
+      const { teenId } = req.params;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Parents can view geofences for their teens, teens can view their own
+      if (user.role === 'parent') {
+        const teen = await storage.getUser(teenId);
+        if (!teen || teen.parentId !== userId) {
+          return res.status(404).json({ message: "Teen not found or not associated with this parent" });
+        }
+      } else if (user.role === 'teen') {
+        if (teenId !== userId) {
+          return res.status(403).json({ message: "Teens can only view their own geofences" });
+        }
+      } else {
+        return res.status(403).json({ message: "Invalid user role" });
+      }
+
+      const geofences = await storage.getAssignedGeofences(teenId);
+      res.json(geofences);
+    } catch (error) {
+      console.error("Error fetching teen geofences:", error);
+      res.status(500).json({ message: "Failed to fetch teen geofences" });
+    }
+  });
+
   // Geocoding search endpoint for address lookup
   app.get('/api/geocode-search', isAuthenticated, async (req, res) => {
     try {

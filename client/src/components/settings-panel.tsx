@@ -413,7 +413,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
 // Geofence Summary Component
 function GeofenceSummary({ teenId }: { teenId?: string }) {
   const { data: geofences = [] } = useQuery({
-    queryKey: ["/api/geofences"],
+    queryKey: ["/api/teens", teenId, "geofences"],
     enabled: !!teenId,
   });
 

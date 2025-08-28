@@ -269,6 +269,17 @@ export const geofences = pgTable("geofences", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Geofence teen assignments (which teens are assigned to which geofences)
+export const geofenceTeenAssignments = pgTable("geofence_teen_assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  geofenceId: varchar("geofence_id").notNull().references(() => geofences.id),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  geofenceTeenUnique: unique().on(table.geofenceId, table.teenId),
+}));
+
 // Geofence events table (logs when teens enter/exit zones)
 export const geofenceEvents = pgTable("geofence_events", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -442,6 +453,18 @@ export const geofencesRelations = relations(geofences, ({ one, many }) => ({
     references: [users.id],
   }),
   events: many(geofenceEvents),
+  teenAssignments: many(geofenceTeenAssignments),
+}));
+
+export const geofenceTeenAssignmentsRelations = relations(geofenceTeenAssignments, ({ one }) => ({
+  geofence: one(geofences, {
+    fields: [geofenceTeenAssignments.geofenceId],
+    references: [geofences.id],
+  }),
+  teen: one(users, {
+    fields: [geofenceTeenAssignments.teenId],
+    references: [users.id],
+  }),
 }));
 
 export const geofenceEventsRelations = relations(geofenceEvents, ({ one }) => ({
@@ -531,6 +554,11 @@ export const insertGeofenceSchema = createInsertSchema(geofences).omit({
   updatedAt: true,
 });
 
+export const insertGeofenceTeenAssignmentSchema = createInsertSchema(geofenceTeenAssignments).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertGeofenceEventSchema = createInsertSchema(geofenceEvents).omit({
   id: true,
   createdAt: true,
@@ -560,5 +588,7 @@ export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
 export type Geofence = typeof geofences.$inferSelect;
 export type InsertGeofence = z.infer<typeof insertGeofenceSchema>;
+export type GeofenceTeenAssignment = typeof geofenceTeenAssignments.$inferSelect;
+export type InsertGeofenceTeenAssignment = z.infer<typeof insertGeofenceTeenAssignmentSchema>;
 export type GeofenceEvent = typeof geofenceEvents.$inferSelect;
 export type InsertGeofenceEvent = z.infer<typeof insertGeofenceEventSchema>;

@@ -7,6 +7,7 @@ import {
   subscriptions,
   geofences,
   geofenceEvents,
+  geofenceTeenAssignments,
   type User,
   type UpsertUser,
   type AllowanceSettings,
@@ -23,6 +24,8 @@ import {
   type InsertGeofence,
   type GeofenceEvent,
   type InsertGeofenceEvent,
+  type GeofenceTeenAssignment,
+  type InsertGeofenceTeenAssignment,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, or, sql } from "drizzle-orm";
@@ -66,10 +69,16 @@ export interface IStorage {
   
   // Geofence operations
   getGeofences(parentId: string): Promise<Geofence[]>;
+  getGeofencesForTeen(teenId: string): Promise<Geofence[]>;
   createGeofence(geofence: InsertGeofence): Promise<Geofence>;
   updateGeofence(id: string, updates: Partial<InsertGeofence>): Promise<Geofence | undefined>;
   deleteGeofence(id: string): Promise<boolean>;
   getGeofenceEvents(teenId: string, parentId: string, limit?: number): Promise<GeofenceEvent[]>;
+  // Geofence teen assignment operations
+  assignGeofenceToTeen(geofenceId: string, teenId: string): Promise<GeofenceTeenAssignment>;
+  unassignGeofenceFromTeen(geofenceId: string, teenId: string): Promise<boolean>;
+  getTeenAssignments(geofenceId: string): Promise<GeofenceTeenAssignment[]>;
+  getAssignedGeofences(teenId: string): Promise<Geofence[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -399,6 +408,65 @@ export class DatabaseStorage implements IStorage {
       ))
       .orderBy(desc(geofenceEvents.createdAt))
       .limit(limit);
+  }
+
+  async getGeofencesForTeen(teenId: string): Promise<Geofence[]> {
+    return await db
+      .select()
+      .from(geofences)
+      .innerJoin(geofenceTeenAssignments, eq(geofences.id, geofenceTeenAssignments.geofenceId))
+      .where(and(
+        eq(geofenceTeenAssignments.teenId, teenId),
+        eq(geofenceTeenAssignments.isActive, true)
+      ))
+      .orderBy(desc(geofences.createdAt))
+      .then(results => results.map(result => result.geofences));
+  }
+
+  async assignGeofenceToTeen(geofenceId: string, teenId: string): Promise<GeofenceTeenAssignment> {
+    const [assignment] = await db
+      .insert(geofenceTeenAssignments)
+      .values({ geofenceId, teenId, isActive: true })
+      .onConflictDoUpdate({
+        target: [geofenceTeenAssignments.geofenceId, geofenceTeenAssignments.teenId],
+        set: { isActive: true }
+      })
+      .returning();
+    return assignment;
+  }
+
+  async unassignGeofenceFromTeen(geofenceId: string, teenId: string): Promise<boolean> {
+    const result = await db
+      .update(geofenceTeenAssignments)
+      .set({ isActive: false })
+      .where(and(
+        eq(geofenceTeenAssignments.geofenceId, geofenceId),
+        eq(geofenceTeenAssignments.teenId, teenId)
+      ));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getTeenAssignments(geofenceId: string): Promise<GeofenceTeenAssignment[]> {
+    return await db
+      .select()
+      .from(geofenceTeenAssignments)
+      .where(and(
+        eq(geofenceTeenAssignments.geofenceId, geofenceId),
+        eq(geofenceTeenAssignments.isActive, true)
+      ));
+  }
+
+  async getAssignedGeofences(teenId: string): Promise<Geofence[]> {
+    return await db
+      .select()
+      .from(geofences)
+      .innerJoin(geofenceTeenAssignments, eq(geofences.id, geofenceTeenAssignments.geofenceId))
+      .where(and(
+        eq(geofenceTeenAssignments.teenId, teenId),
+        eq(geofenceTeenAssignments.isActive, true)
+      ))
+      .orderBy(desc(geofences.createdAt))
+      .then(results => results.map(result => result.geofences));
   }
 
 }
