@@ -205,12 +205,25 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
     setIsSearchingAddress(true);
     try {
       const res = await apiRequest("GET", `/api/geocode-search?q=${encodeURIComponent(query)}`);
+      
+      // Check if the response is ok and contains JSON
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Response is not JSON');
+      }
+      
       const data = await res.json();
+      console.log('Address search results:', data);
       setAddressSuggestions(data.items || []);
-      setShowAddressSuggestions(true);
+      setShowAddressSuggestions(data.items && data.items.length > 0);
     } catch (error) {
       console.error("Error searching addresses:", error);
       setAddressSuggestions([]);
+      setShowAddressSuggestions(false);
     } finally {
       setIsSearchingAddress(false);
     }

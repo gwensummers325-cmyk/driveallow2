@@ -1113,32 +1113,41 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Geocoding search endpoint for address lookup
-  app.get('/api/geocode-search', async (req, res) => {
+  app.get('/api/geocode-search', isAuthenticated, async (req, res) => {
     try {
       const { q } = req.query;
+      console.log('🔍 Geocoding search request:', q);
       
       if (!q || typeof q !== 'string') {
+        console.log('❌ Invalid search query');
         return res.status(400).json({ message: "Search query is required" });
       }
 
       if (!process.env.HERE_MAPS_API_KEY) {
+        console.log('❌ HERE Maps API key not found');
         return res.status(500).json({ message: "Geocoding service unavailable" });
       }
 
       // HERE Geocoding API for address search
       const url = `https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(q)}&limit=5&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      console.log('🌐 Making request to HERE Maps:', url.replace(process.env.HERE_MAPS_API_KEY, '[REDACTED]'));
       
       const response = await fetch(url);
       
       if (!response.ok) {
-        console.error(`HERE Geocoding API error: ${response.status}`);
+        console.error(`❌ HERE Geocoding API error: ${response.status}`);
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
         return res.status(500).json({ message: "Geocoding service error" });
       }
       
       const data = await response.json();
+      console.log('✅ Geocoding results:', data.items?.length || 0, 'items found');
+      
+      res.setHeader('Content-Type', 'application/json');
       res.json(data);
     } catch (error) {
-      console.error("Error in geocode search:", error);
+      console.error("❌ Error in geocode search:", error);
       res.status(500).json({ message: "Failed to search addresses" });
     }
   });
