@@ -736,48 +736,41 @@ export default function ParentDashboard() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Empty spacer for layout */}
-          <div className="lg:col-span-2"></div>
-
-          {/* Quick Actions & Status */}
-          <div className="space-y-6">
-
-            {/* Family Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Family Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Total Teen Drivers</span>
-                    <span className="text-sm font-medium">{teens.length}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Combined Balance</span>
-                    <span className="text-sm font-medium text-green-600">
-                      {formatCurrency(
-                        teens.reduce((sum: number, teen: any) => 
-                          sum + parseFloat(teen.balance?.currentBalance || '0.00'), 0
-                        ).toString()
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Allowance Total</span>
-                    <span className="text-sm font-medium">
-                      {formatCurrency(
-                        teens.reduce((sum: number, teen: any) => 
-                          sum + parseFloat(teen.settings?.allowanceAmount || '50.00'), 0
-                        ).toString()
-                      )}
-                    </span>
-                  </div>
+        {/* Family Summary */}
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Family Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Total Teen Drivers</span>
+                  <span className="text-sm font-medium">{teens.length}</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Combined Balance</span>
+                  <span className="text-sm font-medium text-green-600">
+                    {formatCurrency(
+                      teens.reduce((sum: number, teen: any) => 
+                        sum + parseFloat(teen.balance?.currentBalance || '0.00'), 0
+                      ).toString()
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">Allowance Total</span>
+                  <span className="text-sm font-medium">
+                    {formatCurrency(
+                      teens.reduce((sum: number, teen: any) => 
+                        sum + parseFloat(teen.settings?.allowanceAmount || '50.00'), 0
+                      ).toString()
+                    )}
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Settings Panel */}
