@@ -125,8 +125,11 @@ export const allowanceSettings = pgTable("allowance_settings", {
   harshBrakingPenalty: decimal("harsh_braking_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
   aggressiveAccelPenalty: decimal("aggressive_accel_penalty", { precision: 10, scale: 2 }).notNull().default('5.00'),
   phoneUsagePenalty: decimal("phone_usage_penalty", { precision: 10, scale: 2 }).notNull().default('15.00'),
+  geofenceViolationPenalty: decimal("geofence_violation_penalty", { precision: 10, scale: 2 }).notNull().default('20.00'),
+  curfewViolationPenalty: decimal("curfew_violation_penalty", { precision: 10, scale: 2 }).notNull().default('25.00'),
   perfectWeekBonus: decimal("perfect_week_bonus", { precision: 10, scale: 2 }).notNull().default('10.00'),
   speedComplianceBonus: decimal("speed_compliance_bonus", { precision: 10, scale: 2 }).notNull().default('2.00'),
+  geofenceComplianceBonus: decimal("geofence_compliance_bonus", { precision: 10, scale: 2 }).notNull().default('5.00'),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 }, (table) => ({

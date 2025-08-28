@@ -33,8 +33,11 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
     harshBrakingPenalty: '5.00',
     aggressiveAccelPenalty: '5.00',
     phoneUsagePenalty: '15.00',
+    geofenceViolationPenalty: '20.00',
+    curfewViolationPenalty: '25.00',
     perfectWeekBonus: '10.00',
     speedComplianceBonus: '2.00',
+    geofenceComplianceBonus: '5.00',
   });
 
   // Fetch existing settings
@@ -55,8 +58,11 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
         harshBrakingPenalty: settings.harshBrakingPenalty,
         aggressiveAccelPenalty: settings.aggressiveAccelPenalty,
         phoneUsagePenalty: settings.phoneUsagePenalty || '15.00',
+        geofenceViolationPenalty: settings.geofenceViolationPenalty || '20.00',
+        curfewViolationPenalty: settings.curfewViolationPenalty || '25.00',
         perfectWeekBonus: settings.perfectWeekBonus,
         speedComplianceBonus: settings.speedComplianceBonus,
+        geofenceComplianceBonus: settings.geofenceComplianceBonus || '5.00',
       });
     }
   }, [existingSettings]);
@@ -288,6 +294,42 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                     Automatic penalty applied when phone usage is detected during driving
                   </p>
                 </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Geofence Violation</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="pl-6 text-sm"
+                      value={settings.geofenceViolationPenalty}
+                      onChange={(e) => handleInputChange('geofenceViolationPenalty', e.target.value)}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Penalty for entering restricted areas or leaving safe zones
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Curfew Violation</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="pl-6 text-sm"
+                      value={settings.curfewViolationPenalty}
+                      onChange={(e) => handleInputChange('curfewViolationPenalty', e.target.value)}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Penalty for being outside curfew zones during restricted hours
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -323,6 +365,24 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                       onChange={(e) => handleInputChange('speedComplianceBonus', e.target.value)}
                     />
                   </div>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  <Label className="text-sm text-gray-600">Geofence compliance</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      className="pl-6 text-sm"
+                      value={settings.geofenceComplianceBonus}
+                      onChange={(e) => handleInputChange('geofenceComplianceBonus', e.target.value)}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Weekly bonus for staying within safe zones and respecting restricted areas
+                  </p>
                 </div>
                 
                 <div className="pt-2">
