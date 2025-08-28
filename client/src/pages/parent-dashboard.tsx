@@ -13,6 +13,7 @@ import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
 import { SubscriptionPanel } from "@/components/subscription-panel";
 import { CreateTeenModal } from "@/components/create-teen-modal";
+import { GeofencingModal } from "@/components/geofencing-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { Layout } from "@/components/layout";
@@ -25,6 +26,7 @@ export default function ParentDashboard() {
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [showCreateTeenModal, setShowCreateTeenModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showGeofencingModal, setShowGeofencingModal] = useState(false);
   const [selectedTeenId, setSelectedTeenId] = useState<string>("");
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
@@ -506,7 +508,7 @@ export default function ParentDashboard() {
 
 
                       {/* Actions */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <Button
                           size="sm"
                           variant="outline"
@@ -534,8 +536,23 @@ export default function ParentDashboard() {
                         </Button>
                         <Button
                           size="sm"
+                          variant="outline"
+                          className="text-xs md:text-sm border-blue-200 text-blue-700 hover:bg-blue-50 min-h-[36px]"
+                          onClick={() => {
+                            setSelectedTeenId(teen.id);
+                            setShowGeofencingModal(true);
+                          }}
+                          title="Set up safe zones and location boundaries"
+                        >
+                          <Shield className="h-3 w-3 mr-1" />
+                          Geofencing
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 mt-2">
+                        <Button
+                          size="sm"
                           variant="destructive"
-                          className="text-xs md:text-sm min-h-[36px] col-span-2 sm:col-span-2"
+                          className="text-xs md:text-sm min-h-[36px]"
                           onClick={() => {
                             setSelectedTeenId(teen.id);
                             setShowDeleteModal(true);
@@ -708,6 +725,13 @@ export default function ParentDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Geofencing Modal */}
+      <GeofencingModal
+        isOpen={showGeofencingModal}
+        onClose={() => setShowGeofencingModal(false)}
+        teenId={selectedTeenId}
+      />
       </div>
     </Layout>
   );
