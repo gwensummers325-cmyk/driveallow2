@@ -461,10 +461,10 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="100">Small (100m - about 1 city block)</SelectItem>
-                            <SelectItem value="250">Medium (250m - few blocks)</SelectItem>
-                            <SelectItem value="500">Large (500m - neighborhood area)</SelectItem>
-                            <SelectItem value="1000">Extra Large (1km - wide area)</SelectItem>
+                            <SelectItem value="1609">1-5 miles</SelectItem>
+                            <SelectItem value="9656">6-15 miles</SelectItem>
+                            <SelectItem value="25749">16-30 miles</SelectItem>
+                            <SelectItem value="48280">31-50 miles</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
