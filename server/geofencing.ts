@@ -1,6 +1,8 @@
 import { db } from "./db";
 import { geofences, geofenceEvents, monitoringAlerts, transactions } from "@shared/schema";
 import { eq, and, desc } from "drizzle-orm";
+import { storage } from "./storage";
+import { emailService } from "./emailService";
 import type { 
   Geofence, 
   InsertGeofence, 
@@ -372,6 +374,46 @@ export class GeofencingService {
       .update(geofenceEvents)
       .set({ transactionId: transaction.id })
       .where(eq(geofenceEvents.id, eventId));
+
+    // Get balance information for email notification
+    const balanceBefore = await storage.getAllowanceBalance(teenId);
+    const balanceBeforeAmount = balanceBefore?.currentBalance || '0.00';
+    
+    // Update balance (deduct penalty)
+    await storage.updateBalance(teenId, geofence.penaltyAmount!, true);
+    
+    // Get balance after deduction
+    const balanceAfter = await storage.getAllowanceBalance(teenId);
+    const balanceAfterAmount = balanceAfter?.currentBalance || '0.00';
+
+    // Send email notification for geofence violation
+    try {
+      const teen = await storage.getUser(teenId);
+      const parent = await storage.getUser(parentId);
+      
+      if (teen?.email && parent?.email) {
+        const incidentType = geofence.type === 'restricted' 
+          ? 'Restricted area violation'
+          : geofence.type === 'curfew'
+          ? 'Curfew violation'
+          : 'Geofence violation';
+        
+        await emailService.sendIncidentNotification(
+          parent.email,
+          teen.email,
+          `${teen.firstName} ${teen.lastName}`,
+          incidentType,
+          geofence.address || `${geofence.name} zone`,
+          geofence.penaltyAmount!,
+          balanceBeforeAmount,
+          balanceAfterAmount
+        );
+        
+        console.log(`📧 Sent geofence violation email for ${geofence.name} to parent and teen`);
+      }
+    } catch (error) {
+      console.error('Failed to send geofence violation email:', error);
+    }
 
     console.log(`💸 Applied ${geofence.penaltyAmount} penalty to teen ${teenId} for ${geofence.name} violation`);
   }
