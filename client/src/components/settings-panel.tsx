@@ -12,6 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Shield, Clock, Plus, Settings, Users } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { GeofencingModal } from "@/components/geofencing-modal";
+import {
   Select,
   SelectContent,
   SelectItem,
