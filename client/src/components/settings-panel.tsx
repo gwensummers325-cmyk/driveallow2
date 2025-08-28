@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Shield, Clock } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -396,8 +398,125 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                 </div>
               </div>
             </div>
+
+            {/* Geofence Summary */}
+            <div className="col-span-full">
+              <GeofenceSummary teenId={teenId} />
+            </div>
           </div>
         </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Geofence Summary Component
+function GeofenceSummary({ teenId }: { teenId?: string }) {
+  const { data: geofences = [] } = useQuery({
+    queryKey: ["/api/geofences"],
+    enabled: !!teenId,
+  });
+
+  if (!teenId || geofences.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Active Geofences
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-500 text-sm">
+            No geofences configured yet. Set up safe zones, restricted areas, and curfew zones using the "Manage Geofences" button in the teen dashboard.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return <Shield className="h-4 w-4" />;
+      case 'restricted':
+        return <MapPin className="h-4 w-4" />;
+      case 'curfew':
+        return <Clock className="h-4 w-4" />;
+      default:
+        return <MapPin className="h-4 w-4" />;
+    }
+  };
+
+  const getTypeName = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return 'Safe Zone';
+      case 'restricted':
+        return 'Restricted Area';
+      case 'curfew':
+        return 'Curfew Zone';
+      default:
+        return type;
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'safe_zone':
+        return 'bg-green-100 text-green-800';
+      case 'restricted':
+        return 'bg-red-100 text-red-800';
+      case 'curfew':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center gap-2">
+          <MapPin className="h-5 w-5" />
+          Active Geofences ({geofences.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          {geofences.map((geofence: any) => (
+            <div key={geofence.id} className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                {getTypeIcon(geofence.type)}
+                <div>
+                  <div className="font-medium text-sm">{geofence.name}</div>
+                  <div className="text-xs text-gray-500">{geofence.address}</div>
+                  {geofence.radius && (
+                    <div className="text-xs text-gray-400">
+                      {(geofence.radius / 1609).toFixed(1)} mile radius
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1">
+                <Badge className={`text-xs ${getTypeColor(geofence.type)}`}>
+                  {getTypeName(geofence.type)}
+                </Badge>
+                {!geofence.isActive && (
+                  <Badge variant="secondary" className="text-xs">
+                    Inactive
+                  </Badge>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>How Geofencing Works:</strong> The penalty amounts above are applied automatically when your teen violates geofence rules. 
+            Safe zones provide bonuses for compliance, while restricted areas and curfew violations result in penalties.
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
