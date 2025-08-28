@@ -286,7 +286,7 @@ export default function Landing() {
                   2
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-2">Track Driving</h4>
-                <p className="text-gray-600">Report driving incidents manually or track violations like speeding and harsh braking.</p>
+                <p className="text-gray-600">Teen signs in to their account for automatic monitoring, while parents can report incidents manually or track violations like speeding and harsh braking.</p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
