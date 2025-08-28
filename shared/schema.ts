@@ -78,6 +78,21 @@ export const subscriptionStatusEnum = pgEnum('subscription_status', [
   'expired'
 ]);
 
+// Geofence type enum
+export const geofenceTypeEnum = pgEnum('geofence_type', [
+  'safe_zone',    // Home, school, approved places
+  'restricted',   // Places where teen shouldn't be
+  'curfew',      // Time-based restrictions
+  'speed_zone'   // Different speed limits
+]);
+
+// Geofence action enum
+export const geofenceActionEnum = pgEnum('geofence_action', [
+  'enter',
+  'exit',
+  'violation'
+]);
+
 // Users table  
 export const users: any = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -217,12 +232,53 @@ export const monitoringAlerts = pgTable("monitoring_alerts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   teenId: varchar("teen_id").notNull().references(() => users.id),
   parentId: varchar("parent_id").notNull().references(() => users.id),
-  type: varchar("type").notNull(), // 'speed', 'harsh_brake', 'aggressive_accel', 'trip_start', 'trip_end', 'phone_usage'
+  type: varchar("type").notNull(), // 'speed', 'harsh_brake', 'aggressive_accel', 'trip_start', 'trip_end', 'phone_usage', 'geofence'
   message: text("message").notNull(),
   severity: violationSeverityEnum("severity").notNull().default('medium'),
   isRead: boolean("is_read").notNull().default(false),
   tripId: varchar("trip_id").references(() => drivingTrips.id),
   violationId: varchar("violation_id").references(() => drivingViolations.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Geofences table
+export const geofences = pgTable("geofences", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentId: varchar("parent_id").notNull().references(() => users.id),
+  name: varchar("name").notNull(), // "Home", "School", "Work", etc.
+  type: geofenceTypeEnum("type").notNull(),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }).notNull(),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }).notNull(),
+  radius: integer("radius").notNull(), // radius in meters
+  address: text("address"), // Human-readable address
+  isActive: boolean("is_active").notNull().default(true),
+  // Time restrictions
+  startTime: varchar("start_time"), // HH:MM format for curfew zones
+  endTime: varchar("end_time"), // HH:MM format for curfew zones
+  daysOfWeek: text("days_of_week").array().default([]), // ['monday', 'tuesday', etc.]
+  // Zone-specific settings
+  speedLimit: integer("speed_limit"), // Custom speed limit for speed zones
+  allowanceBonus: decimal("allowance_bonus", { precision: 10, scale: 2 }), // Bonus for being in safe zones
+  penaltyAmount: decimal("penalty_amount", { precision: 10, scale: 2 }), // Penalty for restricted zones
+  notifyOnEntry: boolean("notify_on_entry").notNull().default(true),
+  notifyOnExit: boolean("notify_on_exit").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Geofence events table (logs when teens enter/exit zones)
+export const geofenceEvents = pgTable("geofence_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  geofenceId: varchar("geofence_id").notNull().references(() => geofences.id),
+  teenId: varchar("teen_id").notNull().references(() => users.id),
+  parentId: varchar("parent_id").notNull().references(() => users.id),
+  action: geofenceActionEnum("action").notNull(),
+  tripId: varchar("trip_id").references(() => drivingTrips.id),
+  alertId: varchar("alert_id").references(() => monitoringAlerts.id),
+  transactionId: varchar("transaction_id").references(() => transactions.id), // If bonus/penalty applied
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  address: text("address"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -377,6 +433,41 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   }),
 }));
 
+export const geofencesRelations = relations(geofences, ({ one, many }) => ({
+  parent: one(users, {
+    fields: [geofences.parentId],
+    references: [users.id],
+  }),
+  events: many(geofenceEvents),
+}));
+
+export const geofenceEventsRelations = relations(geofenceEvents, ({ one }) => ({
+  geofence: one(geofences, {
+    fields: [geofenceEvents.geofenceId],
+    references: [geofences.id],
+  }),
+  teen: one(users, {
+    fields: [geofenceEvents.teenId],
+    references: [users.id],
+  }),
+  parent: one(users, {
+    fields: [geofenceEvents.parentId],
+    references: [users.id],
+  }),
+  trip: one(drivingTrips, {
+    fields: [geofenceEvents.tripId],
+    references: [drivingTrips.id],
+  }),
+  alert: one(monitoringAlerts, {
+    fields: [geofenceEvents.alertId],
+    references: [monitoringAlerts.id],
+  }),
+  transaction: one(transactions, {
+    fields: [geofenceEvents.transactionId],
+    references: [transactions.id],
+  }),
+}));
+
 // Schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -431,6 +522,17 @@ export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({
   updatedAt: true,
 });
 
+export const insertGeofenceSchema = createInsertSchema(geofences).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertGeofenceEventSchema = createInsertSchema(geofenceEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -453,3 +555,7 @@ export type MonitoringAlert = typeof monitoringAlerts.$inferSelect;
 export type InsertMonitoringAlert = z.infer<typeof insertMonitoringAlertSchema>;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
+export type Geofence = typeof geofences.$inferSelect;
+export type InsertGeofence = z.infer<typeof insertGeofenceSchema>;
+export type GeofenceEvent = typeof geofenceEvents.$inferSelect;
+export type InsertGeofenceEvent = z.infer<typeof insertGeofenceEventSchema>;

@@ -1,5 +1,6 @@
 import { storage } from './storage';
 import { emailService } from './emailService';
+import { GeofencingService } from './geofencing';
 
 export interface DrivingData {
   teenId: string;
@@ -260,6 +261,20 @@ export class ViolationDetector {
       if (aggressiveViolation) {
         violations.push(aggressiveViolation);
         await ViolationDetector.processViolation(sensorData.teenId, drivingData, aggressiveViolation);
+      }
+
+      // Check geofencing violations
+      try {
+        await GeofencingService.processLocationData(
+          sensorData.teenId,
+          teen.parentId,
+          sensorData.gps.latitude,
+          sensorData.gps.longitude,
+          undefined, // tripId - not used in smartphone monitoring
+          drivingData.location
+        );
+      } catch (error) {
+        console.error('Error checking geofence locations:', error);
       }
       
       // Store driving data for analysis

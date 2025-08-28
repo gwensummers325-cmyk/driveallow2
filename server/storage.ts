@@ -5,6 +5,8 @@ import {
   incidents,
   allowanceBalances,
   subscriptions,
+  geofences,
+  geofenceEvents,
   type User,
   type UpsertUser,
   type AllowanceSettings,
@@ -17,6 +19,10 @@ import {
   type InsertAllowanceBalance,
   type Subscription,
   type InsertSubscription,
+  type Geofence,
+  type InsertGeofence,
+  type GeofenceEvent,
+  type InsertGeofenceEvent,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte, or, sql } from "drizzle-orm";
@@ -57,6 +63,13 @@ export interface IStorage {
   getTeenCountForParent(parentId: string): Promise<number>;
   calculateSubscriptionPrice(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly', teenCount: number): { basePrice: string; additionalPrice: string; totalPrice: string };
   calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro', currentPeriodStart: Date, currentPeriodEnd: Date): string;
+  
+  // Geofence operations
+  getGeofences(parentId: string): Promise<Geofence[]>;
+  createGeofence(geofence: InsertGeofence): Promise<Geofence>;
+  updateGeofence(id: string, updates: Partial<InsertGeofence>): Promise<Geofence | undefined>;
+  deleteGeofence(id: string): Promise<boolean>;
+  getGeofenceEvents(teenId: string, parentId: string, limit?: number): Promise<GeofenceEvent[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -341,6 +354,51 @@ export class DatabaseStorage implements IStorage {
   calculateProratedAmount(tier: 'safety_first' | 'safety_plus' | 'driveallow_pro' | 'driveallow_pro_yearly', currentPeriodStart: Date, currentPeriodEnd: Date): string {
     // No prorated charges for DriveAllow Pro since unlimited teens are included
     return "0.00";
+  }
+
+  // Geofence operations
+  async getGeofences(parentId: string): Promise<Geofence[]> {
+    return await db
+      .select()
+      .from(geofences)
+      .where(eq(geofences.parentId, parentId))
+      .orderBy(desc(geofences.createdAt));
+  }
+
+  async createGeofence(geofenceData: InsertGeofence): Promise<Geofence> {
+    const [geofence] = await db
+      .insert(geofences)
+      .values(geofenceData)
+      .returning();
+    return geofence;
+  }
+
+  async updateGeofence(id: string, updates: Partial<InsertGeofence>): Promise<Geofence | undefined> {
+    const [geofence] = await db
+      .update(geofences)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(geofences.id, id))
+      .returning();
+    return geofence;
+  }
+
+  async deleteGeofence(id: string): Promise<boolean> {
+    const result = await db
+      .delete(geofences)
+      .where(eq(geofences.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getGeofenceEvents(teenId: string, parentId: string, limit = 50): Promise<GeofenceEvent[]> {
+    return await db
+      .select()
+      .from(geofenceEvents)
+      .where(and(
+        eq(geofenceEvents.teenId, teenId),
+        eq(geofenceEvents.parentId, parentId)
+      ))
+      .orderBy(desc(geofenceEvents.createdAt))
+      .limit(limit);
   }
 
 }

@@ -994,6 +994,123 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Geofencing routes
+  app.get('/api/geofences', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can access geofences" });
+      }
+
+      const geofences = await storage.getGeofences(parentId);
+      res.json(geofences);
+    } catch (error) {
+      console.error("Error fetching geofences:", error);
+      res.status(500).json({ message: "Failed to fetch geofences" });
+    }
+  });
+
+  app.post('/api/geofences', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can create geofences" });
+      }
+
+      const geofenceData = {
+        ...req.body,
+        parentId,
+        id: undefined // Let database generate ID
+      };
+
+      const geofence = await storage.createGeofence(geofenceData);
+      res.status(201).json(geofence);
+    } catch (error) {
+      console.error("Error creating geofence:", error);
+      res.status(500).json({ message: "Failed to create geofence" });
+    }
+  });
+
+  app.put('/api/geofences/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { id } = req.params;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can update geofences" });
+      }
+
+      const geofence = await storage.updateGeofence(id, req.body);
+      if (!geofence) {
+        return res.status(404).json({ message: "Geofence not found" });
+      }
+
+      res.json(geofence);
+    } catch (error) {
+      console.error("Error updating geofence:", error);
+      res.status(500).json({ message: "Failed to update geofence" });
+    }
+  });
+
+  app.delete('/api/geofences/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { id } = req.params;
+      const parent = await storage.getUser(parentId);
+      
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can delete geofences" });
+      }
+
+      const deleted = await storage.deleteGeofence(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Geofence not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting geofence:", error);
+      res.status(500).json({ message: "Failed to delete geofence" });
+    }
+  });
+
+  app.get('/api/geofence-events', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user;
+      const { limit = 50 } = req.query;
+      
+      let teenId: string;
+      let parentId: string;
+
+      if (user.role === 'parent') {
+        const { teenId: requestedTeenId } = req.query;
+        if (!requestedTeenId) {
+          return res.status(400).json({ message: "Teen ID is required for parents" });
+        }
+        teenId = requestedTeenId as string;
+        parentId = user.id;
+      } else if (user.role === 'teen') {
+        teenId = user.id;
+        parentId = user.parentId;
+        if (!parentId) {
+          return res.status(400).json({ message: "Teen must be associated with a parent" });
+        }
+      } else {
+        return res.status(403).json({ message: "Invalid user role" });
+      }
+
+      const events = await storage.getGeofenceEvents(teenId, parentId, parseInt(limit as string));
+      res.json(events);
+    } catch (error) {
+      console.error("Error fetching geofence events:", error);
+      res.status(500).json({ message: "Failed to fetch geofence events" });
+    }
+  });
 
   // Trial management endpoints (admin only - would typically be protected by admin role)
   app.post('/api/admin/process-trials', async (req, res) => {
