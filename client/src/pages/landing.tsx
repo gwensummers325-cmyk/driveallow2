@@ -274,22 +274,22 @@ export default function Landing() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-12">
             <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">How It Works</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+              <div className="text-center flex flex-col items-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4 text-white font-bold text-lg">
                   1
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-2">Set Up Allowances</h4>
                 <p className="text-gray-600">Configure weekly allowances, penalty amounts, and incentive bonuses for your teen driver.</p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+              <div className="text-center flex flex-col items-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4 text-white font-bold text-lg">
                   2
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-2">Track Driving</h4>
                 <p className="text-gray-600">Teen signs in to their account for automatic monitoring, while parents can report incidents manually or track violations like speeding and harsh braking.</p>
               </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
+              <div className="text-center flex flex-col items-center">
+                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4 text-white font-bold text-lg">
                   3
                 </div>
                 <h4 className="font-semibold text-gray-900 mb-2">Earn & Learn</h4>
