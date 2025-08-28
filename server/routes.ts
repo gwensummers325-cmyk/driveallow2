@@ -481,6 +481,9 @@ export function registerRoutes(app: Express): Server {
       // Get parent information
       const parent = await storage.getUser(teen.parentId);
       
+      // Get allowance settings configured by parent
+      const settings = await storage.getAllowanceSettings(teen.parentId, teenId);
+      
       // Calculate weekly violations
       const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - 7);
@@ -492,6 +495,11 @@ export function registerRoutes(app: Express): Server {
         balance: balance || { currentBalance: '0.00' },
         transactions,
         incidents,
+        settings: settings || {
+          perfectWeekBonus: '10.00',
+          speedComplianceBonus: '2.00',
+          geofenceComplianceBonus: '5.00'
+        },
         weeklyViolations: weeklyIncidents.length,
       };
 

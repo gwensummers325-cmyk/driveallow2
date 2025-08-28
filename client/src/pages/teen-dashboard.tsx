@@ -65,7 +65,7 @@ export default function TeenDashboard() {
     );
   }
 
-  const { teen, parent, balance, transactions, incidents, weeklyViolations } = dashboardData as any;
+  const { teen, parent, balance, transactions, incidents, settings, weeklyViolations } = dashboardData as any;
   
   
   // Ensure new accounts start with clean data
@@ -330,7 +330,7 @@ export default function TeenDashboard() {
                         <p className="text-sm font-medium text-gray-900">Perfect Week Bonus</p>
                         <p className="text-xs text-gray-600">No violations for 7 days</p>
                       </div>
-                      <span className="text-green-600 font-semibold">+$10</span>
+                      <span className="text-green-600 font-semibold">+${formatCurrency(settings?.perfectWeekBonus || '10.00').replace('$', '')}</span>
                     </div>
                   </div>
                   
@@ -340,7 +340,7 @@ export default function TeenDashboard() {
                         <p className="text-sm font-medium text-gray-900">Speed Limit Champion</p>
                         <p className="text-xs text-gray-600">Stay within speed limits</p>
                       </div>
-                      <span className="text-green-600 font-semibold">+$2/day</span>
+                      <span className="text-green-600 font-semibold">+${formatCurrency(settings?.speedComplianceBonus || '2.00').replace('$', '')}/day</span>
                     </div>
                   </div>
                   
@@ -350,7 +350,7 @@ export default function TeenDashboard() {
                         <p className="text-sm font-medium text-gray-900">Safe Driving Streak</p>
                         <p className="text-xs text-gray-600">Current streak: {actualWeeklyViolations === 0 ? '7' : '0'} days</p>
                       </div>
-                      <span className="text-green-600 font-semibold">+$5/week</span>
+                      <span className="text-green-600 font-semibold">+${formatCurrency(settings?.geofenceComplianceBonus || '5.00').replace('$', '')}/week</span>
                     </div>
                   </div>
                 </div>
