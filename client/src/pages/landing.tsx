@@ -147,7 +147,7 @@ export default function Landing() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
             {/* Left side - Text Content */}
             <div className="text-center lg:text-left relative">
-              <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight font-anton headline-animate relative z-10 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight font-anton headline-animate relative z-10 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient">
                 Teens Drive Safe. Teens Get Rewarded.
               </h2>
               
