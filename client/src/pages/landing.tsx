@@ -157,7 +157,7 @@ export default function Landing() {
               </div>
               
               <p className="text-xl md:text-2xl text-gray-600 mb-8 leading-relaxed">
-                DriveAllow rewards safe teen driving with smart allowance management.
+                DriveAllow rewards safe teen driving with smart, gamified allowance management.
               </p>
 
               {/* Social Proof Testimonials */}
