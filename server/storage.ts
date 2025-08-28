@@ -218,6 +218,15 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(incidents.createdAt));
   }
 
+  async getIncidentsByParentId(parentId: string, limit = 20): Promise<Incident[]> {
+    return await db
+      .select()
+      .from(incidents)
+      .where(eq(incidents.parentId, parentId))
+      .orderBy(desc(incidents.createdAt))
+      .limit(limit);
+  }
+
   async getAllowanceBalance(teenId: string): Promise<AllowanceBalance | undefined> {
     const [balance] = await db
       .select()

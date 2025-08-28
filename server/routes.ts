@@ -533,6 +533,40 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Incident reporting routes
+  app.get('/api/incidents', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const teenId = req.query.teenId as string;
+      
+      let incidents;
+      if (teenId) {
+        // Get incidents for specific teen
+        incidents = await storage.getIncidentsByTeenId(teenId, limit);
+      } else {
+        // Get all incidents for parent's teens
+        incidents = await storage.getIncidentsByParentId(parentId, limit);
+      }
+      
+      // Enrich incidents with teen information
+      const enrichedIncidents = await Promise.all(
+        incidents.map(async (incident: any) => {
+          const teen = await storage.getUser(incident.teenId);
+          return {
+            ...incident,
+            teenName: teen ? `${teen.firstName} ${teen.lastName}` : 'Unknown',
+            teenFirstName: teen?.firstName,
+          };
+        })
+      );
+      
+      res.json(enrichedIncidents);
+    } catch (error) {
+      console.error('Error fetching incidents:', error);
+      res.status(500).json({ message: 'Failed to fetch incidents' });
+    }
+  });
+
   app.post('/api/incidents', isAuthenticated, async (req: any, res) => {
     try {
       const parentId = req.user.id;

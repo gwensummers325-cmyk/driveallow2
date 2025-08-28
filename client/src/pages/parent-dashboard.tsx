@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle, Trash2 } from "lucide-react";
+import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle, Trash2, FileX, Filter } from "lucide-react";
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -36,6 +36,12 @@ export default function ParentDashboard() {
 
   const { data: owedTransactions } = useQuery({
     queryKey: ["/api/owed-transactions"],
+    enabled: !!user && !isLoading,
+  });
+
+  // Fetch incidents for violations section
+  const { data: incidents = [] } = useQuery({
+    queryKey: ["/api/incidents"],
     enabled: !!user && !isLoading,
   });
 
@@ -216,6 +222,64 @@ export default function ParentDashboard() {
         return 'text-green-600';
       default:
         return 'text-gray-600';
+    }
+  };
+
+  const getIncidentIcon = (type: string) => {
+    switch (type) {
+      case 'speeding':
+        return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'harsh_braking':
+        return <Shield className="h-4 w-4 text-orange-500" />;
+      case 'rapid_acceleration':
+        return <DollarSign className="h-4 w-4 text-yellow-500" />;
+      case 'geofence_violation':
+        return <FileX className="h-4 w-4 text-purple-500" />;
+      default:
+        return <AlertTriangle className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const getIncidentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'speeding':
+        return 'Speeding';
+      case 'harsh_braking':
+        return 'Harsh Braking';
+      case 'rapid_acceleration':
+        return 'Rapid Acceleration';
+      case 'geofence_violation':
+        return 'Geofence Violation';
+      default:
+        return type.replace('_', ' ');
+    }
+  };
+
+  const getIncidentSeverity = (type: string) => {
+    switch (type) {
+      case 'speeding':
+        return 'High';
+      case 'harsh_braking':
+        return 'Medium';
+      case 'rapid_acceleration':
+        return 'Medium';
+      case 'geofence_violation':
+        return 'High';
+      default:
+        return 'Medium';
+    }
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'High':
+        return 'bg-red-100 text-red-800';
+      case 'Medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Low':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -561,49 +625,120 @@ export default function ParentDashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Recent Activity */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Recent Activity</CardTitle>
-                  <Button variant="ghost" size="sm">View All</Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {transactions.slice(0, 6).map((transaction: any) => (
-                    <div key={transaction.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Recent Activity</CardTitle>
+                <Button variant="ghost" size="sm">View All</Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {transactions.slice(0, 6).map((transaction: any) => (
+                  <div key={transaction.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border">
+                      {getTransactionIcon(transaction.type)}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">{transaction.description}</p>
+                      {transaction.location && (
+                        <p className="text-xs text-gray-600">{transaction.location}</p>
+                      )}
+                      <p className="text-xs text-gray-500">
+                        {formatDate(transaction.createdAt!)} at {formatTime(transaction.createdAt!)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className={`text-sm font-semibold ${getTransactionColor(transaction.type)}`}>
+                        {parseFloat(transaction.amount) >= 0 ? '+' : ''}{formatCurrency(transaction.amount)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+                
+                {transactions.length === 0 && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No recent activity</p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Violations & Incidents */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Violations & Incidents</CardTitle>
+                <Button variant="ghost" size="sm">
+                  <Filter className="h-4 w-4 mr-1" />
+                  Filter
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {incidents.slice(0, 6).map((incident: any) => {
+                  const severity = getIncidentSeverity(incident.type);
+                  return (
+                    <div key={incident.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border">
-                        {getTransactionIcon(transaction.type)}
+                        {getIncidentIcon(incident.type)}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">{transaction.description}</p>
-                        {transaction.location && (
-                          <p className="text-xs text-gray-600">{transaction.location}</p>
-                        )}
-                        <p className="text-xs text-gray-500">
-                          {formatDate(transaction.createdAt!)} at {formatTime(transaction.createdAt!)}
+                        <div className="flex items-center space-x-2 mb-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {getIncidentTypeLabel(incident.type)}
+                          </p>
+                          <Badge className={`text-xs ${getSeverityColor(severity)}`}>
+                            {severity}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-1">
+                          Teen: {incident.teenName}
                         </p>
+                        {incident.location && (
+                          <p className="text-xs text-gray-600">{incident.location}</p>
+                        )}
+                        <div className="flex items-center justify-between mt-1">
+                          <p className="text-xs text-gray-500">
+                            {formatDate(incident.createdAt)} at {formatTime(incident.createdAt)}
+                          </p>
+                          {incident.autoDetected && (
+                            <Badge variant="outline" className="text-xs">
+                              Auto-detected
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <p className={`text-sm font-semibold ${getTransactionColor(transaction.type)}`}>
-                          {parseFloat(transaction.amount) >= 0 ? '+' : ''}{formatCurrency(transaction.amount)}
+                        <p className="text-xs text-red-600 font-medium">
+                          -{formatCurrency(incident.penaltyAmount)}
                         </p>
                       </div>
                     </div>
-                  ))}
-                  
-                  {transactions.length === 0 && (
-                    <div className="text-center py-8">
-                      <p className="text-gray-500">No recent activity</p>
+                  );
+                })}
+                
+                {incidents.length === 0 && (
+                  <div className="text-center py-8">
+                    <div className="flex flex-col items-center">
+                      <CheckCircle className="h-12 w-12 text-green-500 mb-2" />
+                      <p className="text-gray-500 font-medium">No violations reported</p>
+                      <p className="text-xs text-gray-400">Great driving so far!</p>
                     </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Empty spacer for layout */}
+          <div className="lg:col-span-2"></div>
 
           {/* Quick Actions & Status */}
           <div className="space-y-6">
