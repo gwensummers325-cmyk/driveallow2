@@ -72,6 +72,10 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
     notifyOnExit: true,
   });
 
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([]);
+  const [showAddressSuggestions, setShowAddressSuggestions] = useState(false);
+  const [isSearchingAddress, setIsSearchingAddress] = useState(false);
+
   // Fetch geofences
   const { data: geofences = [], isLoading } = useQuery({
     queryKey: ["/api/geofences"],
@@ -190,6 +194,50 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
     },
   });
 
+  // Search for addresses using HERE Geocoding API
+  const searchAddresses = async (query: string) => {
+    if (!query || query.length < 3) {
+      setAddressSuggestions([]);
+      setShowAddressSuggestions(false);
+      return;
+    }
+
+    setIsSearchingAddress(true);
+    try {
+      const res = await apiRequest("GET", `/api/geocode-search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      setAddressSuggestions(data.items || []);
+      setShowAddressSuggestions(true);
+    } catch (error) {
+      console.error("Error searching addresses:", error);
+      setAddressSuggestions([]);
+    } finally {
+      setIsSearchingAddress(false);
+    }
+  };
+
+  // Select an address from suggestions
+  const selectAddress = (item: any) => {
+    const { lat, lng } = item.position;
+    const address = item.address;
+    const displayName = [
+      address.houseNumber,
+      address.street,
+      address.city,
+      address.stateCode
+    ].filter(Boolean).join(' ');
+
+    setFormData(prev => ({
+      ...prev,
+      address: displayName,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+      name: prev.name || displayName.split(',')[0] // Auto-fill name if empty
+    }));
+    setShowAddressSuggestions(false);
+    setAddressSuggestions([]);
+  };
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -208,6 +256,8 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
       notifyOnEntry: true,
       notifyOnExit: true,
     });
+    setAddressSuggestions([]);
+    setShowAddressSuggestions(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -315,8 +365,8 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-4">
                       <div>
                         <Label htmlFor="name">Geofence Name</Label>
                         <Input
@@ -343,56 +393,67 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
                         </Select>
                       </div>
 
-                      <div>
-                        <Label htmlFor="latitude">Latitude</Label>
-                        <Input
-                          id="latitude"
-                          type="number"
-                          step="any"
-                          value={formData.latitude}
-                          onChange={(e) => setFormData(prev => ({ ...prev, latitude: e.target.value }))}
-                          placeholder="e.g., 37.7749"
-                          required
-                          data-testid="input-latitude"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="longitude">Longitude</Label>
-                        <Input
-                          id="longitude"
-                          type="number"
-                          step="any"
-                          value={formData.longitude}
-                          onChange={(e) => setFormData(prev => ({ ...prev, longitude: e.target.value }))}
-                          placeholder="e.g., -122.4194"
-                          required
-                          data-testid="input-longitude"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="radius">Radius (meters)</Label>
-                        <Input
-                          id="radius"
-                          type="number"
-                          value={formData.radius}
-                          onChange={(e) => setFormData(prev => ({ ...prev, radius: e.target.value }))}
-                          placeholder="500"
-                          required
-                          data-testid="input-radius"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="address">Address (Optional)</Label>
+                      <div className="relative">
+                        <Label htmlFor="address">Search Address</Label>
                         <Input
                           id="address"
                           value={formData.address}
-                          onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                          placeholder="123 Main St, City, State"
+                          onChange={(e) => {
+                            setFormData(prev => ({ ...prev, address: e.target.value }));
+                            searchAddresses(e.target.value);
+                          }}
+                          placeholder="Type an address, school name, or business"
                           data-testid="input-address"
                         />
+                        {isSearchingAddress && (
+                          <div className="absolute right-2 top-8 text-gray-400">
+                            Searching...
+                          </div>
+                        )}
+                        
+                        {showAddressSuggestions && addressSuggestions.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-auto">
+                            {addressSuggestions.map((item, index) => (
+                              <button
+                                key={index}
+                                type="button"
+                                className="w-full px-4 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+                                onClick={() => selectAddress(item)}
+                                data-testid={`address-suggestion-${index}`}
+                              >
+                                <div className="font-medium">{item.title}</div>
+                                <div className="text-sm text-gray-600">{item.address.label}</div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {formData.latitude && formData.longitude && (
+                        <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-2 text-green-800">
+                            <MapPin className="h-4 w-4" />
+                            <span className="font-medium">Location Confirmed</span>
+                          </div>
+                          <p className="text-sm text-green-700 mt-1">
+                            Coordinates: {parseFloat(formData.latitude).toFixed(4)}, {parseFloat(formData.longitude).toFixed(4)}
+                          </p>
+                        </div>
+                      )}
+
+                      <div>
+                        <Label htmlFor="radius">Coverage Area</Label>
+                        <Select value={formData.radius} onValueChange={(value) => setFormData(prev => ({ ...prev, radius: value }))}>
+                          <SelectTrigger data-testid="select-radius">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="100">Small (100m - about 1 city block)</SelectItem>
+                            <SelectItem value="250">Medium (250m - few blocks)</SelectItem>
+                            <SelectItem value="500">Large (500m - neighborhood area)</SelectItem>
+                            <SelectItem value="1000">Extra Large (1km - wide area)</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
@@ -641,18 +702,25 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
 
               <Card>
                 <CardHeader>
-                  <CardTitle>How to Set Up Coordinates</CardTitle>
+                  <CardTitle>How to Create Geofences</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <p className="text-gray-600">To find latitude and longitude for a location:</p>
+                    <p className="text-gray-600">Creating a geofence is easy:</p>
                     <ol className="list-decimal list-inside space-y-2 text-sm text-gray-600">
-                      <li>Open Google Maps in your web browser</li>
-                      <li>Search for the location or right-click on the map</li>
-                      <li>Click on the coordinates that appear</li>
-                      <li>Copy the latitude (first number) and longitude (second number)</li>
-                      <li>Paste them into the form above</li>
+                      <li>Give your geofence a name (e.g., "Home", "School")</li>
+                      <li>Choose the type: Safe Zone, Restricted Area, or Curfew Zone</li>
+                      <li>Start typing an address in the search box - suggestions will appear automatically</li>
+                      <li>Click on the correct address from the suggestions</li>
+                      <li>Choose the coverage area size</li>
+                      <li>Set up notifications and time restrictions if needed</li>
                     </ol>
+                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-800 font-medium">💡 Pro Tip</p>
+                      <p className="text-sm text-blue-700">
+                        You can search for businesses, schools, or landmarks by name. For example, try "Starbucks near downtown" or "Lincoln High School".
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

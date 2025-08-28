@@ -1112,6 +1112,37 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Geocoding search endpoint for address lookup
+  app.get('/api/geocode-search', async (req, res) => {
+    try {
+      const { q } = req.query;
+      
+      if (!q || typeof q !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      if (!process.env.HERE_MAPS_API_KEY) {
+        return res.status(500).json({ message: "Geocoding service unavailable" });
+      }
+
+      // HERE Geocoding API for address search
+      const url = `https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(q)}&limit=5&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        console.error(`HERE Geocoding API error: ${response.status}`);
+        return res.status(500).json({ message: "Geocoding service error" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error in geocode search:", error);
+      res.status(500).json({ message: "Failed to search addresses" });
+    }
+  });
+
   // Trial management endpoints (admin only - would typically be protected by admin role)
   app.post('/api/admin/process-trials', async (req, res) => {
     try {
