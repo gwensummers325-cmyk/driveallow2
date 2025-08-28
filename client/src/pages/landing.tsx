@@ -272,7 +272,7 @@ export default function Landing() {
 
           {/* How It Works */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-12">
-            <h3 className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">How It Works</h3>
+            <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">How It Works</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center flex flex-col items-center">
                 <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4 text-white font-bold text-lg">
@@ -471,7 +471,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mr-4">
                       <DollarSign className="h-6 w-6 text-white animate-bounce" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Smart Allowances</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Smart Allowances</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Automatically manage weekly allowances that adjust based on driving behavior. Safe driving earns the full allowance, while violations result in automatic deductions.
@@ -515,7 +515,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-4">
                       <Shield className="h-6 w-6 text-white animate-pulse" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Safety Tracking</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Safety Tracking</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Real-time monitoring of driving behaviors including speed, harsh braking, and acceleration. Get instant alerts when safety thresholds are exceeded.
@@ -557,7 +557,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mr-4">
                       <Smartphone className="h-6 w-6 text-white animate-pulse" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Phone Use Monitoring</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Phone Use Monitoring</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Detect phone usage while driving and automatically apply penalties for distracted driving. Encourage hands-free habits for safer roads.
@@ -602,7 +602,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mr-4">
                       <Users className="h-6 w-6 text-white animate-pulse" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Family Control</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Family Control</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Complete family dashboard with individual settings for each teen driver. Parents maintain full control while giving teens transparency into their progress.
@@ -649,7 +649,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mr-4">
                       <Car className="h-6 w-6 text-white animate-bounce" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Unlimited Teen Drivers</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Unlimited Teen Drivers</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Add as many teen drivers as you need with no additional cost. Perfect for large families with multiple teens learning to drive.
@@ -698,7 +698,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center mr-4">
                       <TrendingUp className="h-6 w-6 text-white animate-pulse" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Automatic Safety Scoring</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Automatic Safety Scoring</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     AI-powered safety scoring that automatically calculates driving performance based on speed, braking, phone use, and other safety metrics.
@@ -745,7 +745,7 @@ export default function Landing() {
                     <div className="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center mr-4">
                       <Mail className="h-6 w-6 text-white animate-pulse" />
                     </div>
-                    <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">Email Notifications</h3>
+                    <h3 className="text-2xl font-bold text-gray-900">Email Notifications</h3>
                   </div>
                   <p className="text-gray-700 mb-4 text-lg">
                     Instant email alerts for both parents and teens when incidents occur. Stay informed about driving behavior in real-time.
@@ -1343,7 +1343,7 @@ export default function Landing() {
         {/* Call to Action Section */}
         <div className="bg-gradient-to-r from-primary to-blue-600 text-white py-16 rounded-3xl mt-16">
           <div className="max-w-4xl mx-auto text-center px-6">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 bg-clip-text text-transparent animate-gradient-x">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Ready to Transform Your Teen's Driving?
             </h2>
             <p className="text-xl md:text-2xl text-blue-100 mb-6 max-w-3xl mx-auto">
