@@ -1128,9 +1128,9 @@ export function registerRoutes(app: Express): Server {
         return res.status(500).json({ message: "Geocoding service unavailable" });
       }
 
-      // HERE Geocoding API for address search
-      const url = `https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(q)}&limit=5&apikey=${process.env.HERE_MAPS_API_KEY}`;
-      console.log('🌐 Making request to HERE Maps:', url.replace(process.env.HERE_MAPS_API_KEY, '[REDACTED]'));
+      // HERE Geocoding API for address search - filtered to USA only
+      const url = `https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(q)}&in=countryCode:USA&limit=5&apikey=${process.env.HERE_MAPS_API_KEY}`;
+      console.log('🌐 Making request to HERE Maps (USA only):', url.replace(process.env.HERE_MAPS_API_KEY, '[REDACTED]'));
       
       const response = await fetch(url);
       
