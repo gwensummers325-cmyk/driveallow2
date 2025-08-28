@@ -29,7 +29,7 @@ interface GeofencingModalProps {
 interface Geofence {
   id: string;
   name: string;
-  type: 'safe' | 'restricted' | 'curfew';
+  type: 'safe_zone' | 'restricted' | 'curfew';
   latitude: number;
   longitude: number;
   radius: number;
@@ -56,7 +56,7 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
   // Form state for creating/editing geofences
   const [formData, setFormData] = useState({
     name: "",
-    type: "safe" as 'safe' | 'restricted' | 'curfew',
+    type: "safe_zone" as 'safe_zone' | 'restricted' | 'curfew',
     latitude: "",
     longitude: "",
     radius: "500",
@@ -394,12 +394,12 @@ export function GeofencingModal({ isOpen, onClose, teenId }: GeofencingModalProp
 
                       <div>
                         <Label htmlFor="type">Geofence Type</Label>
-                        <Select value={formData.type} onValueChange={(value: 'safe' | 'restricted' | 'curfew') => setFormData(prev => ({ ...prev, type: value }))}>
+                        <Select value={formData.type} onValueChange={(value: 'safe_zone' | 'restricted' | 'curfew') => setFormData(prev => ({ ...prev, type: value }))}>
                           <SelectTrigger data-testid="select-geofence-type">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="safe">Safe Zone</SelectItem>
+                            <SelectItem value="safe_zone">Safe Zone</SelectItem>
                             <SelectItem value="restricted">Restricted Area</SelectItem>
                             <SelectItem value="curfew">Curfew Zone</SelectItem>
                           </SelectContent>
