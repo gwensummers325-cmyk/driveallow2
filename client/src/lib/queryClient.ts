@@ -12,6 +12,16 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  // Debug logging to see what's actually being sent
+  if (url.includes('/login')) {
+    console.log('🔍 API Request Debug:', {
+      method,
+      url,
+      data,
+      stringifiedData: data ? JSON.stringify(data) : 'none'
+    });
+  }
+  
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
