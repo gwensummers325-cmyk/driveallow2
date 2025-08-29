@@ -307,11 +307,6 @@ export function setupAuth(app: Express) {
 
   // Login endpoint
   app.post("/api/login", (req, res, next) => {
-    console.log('=== LOGIN REQUEST DEBUG ===');
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
-    console.log('Session ID:', req.sessionID);
-    console.log('Cookies:', req.headers.cookie);
     console.log('Login request received:', {
       username: req.body.username,
       userAgent: req.headers['user-agent'],

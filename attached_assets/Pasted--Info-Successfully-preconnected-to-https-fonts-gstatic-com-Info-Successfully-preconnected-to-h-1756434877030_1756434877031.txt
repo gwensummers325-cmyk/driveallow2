@@ -1,0 +1,25 @@
+[Info] Successfully preconnected to https://fonts.gstatic.com/
+[Info] Successfully preconnected to https://fonts.googleapis.com/
+[Error] Failed to load resource: the server responded with a status of 401 () (user, line 0)
+[Info] Successfully preconnected to https://api.stripe.com/
+[Error] Missing username or password
+	c (index-tQ6KU1yF.js:303:23310)
+[Log] Teen login form submitted: – {username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"} (index-tQ6KU1yF.js, line 303)
+{username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"}Object
+[Log] Performing login mutation... (index-tQ6KU1yF.js, line 303)
+[Log] Login mutation called with: – {username: "thaddeus", hasPassword: true} (index-tQ6KU1yF.js, line 253)
+[Log] API Request: – {method: "POST", url: "/api/login", data: "present"} (index-tQ6KU1yF.js, line 48)
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
+[Log] API Response: – {status: 401, statusText: "", url: "/api/login"} (index-tQ6KU1yF.js, line 48)
+[Log] Performing login mutation... (index-tQ6KU1yF.js, line 303)
+[Log] Login mutation called with: – {username: "thaddeus", hasPassword: true} (index-tQ6KU1yF.js, line 253)
+[Log] API Request: – {method: "POST", url: "/api/login", data: "present"} (index-tQ6KU1yF.js, line 48)
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
+[Log] API Response: – {status: 401, statusText: "", url: "/api/login"} (index-tQ6KU1yF.js, line 48)
+[Log] Teen login form submitted: – {username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"} (index-tQ6KU1yF.js, line 303)
+{username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"}Object
+[Log] Performing login mutation... (index-tQ6KU1yF.js, line 303)
+[Log] Login mutation called with: – {username: "thaddeus", hasPassword: true} (index-tQ6KU1yF.js, line 253)
+[Log] API Request: – {method: "POST", url: "/api/login", data: "present"} (index-tQ6KU1yF.js, line 48)
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
+[Log] API Response: – {status: 401, statusText: "", url: "/api/login"} (index-tQ6KU1yF.js, line 48)

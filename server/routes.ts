@@ -26,31 +26,10 @@ async function hashPassword(password: string) {
 }
 
 export function registerRoutes(app: Express): Server {
-  // Debug middleware to log ALL requests
-  app.use((req, res, next) => {
-    console.log(`=== ALL REQUESTS DEBUG ===`);
-    console.log(`${req.method} ${req.url}`);
-    console.log('Headers:', req.headers);
-    console.log('Body:', req.body);
-    console.log('Session ID:', req.sessionID);
-    console.log('========================');
-    next();
-  });
-
-  // Ensure API routes are handled BEFORE Vite catch-all
-  app.use('/api/*', (req, res, next) => {
-    console.log('API ROUTE MIDDLEWARE HIT:', req.url);
-    next();
-  });
 
   // Auth middleware
   setupAuth(app);
 
-  // TEST endpoint to verify routing
-  app.post('/api/test-route', async (req, res) => {
-    console.log('TEST ROUTE HIT!');
-    res.json({ message: "Test route working", received: req.body });
-  });
 
   // Test accounts creation endpoint (remove in production)
   app.post('/api/create-test-accounts', async (req, res) => {
