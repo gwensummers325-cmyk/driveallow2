@@ -48,6 +48,11 @@ export default function TeenAuth() {
       return;
     }
     console.log('Performing login mutation...');
+    console.log('Form data being sent:', {
+      username: loginForm.username,
+      password: loginForm.password,
+      passwordLength: loginForm.password.length
+    });
     loginMutation.mutate(loginForm);
   };
 

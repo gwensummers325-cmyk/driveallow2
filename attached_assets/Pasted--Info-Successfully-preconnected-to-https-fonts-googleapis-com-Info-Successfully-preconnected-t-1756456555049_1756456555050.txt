@@ -1,0 +1,24 @@
+[Info] Successfully preconnected to https://fonts.googleapis.com/
+[Info] Successfully preconnected to https://fonts.gstatic.com/
+[Info] Successfully preconnected to https://api.stripe.com/
+[Error] Failed to load resource: the server responded with a status of 401 () (user, line 0)
+[Error] Missing username or password
+	c (index-CSyMhPVR.js:303:23310)
+[Log] Teen login form submitted: – Object (index-CSyMhPVR.js, line 303)
+Object
+[Log] Performing login mutation... (index-CSyMhPVR.js, line 303)
+[Log] Login mutation called with: – Object (index-CSyMhPVR.js, line 253)
+Object
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
+> Selected Element
+< <div class="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 flex items-center justify-center p-4">…</div>
+[Log] Teen login form submitted: – {username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"} (index-CSyMhPVR.js, line 303)
+{username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"}Object
+[Log] Performing login mutation... (index-CSyMhPVR.js, line 303)
+[Log] Login mutation called with: – {username: "thaddeus", hasPassword: true} (index-CSyMhPVR.js, line 253)
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
+[Log] Teen login form submitted: – {username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"} (index-CSyMhPVR.js, line 303)
+{username: "thaddeus", hasPassword: true, userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap… (KHTML, like Gecko) Version/18.6 Safari/605.1.15"}Object
+[Log] Performing login mutation... (index-CSyMhPVR.js, line 303)
+[Log] Login mutation called with: – {username: "thaddeus", hasPassword: true} (index-CSyMhPVR.js, line 253)
+[Error] Failed to load resource: the server responded with a status of 401 () (login, line 0)
