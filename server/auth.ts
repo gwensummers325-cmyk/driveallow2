@@ -50,7 +50,7 @@ export function setupAuth(app: Express) {
     store: sessionStore,
     cookie: {
       secure: false,
-      httpOnly: false, // Allow frontend access to cookie
+      httpOnly: true, // Secure cookie handling
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       sameSite: 'lax', // Allow cross-origin requests
     },
@@ -62,14 +62,28 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
+    new LocalStrategy({
+      usernameField: 'username',
+      passwordField: 'password'
+    }, async (username, password, done) => {
       try {
+        console.log(`Login attempt for username: ${username}`);
         const user = await storage.getUserByUsername(username.toLowerCase());
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user) {
+          console.log(`User not found: ${username}`);
           return done(null, false, { message: 'Invalid username or password' });
         }
+        
+        const passwordMatch = await comparePasswords(password, user.password);
+        if (!passwordMatch) {
+          console.log(`Password mismatch for user: ${username}`);
+          return done(null, false, { message: 'Invalid username or password' });
+        }
+        
+        console.log(`Login successful for user: ${username}`);
         return done(null, user);
       } catch (error) {
+        console.error('Login error:', error);
         return done(error);
       }
     })
@@ -292,18 +306,31 @@ export function setupAuth(app: Express) {
 
   // Login endpoint
   app.post("/api/login", (req, res, next) => {
+    console.log('Login request received:', {
+      username: req.body.username,
+      userAgent: req.headers['user-agent'],
+      ip: req.ip,
+      hasPassword: !!req.body.password
+    });
+    
     passport.authenticate("local", async (err: any, user: DatabaseUser | false, info: any) => {
       if (err) {
+        console.error('Authentication error:', err);
         return res.status(500).json({ message: "Authentication error" });
       }
       if (!user) {
+        console.log('Login failed for:', req.body.username, 'Reason:', info?.message);
         return res.status(401).json({ message: info?.message || "Invalid credentials" });
       }
+      
       req.login(user, async (err) => {
         if (err) {
+          console.error('Session login error:', err);
           return res.status(500).json({ message: "Login failed" });
         }
 
+        console.log('Login successful, setting session data for:', user.username);
+        
         // Store login time in session for session duration calculation
         (req.session as any).loginTime = Date.now();
 
