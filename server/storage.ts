@@ -38,6 +38,7 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   getUsersByParentId(parentId: string): Promise<User[]>;
   deleteUser(userId: string): Promise<void>;
+  updateUserCredentials(userId: string, username: string, password: string): Promise<User>;
   updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User>;
   
   // Allowance settings operations
@@ -295,6 +296,30 @@ export class DatabaseStorage implements IStorage {
         )
       )
       .orderBy(desc(transactions.createdAt));
+  }
+
+  async updateUserCredentials(userId: string, username: string, password: string): Promise<User> {
+    // Check if username is already taken by another user
+    const existingUser = await this.getUserByUsername(username.toLowerCase());
+    if (existingUser && existingUser.id !== userId) {
+      throw new Error('Username already exists');
+    }
+
+    const [user] = await db
+      .update(users)
+      .set({ 
+        username: username.toLowerCase(),
+        password: password, // password should already be hashed when passed in
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+    
+    return user;
   }
 
   async updateUserStripeInfo(userId: string, stripeInfo: Partial<Pick<User, 'stripeCustomerId' | 'stripeCardholderId' | 'stripeCardId' | 'cardStatus'>>): Promise<User> {

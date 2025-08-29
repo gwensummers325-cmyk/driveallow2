@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle, Trash2, FileX, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Wallet, AlertTriangle, Shield, Calendar, Plus, Settings, Gift, DollarSign, CheckCircle, Trash2, FileX, Filter, Key } from "lucide-react";
 import { ReportIncidentModal } from "@/components/report-incident-modal";
 import { AddBonusModal } from "@/components/add-bonus-modal";
 import { SettingsPanel } from "@/components/settings-panel";
@@ -18,6 +20,122 @@ import { apiRequest } from "@/lib/queryClient";
 import { useState } from "react";
 import { Layout } from "@/components/layout";
 
+// Change Credentials Modal Component
+function ChangeCredentialsModal({ isOpen, onClose, teenId, teenName }: {
+  isOpen: boolean;
+  onClose: () => void;
+  teenId: string;
+  teenName: string;
+}) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const updateCredentialsMutation = useMutation({
+    mutationFn: async ({ teenId, username, password }: { teenId: string; username: string; password: string }) => {
+      const response = await apiRequest('PUT', `/api/teens/${teenId}/credentials`, {
+        username,
+        password
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: `${teenName}'s login credentials have been updated successfully.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/parent"] });
+      onClose();
+      setUsername('');
+      setPassword('');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update credentials",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username.trim() && password.trim()) {
+      updateCredentialsMutation.mutate({ teenId, username: username.trim(), password });
+    }
+  };
+
+  const handleClose = () => {
+    onClose();
+    setUsername('');
+    setPassword('');
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Change Login Credentials</DialogTitle>
+          <DialogDescription>
+            Update {teenName}'s username and password for logging into DriveAllow.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="username">New Username</Label>
+            <Input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter new username"
+              required
+              minLength={3}
+              disabled={updateCredentialsMutation.isPending}
+              data-testid="input-username"
+            />
+            <p className="text-xs text-gray-500 mt-1">At least 3 characters</p>
+          </div>
+          <div>
+            <Label htmlFor="password">New Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter new password"
+              required
+              minLength={6}
+              disabled={updateCredentialsMutation.isPending}
+              data-testid="input-password"
+            />
+            <p className="text-xs text-gray-500 mt-1">At least 6 characters</p>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={handleClose}
+              disabled={updateCredentialsMutation.isPending}
+              data-testid="button-cancel"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit"
+              disabled={updateCredentialsMutation.isPending || !username.trim() || !password.trim()}
+              data-testid="button-update-credentials"
+            >
+              {updateCredentialsMutation.isPending ? "Updating..." : "Update Credentials"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function ParentDashboard() {
   const { toast } = useToast();
   const { user, isLoading } = useAuth();
@@ -26,6 +144,7 @@ export default function ParentDashboard() {
   const [showBonusModal, setShowBonusModal] = useState(false);
   const [showCreateTeenModal, setShowCreateTeenModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCredentialsModal, setShowCredentialsModal] = useState(false);
   const [showGeofencingModal, setShowGeofencingModal] = useState(false);
   const [selectedTeenId, setSelectedTeenId] = useState<string>("");
 
@@ -602,6 +721,19 @@ export default function ParentDashboard() {
                           <Gift className="h-3 w-3 mr-1" />
                           Add Bonus
                         </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-xs md:text-sm border-blue-200 text-blue-700 hover:bg-blue-50 min-h-[36px]"
+                          onClick={() => {
+                            setSelectedTeenId(teen.id);
+                            setShowCredentialsModal(true);
+                          }}
+                          title="Change teen's login username and password"
+                        >
+                          <Key className="h-3 w-3 mr-1" />
+                          Change Login
+                        </Button>
                       </div>
                       <div className="grid grid-cols-1 gap-2 mt-2">
                         <Button
@@ -850,6 +982,14 @@ export default function ParentDashboard() {
         isOpen={showGeofencingModal}
         onClose={() => setShowGeofencingModal(false)}
         teenId={selectedTeenId}
+      />
+
+      {/* Change Teen Credentials Modal */}
+      <ChangeCredentialsModal
+        isOpen={showCredentialsModal}
+        onClose={() => setShowCredentialsModal(false)}
+        teenId={selectedTeenId}
+        teenName={teens.find((t: any) => t.id === selectedTeenId)?.firstName || ''}
       />
       </div>
     </Layout>

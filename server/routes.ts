@@ -514,6 +514,60 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Update teen login credentials (parent only)
+  app.put('/api/teens/:teenId/credentials', isAuthenticated, async (req: any, res) => {
+    try {
+      const parentId = req.user.id;
+      const { teenId } = req.params;
+      const { username, password } = req.body;
+      
+      // Verify user is a parent
+      const parent = await storage.getUser(parentId);
+      if (!parent || parent.role !== 'parent') {
+        return res.status(403).json({ message: "Only parents can update teen credentials" });
+      }
+      
+      // Verify teen exists and belongs to this parent
+      const teen = await storage.getUser(teenId);
+      if (!teen || teen.parentId !== parentId || teen.role !== 'teen') {
+        return res.status(404).json({ message: "Teen not found or access denied" });
+      }
+      
+      // Validate input
+      if (!username || !password) {
+        return res.status(400).json({ message: "Username and password are required" });
+      }
+      
+      if (username.length < 3) {
+        return res.status(400).json({ message: "Username must be at least 3 characters long" });
+      }
+      
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters long" });
+      }
+      
+      // Hash the new password
+      const hashedPassword = await hashPassword(password);
+      
+      // Update the teen's credentials
+      const updatedTeen = await storage.updateUserCredentials(teenId, username, hashedPassword);
+      
+      res.json({
+        id: updatedTeen.id,
+        username: updatedTeen.username,
+        firstName: updatedTeen.firstName,
+        lastName: updatedTeen.lastName,
+        message: "Teen credentials updated successfully"
+      });
+    } catch (error: any) {
+      console.error("Error updating teen credentials:", error);
+      if (error.message === 'Username already exists') {
+        return res.status(409).json({ message: "Username already exists. Please choose a different username." });
+      }
+      res.status(500).json({ message: "Failed to update teen credentials" });
+    }
+  });
+
   // Allowance settings routes
   app.get('/api/allowance-settings/:teenId', isAuthenticated, async (req: any, res) => {
     try {
