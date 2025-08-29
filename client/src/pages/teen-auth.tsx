@@ -10,7 +10,7 @@ import { Car, DollarSign, Star, Users } from "lucide-react";
 import { Layout } from "@/components/layout";
 
 export default function TeenAuth() {
-  const { user, loginMutation, registerMutation } = useAuth();
+  const { user, loginMutation, registerMutation, logoutMutation } = useAuth();
   const [, setLocation] = useLocation();
 
   const [loginForm, setLoginForm] = useState({
