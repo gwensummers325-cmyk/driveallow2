@@ -205,18 +205,18 @@ export default function ParentDashboard() {
   const [showGeofencingModal, setShowGeofencingModal] = useState(false);
   const [selectedTeenId, setSelectedTeenId] = useState<string>("");
 
-  const { data: dashboardData, isLoading: isDashboardLoading } = useQuery<DashboardData>({
+  const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
     queryKey: ["/api/dashboard/parent"],
     enabled: !!user && !isLoading,
   });
 
-  const { data: owedTransactions } = useQuery<Transaction[]>({
+  const { data: owedTransactions } = useQuery({
     queryKey: ["/api/owed-transactions"],
     enabled: !!user && !isLoading,
   });
 
   // Fetch incidents for violations section
-  const { data: incidents = [] } = useQuery<Incident[]>({
+  const { data: incidents = [] } = useQuery({
     queryKey: ["/api/incidents"],
     enabled: !!user && !isLoading,
   });
@@ -370,7 +370,7 @@ export default function ParentDashboard() {
     );
   }
 
-  const { parent, teens, transactions } = dashboardData;
+  const { parent, teens, transactions } = dashboardData as any;
 
   const formatCurrency = (amount: string) => `$${parseFloat(amount).toFixed(2)}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
