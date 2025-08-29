@@ -13,7 +13,6 @@ import {
   insertSubscriptionSchema
 } from "@shared/schema";
 import { z } from "zod";
-import { createTestAccounts } from "./create-test-accounts";
 import { scrypt, randomBytes } from "crypto";
 import { promisify } from "util";
 
@@ -31,16 +30,6 @@ export function registerRoutes(app: Express): Server {
   setupAuth(app);
 
 
-  // Test accounts creation endpoint (remove in production)
-  app.post('/api/create-test-accounts', async (req, res) => {
-    try {
-      await createTestAccounts();
-      res.json({ message: "Test accounts created successfully" });
-    } catch (error) {
-      console.error("Error creating test accounts:", error);
-      res.status(500).json({ message: "Failed to create test accounts" });
-    }
-  });
 
   // Subscription management routes
   app.get('/api/subscription', isAuthenticated, async (req: any, res) => {
