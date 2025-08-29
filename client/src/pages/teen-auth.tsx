@@ -160,6 +160,19 @@ export default function TeenAuth() {
                   {loginMutation.isPending ? "Signing In..." : "Sign In"}
                 </Button>
                 
+                {/* Temporary debug button */}
+                <Button 
+                  type="button"
+                  onClick={() => {
+                    setLoginForm({ username: 'thaddeus', password: 'test123' });
+                    setTimeout(() => performLogin(), 100);
+                  }}
+                  className="w-full bg-red-600 hover:bg-red-700 mt-2" 
+                  disabled={loginMutation.isPending}
+                >
+                  Quick Test: thaddeus/test123
+                </Button>
+                
               </form>
               
               <div className="mt-6 text-center">
