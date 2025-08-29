@@ -1,12 +1,17 @@
 import Stripe from "stripe";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+// Allow development without Stripe key
+if (!stripeSecretKey || stripeSecretKey === 'your_stripe_secret_key_here') {
+  console.warn('STRIPE_SECRET_KEY not configured, Stripe functionality will be disabled');
 }
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-07-30.basil",
-});
+export const stripe = stripeSecretKey && stripeSecretKey !== 'your_stripe_secret_key_here' 
+  ? new Stripe(stripeSecretKey, {
+      apiVersion: '2023-10-16',
+    })
+  : null;
 
 export class StripeService {
   /**
