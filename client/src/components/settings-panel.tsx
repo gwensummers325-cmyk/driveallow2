@@ -344,7 +344,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
             </div>
 
             {/* Incentive Settings */}
-            <div>
+            <div className="mt-4">
               <h4 className="text-sm font-medium text-gray-900 mb-3">Safe Driving Incentives</h4>
               <div className="space-y-3">
                 <div className="grid grid-cols-1 gap-2">
