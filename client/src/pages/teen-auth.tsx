@@ -160,7 +160,18 @@ export default function TeenAuth() {
                   {loginMutation.isPending ? "Signing In..." : "Sign In"}
                 </Button>
                 
-                {/* Debug button for testing */}
+                {/* Debug buttons for testing */}
+                <Button 
+                  type="button"
+                  onClick={() => {
+                    console.log('Logout clicked');
+                    logoutMutation.mutate();
+                  }}
+                  className="w-full bg-blue-600 hover:bg-blue-700 mt-2" 
+                >
+                  DEBUG: Clear Session / Logout
+                </Button>
+                
                 <Button 
                   type="button"
                   onClick={() => {
