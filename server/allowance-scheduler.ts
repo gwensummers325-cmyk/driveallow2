@@ -38,6 +38,14 @@ export class AllowanceScheduler {
       const now = new Date();
       console.log(`📅 Checking for due allowances at ${now.toISOString()}`);
 
+      // Check if database is available before proceeding
+      try {
+        await storage.getUsersByRole('teen');
+      } catch (dbError) {
+        console.log('⚠️  Database not available, skipping allowance processing');
+        return;
+      }
+
       // Get all teens
       const teens = await storage.getUsersByRole('teen');
 
