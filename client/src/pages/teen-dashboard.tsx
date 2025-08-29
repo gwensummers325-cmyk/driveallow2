@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target } from "lucide-react";
+import { PiggyBank, Shield, Construction, AlertTriangle, Star, Car, TrendingUp, Target, MapPin } from "lucide-react";
 import { MonitoringStatus } from "@/components/monitoring-status";
 import { Layout } from "@/components/layout";
 
@@ -65,7 +65,7 @@ export default function TeenDashboard() {
     );
   }
 
-  const { teen, parent, balance, transactions, incidents, settings, weeklyViolations } = dashboardData as any;
+  const { teen, parent, balance, transactions, incidents, settings, geofences, weeklyViolations } = dashboardData as any;
   
   
   // Ensure new accounts start with clean data
@@ -353,6 +353,63 @@ export default function TeenDashboard() {
                       <span className="text-green-600 font-semibold">+${formatCurrency(settings?.geofenceComplianceBonus || '5.00').replace('$', '')}/week</span>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Geofence Restrictions */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Safe Zones & Restrictions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {geofences && geofences.length > 0 ? (
+                    geofences.map((geofence: any) => (
+                      <div key={geofence.id} className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <MapPin className="h-4 w-4 text-blue-600" />
+                              <p className="text-sm font-medium text-gray-900">{geofence.name}</p>
+                            </div>
+                            <p className="text-xs text-gray-600 mb-2">{geofence.address}</p>
+                            <div className="flex items-center space-x-4">
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                geofence.type === 'safe_zone' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-red-100 text-red-800'
+                              }`}>
+                                {geofence.type === 'safe_zone' ? 'Safe Zone' : 'Restricted Area'}
+                              </span>
+                              {geofence.isTimeRestricted && (
+                                <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
+                                  Time Restricted
+                                </span>
+                              )}
+                            </div>
+                            {geofence.isTimeRestricted && (
+                              <p className="text-xs text-gray-500 mt-1">
+                                {geofence.allowedStartTime} - {geofence.allowedEndTime}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-red-600 font-medium">
+                              -{formatCurrency(settings?.geofenceViolationPenalty || '20.00')}
+                            </p>
+                            <p className="text-xs text-gray-500">penalty</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-6">
+                      <MapPin className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-500 text-sm">No geofences assigned yet</p>
+                      <p className="text-xs text-gray-400">Your parents will set up safe zones and restrictions</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

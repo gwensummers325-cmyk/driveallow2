@@ -484,6 +484,9 @@ export function registerRoutes(app: Express): Server {
       // Get allowance settings configured by parent
       const settings = await storage.getAllowanceSettings(teen.parentId, teenId);
       
+      // Get assigned geofences for the teen
+      const assignedGeofences = await storage.getGeofencesForTeen(teenId);
+      
       // Calculate weekly violations
       const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - 7);
@@ -500,6 +503,7 @@ export function registerRoutes(app: Express): Server {
           speedComplianceBonus: '2.00',
           geofenceComplianceBonus: '5.00'
         },
+        geofences: assignedGeofences || [],
         weeklyViolations: weeklyIncidents.length,
       };
 
