@@ -185,7 +185,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
             {/* Allowance Settings */}
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Allowance Configuration</h4>
@@ -344,7 +344,7 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
             </div>
 
             {/* Incentive Settings */}
-            <div className="mt-4">
+            <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">Safe Driving Incentives</h4>
               <div className="space-y-3">
                 <div className="grid grid-cols-1 gap-2">
