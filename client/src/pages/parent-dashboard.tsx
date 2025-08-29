@@ -434,9 +434,15 @@ export default function ParentDashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+        
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Parent Dashboard</h1>
+          <p className="text-gray-600">Monitor your teen drivers and manage allowances</p>
+        </div>
+
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -512,9 +518,9 @@ export default function ParentDashboard() {
 
         {/* Owed Money Reminder */}
         {owedTransactions && Array.isArray(owedTransactions) && owedTransactions.length > 0 && (
-          <Card className="mb-8 border-orange-200 bg-orange-50">
+          <Card className="mb-6 border-orange-200 bg-orange-50">
             <CardHeader>
-              <CardTitle className="flex items-center text-orange-800">
+              <CardTitle className="flex items-center text-orange-800 text-lg">
                 <DollarSign className="h-5 w-5 mr-2" />
                 Pending Real-World Payments
               </CardTitle>
@@ -575,9 +581,9 @@ export default function ParentDashboard() {
 
         {/* Individual Teen Cards */}
         {teens.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Your Teen Drivers</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">Your Teen Drivers</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {teens.map((teen: any) => (
                 <Card key={teen.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
@@ -594,7 +600,7 @@ export default function ParentDashboard() {
                         </div>
                         <div>
                           <CardTitle className="text-lg">{teen.firstName} {teen.lastName}</CardTitle>
-                          <p className="text-sm text-gray-600">{teen.email}</p>
+                          <p className="text-sm text-gray-500">{teen.email}</p>
                         </div>
                       </div>
                     </div>
@@ -757,19 +763,19 @@ export default function ParentDashboard() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
           {/* Recent Activity */}
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Recent Activity</CardTitle>
+                <CardTitle className="text-lg">Recent Activity</CardTitle>
                 <Button variant="ghost" size="sm">View All</Button>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-80 overflow-y-auto">
                 {transactions.slice(0, 6).map((transaction: any) => (
-                  <div key={transaction.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <div key={transaction.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                     <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border">
                       {getTransactionIcon(transaction.type)}
                     </div>
@@ -803,7 +809,7 @@ export default function ParentDashboard() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Violations & Incidents</CardTitle>
+                <CardTitle className="text-lg">Violations & Incidents</CardTitle>
                 <Button variant="ghost" size="sm">
                   <Filter className="h-4 w-4 mr-1" />
                   Filter
@@ -811,11 +817,11 @@ export default function ParentDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-80 overflow-y-auto">
                 {incidents.slice(0, 6).map((incident: any) => {
                   const severity = getIncidentSeverity(incident.type);
                   return (
-                    <div key={incident.id} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                    <div key={incident.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center border">
                         {getIncidentIcon(incident.type)}
                       </div>
@@ -869,10 +875,10 @@ export default function ParentDashboard() {
         </div>
 
         {/* Family Summary */}
-        <div className="mt-8">
+        <div className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Family Summary</CardTitle>
+              <CardTitle className="text-lg">Family Summary</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -907,7 +913,7 @@ export default function ParentDashboard() {
 
         {/* Settings Panel */}
         {teens.length > 0 && (
-          <div className="mt-8">
+          <div className="mt-6">
             <SettingsPanel 
               teenId={teens.find(t => t.id === selectedTeenId) ? selectedTeenId : teens[0]?.id} 
               teens={teens}
@@ -917,7 +923,7 @@ export default function ParentDashboard() {
         )}
 
         {/* Subscription Management */}
-        <div className="mt-8">
+        <div className="mt-6">
           <SubscriptionPanel />
         </div>
       </main>
