@@ -33,7 +33,7 @@ export function registerRoutes(app: Express): Server {
     console.log('Headers:', req.headers);
     console.log('Body:', req.body);
     console.log('Session ID:', req.sessionID);
-    console.log('========================`);
+    console.log('========================');
     next();
   });
 
