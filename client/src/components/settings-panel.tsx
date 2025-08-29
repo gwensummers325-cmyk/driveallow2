@@ -185,11 +185,11 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="space-y-6">
             {/* Allowance Settings */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">Allowance Configuration</h4>
-              <div className="space-y-3">
+              <h4 className="text-lg font-medium text-gray-900 mb-4">Allowance Configuration</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="allowance-amount">Allowance Amount</Label>
                   <div className="relative">
@@ -205,7 +205,6 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                     />
                   </div>
                 </div>
-                
                 <div>
                   <Label htmlFor="frequency">Payment Frequency</Label>
                   <Select value={settings.frequency} onValueChange={(value) => handleInputChange('frequency', value)}>
@@ -219,14 +218,13 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
                     </SelectContent>
                   </Select>
                 </div>
-                
               </div>
             </div>
 
             {/* Penalty Settings */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">Violation Penalties</h4>
-              <div className="space-y-3">
+              <h4 className="text-lg font-medium text-gray-900 mb-4">Violation Penalties</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="grid grid-cols-1 gap-2">
                   <Label className="text-sm text-gray-600">Speeding (3-10 mph over)</Label>
                   <div className="relative">
@@ -345,8 +343,8 @@ export function SettingsPanel({ teenId, teens = [], onTeenChange }: SettingsPane
 
             {/* Incentive Settings */}
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-3">Safe Driving Incentives</h4>
-              <div className="space-y-3">
+              <h4 className="text-lg font-medium text-gray-900 mb-4">Safe Driving Incentives</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="grid grid-cols-1 gap-2">
                   <Label className="text-sm text-gray-600">Perfect week (no violations)</Label>
                   <div className="relative">
