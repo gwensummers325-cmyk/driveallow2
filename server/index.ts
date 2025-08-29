@@ -4,6 +4,17 @@ import { setupVite, serveStatic, log } from "./vite";
 import { AllowanceScheduler } from "./allowance-scheduler";
 
 const app = express();
+
+// Debug middleware FIRST to catch ALL requests
+app.use((req, res, next) => {
+  console.log(`=== SERVER REQUEST DEBUG ===`);
+  console.log(`${req.method} ${req.url}`);
+  console.log('Headers:', req.headers);
+  console.log('Raw Body:', req.body);
+  console.log('============================');
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
