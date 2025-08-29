@@ -34,6 +34,11 @@ export default function TeenAuth() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Teen login form submitted:', {
+      username: loginForm.username,
+      hasPassword: !!loginForm.password,
+      userAgent: navigator.userAgent
+    });
     loginMutation.mutate(loginForm);
   };
 
