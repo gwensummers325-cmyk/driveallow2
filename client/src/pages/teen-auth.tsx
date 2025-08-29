@@ -39,6 +39,15 @@ export default function TeenAuth() {
       hasPassword: !!loginForm.password,
       userAgent: navigator.userAgent
     });
+    performLogin();
+  };
+
+  const performLogin = () => {
+    if (!loginForm.username || !loginForm.password) {
+      console.error('Missing username or password');
+      return;
+    }
+    console.log('Performing login mutation...');
     loginMutation.mutate(loginForm);
   };
 
@@ -115,11 +124,14 @@ export default function TeenAuth() {
                   <Label htmlFor="username">Username</Label>
                   <Input
                     id="username"
+                    name="username"
                     type="text"
+                    autoComplete="username"
                     value={loginForm.username}
                     onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
                     placeholder="Enter your username"
                     required
+                    data-testid="input-username"
                   />
                 </div>
                 
@@ -127,18 +139,23 @@ export default function TeenAuth() {
                   <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
+                    autoComplete="current-password"
                     value={loginForm.password}
                     onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                     placeholder="Enter your password"
                     required
+                    data-testid="input-password"
                   />
                 </div>
                 
                 <Button 
                   type="submit" 
-                  className="w-full bg-green-600 hover:bg-green-700" 
+                  className="w-full bg-green-600 hover:bg-green-700 touch-manipulation" 
                   disabled={loginMutation.isPending}
+                  data-testid="button-signin"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   {loginMutation.isPending ? "Signing In..." : "Sign In"}
                 </Button>
