@@ -26,6 +26,17 @@ async function hashPassword(password: string) {
 }
 
 export function registerRoutes(app: Express): Server {
+  // Debug middleware to log ALL requests
+  app.use((req, res, next) => {
+    console.log(`=== ALL REQUESTS DEBUG ===`);
+    console.log(`${req.method} ${req.url}`);
+    console.log('Headers:', req.headers);
+    console.log('Body:', req.body);
+    console.log('Session ID:', req.sessionID);
+    console.log('========================`);
+    next();
+  });
+
   // Auth middleware
   setupAuth(app);
 
