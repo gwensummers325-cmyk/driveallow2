@@ -43,8 +43,15 @@ export default function TeenAuth() {
   };
 
   const performLogin = () => {
+    console.log('🚀 performLogin called with loginForm:', loginForm);
     if (!loginForm.username || !loginForm.password) {
       console.error('Missing username or password');
+      console.log('Form state debug:', {
+        username: loginForm.username,
+        password: loginForm.password,
+        usernameLength: loginForm.username?.length || 0,
+        passwordLength: loginForm.password?.length || 0
+      });
       return;
     }
     console.log('Performing login mutation...');
@@ -53,7 +60,14 @@ export default function TeenAuth() {
       password: loginForm.password,
       passwordLength: loginForm.password.length
     });
-    loginMutation.mutate(loginForm);
+    
+    // Create explicit object to ensure no reference issues
+    const loginData = {
+      username: loginForm.username,
+      password: loginForm.password
+    };
+    console.log('🎯 Explicit login data:', loginData);
+    loginMutation.mutate(loginData);
   };
 
   const handleRegister = async (e: React.FormEvent) => {
