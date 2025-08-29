@@ -357,6 +357,107 @@ export default function TeenDashboard() {
               </CardContent>
             </Card>
 
+            {/* Violation Penalties */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Violation Penalties</CardTitle>
+                <p className="text-sm text-gray-600">These amounts will be deducted from your allowance</p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Minor Speeding</p>
+                        <p className="text-xs text-gray-500">3-10 mph over limit</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.speedingMinorPenalty || '5.00')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Major Speeding</p>
+                        <p className="text-xs text-gray-500">Over 10 mph over limit</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.speedingMajorPenalty || '10.00')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <Car className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Harsh Braking</p>
+                        <p className="text-xs text-gray-500">Sudden stops detected</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.harshBrakingPenalty || '5.00')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <TrendingUp className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Aggressive Acceleration</p>
+                        <p className="text-xs text-gray-500">Rapid speed increases</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.aggressiveAccelPenalty || '5.00')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <Target className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Phone Usage</p>
+                        <p className="text-xs text-gray-500">Using phone while driving</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.phoneUsagePenalty || '15.00')}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                        <Shield className="h-4 w-4 text-red-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Curfew Violation</p>
+                        <p className="text-xs text-gray-500">Driving outside allowed hours</p>
+                      </div>
+                    </div>
+                    <span className="text-red-600 font-semibold">
+                      -{formatCurrency(settings?.curfewViolationPenalty || '25.00')}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Geofence Restrictions */}
             <Card>
               <CardHeader>
